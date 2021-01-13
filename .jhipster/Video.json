@@ -1,0 +1,25 @@
+{
+  "name": "Video",
+  "fields": [
+    {
+      "fieldName": "length",
+      "fieldType": "Integer"
+    }
+  ],
+  "relationships": [],
+  "changelogDate": "20210113202713",
+  "entityTableName": "media",
+  "dto": "mapstruct",
+  "pagination": "no",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": [
+    "Gateway",
+    "MediaService"
+  ],
+  "microserviceName": "MediaService"
+}

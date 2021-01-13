@@ -1,0 +1,42 @@
+{
+  "name": "Media",
+  "fields": [
+    {
+      "fieldName": "title",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "uploadDate",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "mimeType",
+      "fieldType": "MIMETYPE",
+      "fieldValues": "VIDEO,IMAGE,AUDIO"
+    },
+    {
+      "fieldName": "format",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "location",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [],
+  "changelogDate": "20210113202613",
+  "entityTableName": "media",
+  "dto": "mapstruct",
+  "pagination": "no",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": [
+    "Gateway",
+    "MediaService"
+  ],
+  "microserviceName": "MediaService"
+}
