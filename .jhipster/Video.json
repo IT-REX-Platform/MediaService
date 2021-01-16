@@ -2,13 +2,34 @@
   "name": "Video",
   "fields": [
     {
+      "fieldName": "title",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "uploadDate",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "mimeType",
+      "fieldType": "MIMETYPE",
+      "fieldValues": "VIDEO,IMAGE,AUDIO"
+    },
+    {
+      "fieldName": "format",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "location",
+      "fieldType": "String"
+    },
+    {
       "fieldName": "length",
       "fieldType": "Integer"
     }
   ],
   "relationships": [],
-  "changelogDate": "20210113202713",
-  "entityTableName": "media",
+  "changelogDate": "20210116162217",
+  "entityTableName": "video",
   "dto": "mapstruct",
   "pagination": "no",
   "service": "serviceClass",
@@ -17,9 +38,6 @@
   "readOnly": false,
   "embedded": false,
   "clientRootFolder": "",
-  "applications": [
-    "Gateway",
-    "MediaService"
-  ],
+  "applications": ["Gateway", "MediaService"],
   "microserviceName": "MediaService"
 }

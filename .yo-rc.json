@@ -25,7 +25,7 @@
     "packageName": "de.uni_stuttgart.it_rex.media",
     "packageFolder": "de/uni_stuttgart/it_rex/media",
     "jhipsterVersion": "6.10.5",
-    "creationTimestamp": 1610569320601,
+    "creationTimestamp": 1610813880678,
     "clientPackageManager": "npm",
     "embeddableLaunchScript": false,
     "entitySuffix": "",

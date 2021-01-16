@@ -24,7 +24,7 @@
     }
   ],
   "relationships": [],
-  "changelogDate": "20210113202613",
+  "changelogDate": "20210116162117",
   "entityTableName": "media",
   "dto": "mapstruct",
   "pagination": "no",
@@ -34,9 +34,6 @@
   "readOnly": false,
   "embedded": false,
   "clientRootFolder": "",
-  "applications": [
-    "Gateway",
-    "MediaService"
-  ],
+  "applications": ["Gateway", "MediaService"],
   "microserviceName": "MediaService"
 }
