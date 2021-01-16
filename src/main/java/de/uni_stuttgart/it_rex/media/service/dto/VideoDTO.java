@@ -1,6 +1,8 @@
 package de.uni_stuttgart.it_rex.media.service.dto;
 
+import java.time.LocalDate;
 import java.io.Serializable;
+import de.uni_stuttgart.it_rex.media.domain.enumeration.MIMETYPE;
 
 /**
  * A DTO for the {@link de.uni_stuttgart.it_rex.media.domain.Video} entity.
@@ -8,6 +10,16 @@ import java.io.Serializable;
 public class VideoDTO implements Serializable {
     
     private Long id;
+
+    private String title;
+
+    private LocalDate uploadDate;
+
+    private MIMETYPE mimeType;
+
+    private String format;
+
+    private String location;
 
     private Integer length;
 
@@ -18,6 +30,46 @@ public class VideoDTO implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public LocalDate getUploadDate() {
+        return uploadDate;
+    }
+
+    public void setUploadDate(LocalDate uploadDate) {
+        this.uploadDate = uploadDate;
+    }
+
+    public MIMETYPE getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(MIMETYPE mimeType) {
+        this.mimeType = mimeType;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public Integer getLength() {
@@ -50,6 +102,11 @@ public class VideoDTO implements Serializable {
     public String toString() {
         return "VideoDTO{" +
             "id=" + getId() +
+            ", title='" + getTitle() + "'" +
+            ", uploadDate='" + getUploadDate() + "'" +
+            ", mimeType='" + getMimeType() + "'" +
+            ", format='" + getFormat() + "'" +
+            ", location='" + getLocation() + "'" +
             ", length=" + getLength() +
             "}";
     }

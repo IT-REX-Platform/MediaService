@@ -6,12 +6,15 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+
+import de.uni_stuttgart.it_rex.media.domain.enumeration.MIMETYPE;
 
 /**
  * A Video.
  */
 @Entity
-@Table(name = "media")
+@Table(name = "video")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Video implements Serializable {
 
@@ -21,6 +24,22 @@ public class Video implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
+
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "upload_date")
+    private LocalDate uploadDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "mime_type")
+    private MIMETYPE mimeType;
+
+    @Column(name = "format")
+    private String format;
+
+    @Column(name = "location")
+    private String location;
 
     @Column(name = "length")
     private Integer length;
@@ -32,6 +51,71 @@ public class Video implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public Video title(String title) {
+        this.title = title;
+        return this;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public LocalDate getUploadDate() {
+        return uploadDate;
+    }
+
+    public Video uploadDate(LocalDate uploadDate) {
+        this.uploadDate = uploadDate;
+        return this;
+    }
+
+    public void setUploadDate(LocalDate uploadDate) {
+        this.uploadDate = uploadDate;
+    }
+
+    public MIMETYPE getMimeType() {
+        return mimeType;
+    }
+
+    public Video mimeType(MIMETYPE mimeType) {
+        this.mimeType = mimeType;
+        return this;
+    }
+
+    public void setMimeType(MIMETYPE mimeType) {
+        this.mimeType = mimeType;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public Video format(String format) {
+        this.format = format;
+        return this;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public Video location(String location) {
+        this.location = location;
+        return this;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public Integer getLength() {
@@ -69,6 +153,11 @@ public class Video implements Serializable {
     public String toString() {
         return "Video{" +
             "id=" + getId() +
+            ", title='" + getTitle() + "'" +
+            ", uploadDate='" + getUploadDate() + "'" +
+            ", mimeType='" + getMimeType() + "'" +
+            ", format='" + getFormat() + "'" +
+            ", location='" + getLocation() + "'" +
             ", length=" + getLength() +
             "}";
     }
