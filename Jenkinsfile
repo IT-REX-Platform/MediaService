@@ -42,6 +42,9 @@ pipeline {
         }
 
         stage('quality analysis') {
+            when {
+                branch 'dev'
+            }
             environment {
                 scannerHome = tool 'SonarQubeScanner'
             }
