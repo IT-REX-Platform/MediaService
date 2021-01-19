@@ -54,7 +54,7 @@ pipeline {
                 }
                 timeout(time: 10, unit: 'MINUTES') {
                     // Needs to be changed to true in the real project.
-                    waitForQualityGate abortPipeline: false
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }
