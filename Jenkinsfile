@@ -66,6 +66,7 @@ pipeline {
             steps {
                 echo 'Deploying....'
                 sh './gradlew jibBuildTar'
+                sh 'mkdir -p /srv/Backend/mediaservice'
                 sh 'rm -rf /srv/Backend/mediaservice/*'
                 sh 'cd ./build && mv jib-image.tar /srv/Backend/mediaservice/mediaservice.tar'
                 sh 'touch /srv/Backend/mediaservice/deploy'
