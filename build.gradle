@@ -230,6 +230,7 @@ dependencies {
 
     // Use ", version: jhipster_dependencies_version, changing: true" if you want
     // to use a SNAPSHOT release instead of a stable release
+    implementation "io.minio:minio:8.0.3"
     implementation group: "io.github.jhipster", name: "jhipster-framework"
     implementation "javax.annotation:javax.annotation-api"
     implementation "org.springframework.boot:spring-boot-starter-cache"
