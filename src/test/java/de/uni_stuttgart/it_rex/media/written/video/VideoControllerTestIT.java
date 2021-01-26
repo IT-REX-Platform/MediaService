@@ -47,7 +47,7 @@ class VideoControllerTestIT {
 
   @Test
   void uploadVideo() {
-    restTemplate.postForLocation()
+    //restTemplate.postForLocation()
     System.out.println(MINIO_PORT);
     Assert.isTrue(true);
   }
