@@ -6,6 +6,7 @@ import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.errors.MinioException;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +30,14 @@ public class VideoStorageService {
         LoggerFactory.getLogger(VideoStorageService.class);
 
     /**
+     * The url to minio
+     */
+    private final String minioUrl;
+
+    /**
      * The MinIO Client the media service connects to.
      */
-    private final MinioClient minioClient;
+    private MinioClient minioClient;
 
     /**
      * Name of the root bucket.
@@ -52,13 +58,26 @@ public class VideoStorageService {
      * @param secretKey The secret key for the MinIO client.
      */
     @Autowired
-    public VideoStorageService(
-        @Value("${minio.access-key}") final String accessKey,
-        @Value("${minio.secret-key}") final String secretKey) {
+    public VideoStorageService(@Value("${minio.url}") final String minioUrl,
+                               @Value("${minio.access-key}") final String accessKey,
+                               @Value("${minio.secret-key}") final String secretKey) {
+        this.minioUrl = minioUrl;
         this.rootLocation = Paths.get("videos");
 
+        connect(this.minioUrl, accessKey, secretKey);
+    }
+
+    /**
+     * Actually creates the minioClient
+     *
+     * @param minioUrl  the minioUrl
+     * @param accessKey The access key for the MinIO client.
+     * @param secretKey The secret key for the MinIO client.
+     */
+    @NotNull
+    public void connect(final String minioUrl, final String accessKey, final String secretKey) {
         this.minioClient = MinioClient.builder()
-            .endpoint("http://minio:8087")
+            .endpoint(minioUrl)
             .credentials(accessKey, secretKey)
             .build();
 
