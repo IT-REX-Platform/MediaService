@@ -125,7 +125,8 @@ jhipster:
 # ===================================================================
 
 # application:
-
 minio:
-  access-key: 'minio_itrex'
-  secret-key: 'minio_itrex_secret'
+  port: 34836
+  url: http://minio_test:${minio.port}
+  access-key: minio_itrex
+  secret-key: minio_itrex_secret

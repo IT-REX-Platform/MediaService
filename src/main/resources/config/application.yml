@@ -230,5 +230,6 @@ jhipster:
 # application:
 
 minio:
+  url: 'http://minio:8087'
   access-key: 'minio_itrex'
   secret-key: 'minio_itrex_secret'
