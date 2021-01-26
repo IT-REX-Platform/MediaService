@@ -82,7 +82,10 @@ spring:
         provider:
           oidc:
             issuer-uri: http://DO_NOT_CALL:9080/auth/realms/jhipster
-
+  servlet:
+    multipart:
+      max-file-size: 2GB
+      max-request-size: 2GB
 server:
   port: 10344
   address: localhost
@@ -122,3 +125,7 @@ jhipster:
 # ===================================================================
 
 # application:
+
+minio:
+  access-key: 'minio_itrex'
+  secret-key: 'minio_itrex_secret'
