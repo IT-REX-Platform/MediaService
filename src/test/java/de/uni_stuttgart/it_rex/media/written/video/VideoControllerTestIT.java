@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @TestInstance(PER_CLASS)
-@SpringBootTest(classes = {TestSecurityConfiguration.class}, webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = {TestSecurityConfiguration.class})
 class VideoControllerTestIT {
   private static Integer MINIO_PORT = 9000;
   private Integer minioMappedPort;
@@ -35,9 +35,6 @@ class VideoControllerTestIT {
   private String minioAccessKey;
   private String minioSecretKey;
   private DockerComposeContainer environment;
-
-  @LocalServerPort
-  private Integer port;
 
   @Autowired
   private VideoStorageService videoStorageService;
