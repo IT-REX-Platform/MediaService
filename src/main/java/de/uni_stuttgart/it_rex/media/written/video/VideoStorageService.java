@@ -29,7 +29,7 @@ public class VideoStorageService {
         LoggerFactory.getLogger(VideoStorageService.class);
 
     /**
-     * The url to minio
+     * The url to minio.
      */
     private String minioUrl;
 
@@ -58,18 +58,20 @@ public class VideoStorageService {
      * Constructor.
      */
     public VideoStorageService() {
+        // Empty because Spring autowiring is used for initialization
     }
 
-    @PostConstruct
     /**
      * Initializes the VideoStorage.
      */
+    @PostConstruct
     private void init() {
         makeBucket(this.rootLocation);
     }
 
     /**
-     * Creates a bucket in minio in the specified location if it doesn't already exist.
+     * Creates a bucket in minio in the specified location
+     * if it doesn't already exist.
      *
      * @param location the location
      */
@@ -150,39 +152,83 @@ public class VideoStorageService {
         }
     }
 
-    public String getMinioUrl() {
+    /**
+     * Getter.
+     *
+     * @return the url where minio can be found
+     */
+    public final String getMinioUrl() {
         return minioUrl;
     }
 
+    /**
+     * Setter.
+     *
+     * @param newMinioUrl the url where minio can be found
+     */
     @Autowired
-    public void setMinioUrl(@Value("${minio.url}") final String minioUrl) {
-        this.minioUrl = minioUrl;
+    public final void setMinioUrl(
+        @Value("${minio.url}") final String newMinioUrl) {
+        this.minioUrl = newMinioUrl;
     }
 
-    public String getAccessKey() {
+    /**
+     * Getter.
+     *
+     * @return the minio access key
+     */
+    public final String getAccessKey() {
         return accessKey;
     }
 
+    /**
+     * Setter.
+     *
+     * @param newAccessKey the minio access key
+     */
     @Autowired
-    public void setAccessKey(@Value("${minio.access-key}") final String accessKey) {
-        this.accessKey = accessKey;
+    public final void setAccessKey(
+        @Value("${minio.access-key}") final String newAccessKey) {
+        this.accessKey = newAccessKey;
     }
 
-    public String getSecretKey() {
+    /**
+     * Getter.
+     *
+     * @return the minio secret key
+     */
+    public final String getSecretKey() {
         return secretKey;
     }
 
+    /**
+     * Setter.
+     *
+     * @param newSecretKey the minio secret key
+     */
     @Autowired
-    public void setSecretKey(@Value("${minio.secret-key}") final String secretKey) {
-        this.secretKey = secretKey;
+    public final void setSecretKey(
+        @Value("${minio.secret-key}") final String newSecretKey) {
+        this.secretKey = newSecretKey;
     }
 
-    public Path getRootLocation() {
+    /**
+     * Getter.
+     *
+     * @return the root bucket of minio
+     */
+    public final Path getRootLocation() {
         return rootLocation;
     }
 
+    /**
+     * Setter.
+     *
+     * @param newLocation the root bucket of minio
+     */
     @Autowired
-    public void setRootLocation(@Value("${minio.root-location}") final Path rootLocation) {
-        this.rootLocation = rootLocation;
+    public final void setRootLocation(
+        @Value("${minio.root-location}") final Path newLocation) {
+        this.rootLocation = newLocation;
     }
 }
