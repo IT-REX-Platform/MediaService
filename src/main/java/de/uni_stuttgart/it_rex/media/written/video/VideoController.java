@@ -1,5 +1,6 @@
 package de.uni_stuttgart.it_rex.media.written.video;
 
+import de.uni_stuttgart.it_rex.media.written.FileValidatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,38 +13,46 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("/api")
 public class VideoController {
 
-    /**
-     * Service for storing videos.
-     */
-    private final VideoStorageService videoStorageService;
+  /**
+   * Service for validating files.
+   */
+  private final FileValidatorService fileValidatorService;
 
-    /**
-     * Constructor.
-     *
-     * @param vss The service for storing videos.
-     */
-    @Autowired
-    public VideoController(final VideoStorageService vss) {
-        this.videoStorageService = vss;
-    }
+  /**
+   * Service for storing videos.
+   */
+  private final VideoStorageService videoStorageService;
 
-    /**
-     * Upload a video to the system.
-     * The file ist stored in a file storage
-     * while metadata is persisted in an RDBMS.
-     *
-     * @param file               The video file to upload.
-     * @param redirectAttributes The redirect attributes.
-     * @return test message
-     */
-    @PostMapping("/videos/upload")
-    public String uploadVideo(@RequestParam("file") final MultipartFile file,
-                              final RedirectAttributes redirectAttributes) {
+  /**
+   * Constructor.
+   *
+   * @param fvs the service for validating files.
+   * @param vss The service for storing videos.
+   */
+  @Autowired
+  public VideoController(final FileValidatorService fvs,
+                         final VideoStorageService vss) {
+    this.fileValidatorService = fvs;
+    this.videoStorageService = vss;
+  }
 
-        videoStorageService.store(file);
-        redirectAttributes.addFlashAttribute("message",
-            "You successfully uploaded " + file.getOriginalFilename() + "!");
+  /**
+   * Upload a video to the system.
+   * The file ist stored in a file storage
+   * while metadata is persisted in an RDBMS.
+   *
+   * @param file               The video file to upload.
+   * @param redirectAttributes The redirect attributes.
+   * @return test message
+   */
+  @PostMapping("/videos/upload")
+  public String uploadVideo(@RequestParam("file") final MultipartFile file,
+                            final RedirectAttributes redirectAttributes) {
+    fileValidatorService.validate(file);
+    videoStorageService.store(file);
+    redirectAttributes.addFlashAttribute("message",
+        "You successfully uploaded " + file.getOriginalFilename() + "!");
 
-        return "redirect:/";
-    }
+    return "redirect:/";
+  }
 }
