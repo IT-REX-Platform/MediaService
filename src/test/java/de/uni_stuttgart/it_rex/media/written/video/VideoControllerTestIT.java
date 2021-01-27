@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestInstance(PER_CLASS)
 @SpringBootTest(classes = {TestSecurityConfiguration.class})
 class VideoControllerTestIT {
-  private static Integer MINIO_PORT = 9000;
+  private static final Integer MINIO_PORT = 9000;
   private Integer minioMappedPort;
   private String minioMappedHost;
   private String minioUrl;
@@ -87,5 +87,18 @@ class VideoControllerTestIT {
 
     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     mockMvc.perform(multipart("/api/videos/upload").file(file)).andExpect(status().isOk());
+  }
+
+  @Test
+  void uploadFileToWrongEndpoint() throws Exception {
+    MockMultipartFile file = new MockMultipartFile(
+        "file",
+        "hello.txt",
+        MediaType.TEXT_PLAIN_VALUE,
+        "Hello, World!".getBytes()
+    );
+
+    MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    mockMvc.perform(multipart("/api/videos/upload6969").file(file)).andExpect(status().is4xxClientError());
   }
 }
