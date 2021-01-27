@@ -75,7 +75,7 @@ public class VideoStorageService {
      *
      * @param location the location
      */
-    private void makeBucket(final Path location) {
+    public void makeBucket(final Path location) {
         MinioClient minioClient = buildClient();
         try {
             // Make uploads bucket if not exist.
