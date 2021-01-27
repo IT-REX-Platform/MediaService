@@ -1,7 +1,5 @@
 package de.uni_stuttgart.it_rex.media.written.video;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -25,12 +23,6 @@ public class VideoController {
      * Service for storing videos.
      */
     private final VideoStorageService videoStorageService;
-
-    /**
-     * Logger.
-     */
-    private static final Logger LOGGER =
-        LoggerFactory.getLogger(VideoController.class);
 
     /**
      * Constructor.
@@ -74,9 +66,13 @@ public class VideoController {
                                     @PathVariable final String filename,
                                     @RequestHeader final HttpHeaders headers) {
 
-        LOGGER.info("Trying to download file " + filename);
+        HttpHeaders responseHeaders = new HttpHeaders();
 
         long chosenFileLength = videoStorageService.getLength(filename);
+
+        if (chosenFileLength == 0L) {
+            return ResponseEntity.notFound().headers(responseHeaders).build();
+        }
 
         HttpRange range;
 
@@ -90,12 +86,13 @@ public class VideoController {
         long end = range.getRangeEnd(chosenFileLength);
         long length = end - start + 1;
 
-        LOGGER.info("Start: " + start + " End: " + end + " Length: " + length);
-
         Resource file = videoStorageService
                                     .loadAsResource(filename, start, length);
 
-        HttpHeaders responseHeaders = new HttpHeaders();
+        if (file == null) {
+            return ResponseEntity.notFound().headers(responseHeaders).build();
+        }
+
         responseHeaders.add(HttpHeaders.CONTENT_DISPOSITION,
             "inline; filename=\"" + filename + "\"");
         responseHeaders.add("Content-Type", "video/mp4");
