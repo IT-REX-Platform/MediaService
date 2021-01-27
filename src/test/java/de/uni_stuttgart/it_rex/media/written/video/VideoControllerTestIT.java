@@ -53,8 +53,9 @@ class VideoControllerTestIT {
                     @Value("${minio.secret-key}") final String secretKey) {
     minioAccessKey = accessKey;
     minioSecretKey = secretKey;
+    // The with ".withLocalCompose(true)" is needed to use the local installation of docker-compose
     environment = new DockerComposeContainer(new File("src/test/resources/docker/minio.yml")).
-        withExposedService("minio", MINIO_PORT);
+        withExposedService("minio", MINIO_PORT).withLocalCompose(true);
     environment.start();
     minioMappedPort = environment.getServicePort("minio", MINIO_PORT);
     minioMappedHost = environment.getServiceHost("minio", MINIO_PORT);
