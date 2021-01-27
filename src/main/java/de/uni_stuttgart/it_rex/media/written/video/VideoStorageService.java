@@ -128,11 +128,11 @@ public class VideoStorageService {
     }
 
     /**
-     * Get the size of a stored file
+     * Get the size of a stored file.
      * @param filename Name of the file to stat
-     * @return
+     * @return Length of file
      */
-    public long getLength(String filename) {
+    public long getLength(final String filename) {
 
         try {
             StatObjectResponse stat = minioClient.statObject(
@@ -150,17 +150,19 @@ public class VideoStorageService {
         } catch (IOException e) {
         }
 
-        return 0l;
+        return 0L;
     }
 
     /**
-     * Get the contents of a stored file
+     * Get the contents of a stored file.
      * @param filename Name of file to load
      * @param offset Starting offset to read from
      * @param length How many bytes to read
-     * @return *length* bytes of requested file starting from *offset* if file exists, null otherwise
+     * @return *length* bytes of requested file starting from *offset* if file
+     *         exists, null otherwise
      */
-    public Resource loadAsResource(String filename, long offset, long length) {
+    public Resource loadAsResource(final String filename, final long offset,
+                                   final long length) {
 
         // get object given the bucket and object name
         try {
@@ -178,7 +180,8 @@ public class VideoStorageService {
             if (resource.exists() || resource.isReadable()) {
                 return resource;
             } else {
-                throw new StorageFileNotFoundException("Could not read file: " + filename);
+                throw new StorageFileNotFoundException(
+                    "Could not read file: " + filename);
             }
         } catch (InvalidKeyException e) {
         } catch (NoSuchAlgorithmException e) {
