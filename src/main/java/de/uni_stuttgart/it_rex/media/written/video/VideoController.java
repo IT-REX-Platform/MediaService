@@ -62,9 +62,17 @@ public class VideoController {
         return "redirect:/";
     }
 
+    /**
+     * Download a video from the system.
+     *
+     * @param filename The video file to download.
+     * @param headers  The request headers.
+     * @return A ResponseEntity to stream the file to the client.
+     */
     @GetMapping("/videos/download/{filename:.+}")
-    public ResponseEntity<Resource> downloadVideo(@PathVariable final String filename, @RequestHeader
-        HttpHeaders headers) {
+    public ResponseEntity<Resource> downloadVideo(
+                                    @PathVariable final String filename,
+                                    @RequestHeader final HttpHeaders headers) {
 
         LOGGER.info("Trying to download file " + filename);
 
@@ -84,7 +92,8 @@ public class VideoController {
 
         LOGGER.info("Start: " + start + " End: " + end + " Length: " + length);
 
-        Resource file = videoStorageService.loadAsResource(filename, start, length);
+        Resource file = videoStorageService
+                                    .loadAsResource(filename, start, length);
 
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add(HttpHeaders.CONTENT_DISPOSITION,
