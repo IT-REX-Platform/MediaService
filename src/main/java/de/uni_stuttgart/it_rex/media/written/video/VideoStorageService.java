@@ -6,7 +6,6 @@ import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.errors.MinioException;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +13,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
@@ -32,17 +31,22 @@ public class VideoStorageService {
     /**
      * The url to minio
      */
-    private final String minioUrl;
+    private String minioUrl;
 
     /**
-     * The MinIO Client the media service connects to.
+     * The access key of the minio instance.
      */
-    private MinioClient minioClient;
+    private String accessKey;
+
+    /**
+     * The secreat key of the minio instance.
+     */
+    private String secretKey;
 
     /**
      * Name of the root bucket.
      */
-    private final Path rootLocation;
+    private Path rootLocation;
 
     /**
      * If the input file size is unknown it is recommended to use a high number.
@@ -51,49 +55,38 @@ public class VideoStorageService {
     private static final int UNKNOWN_FILE_SIZE = 10485760;
 
     /**
-     * Create a minioClient with the MinIO server playground,
-     * its access key and secret key.
-     *
-     * @param accessKey The access key for the MinIO client.
-     * @param secretKey The secret key for the MinIO client.
+     * Constructor.
      */
-    @Autowired
-    public VideoStorageService(@Value("${minio.url}") final String minioUrl,
-                               @Value("${minio.access-key}") final String accessKey,
-                               @Value("${minio.secret-key}") final String secretKey) {
-        this.minioUrl = minioUrl;
-        this.rootLocation = Paths.get("videos");
+    public VideoStorageService() {
+    }
 
-        connect(this.minioUrl, accessKey, secretKey);
+    @PostConstruct
+    /**
+     * Initializes the VideoStorage.
+     */
+    private void init() {
+        makeBucket(this.rootLocation);
     }
 
     /**
-     * Actually creates the minioClient
+     * Creates a bucket in minio in the specified location if it doesn't already exist.
      *
-     * @param minioUrl  the minioUrl
-     * @param accessKey The access key for the MinIO client.
-     * @param secretKey The secret key for the MinIO client.
+     * @param location the location
      */
-    @NotNull
-    public void connect(final String minioUrl, final String accessKey, final String secretKey) {
-        this.minioClient = MinioClient.builder()
-            .endpoint(minioUrl)
-            .credentials(accessKey, secretKey)
-            .build();
-
+    private void makeBucket(final Path location) {
+        MinioClient minioClient = buildClient();
         try {
             // Make uploads bucket if not exist.
             boolean found = minioClient.bucketExists(
-                BucketExistsArgs.builder().bucket(rootLocation.toString())
+                BucketExistsArgs.builder().bucket(location.toString())
                     .build());
             if (!found) {
                 minioClient.makeBucket(
-                    MakeBucketArgs.builder().bucket(rootLocation.toString())
+                    MakeBucketArgs.builder().bucket(location.toString())
                         .build());
             } else {
                 String bucketExistsLog = String
-                    .format("Bucket %s already exists.",
-                        rootLocation.toString());
+                    .format("Bucket %s already exists.", location);
                 LOGGER.info(bucketExistsLog);
             }
         } catch (InvalidKeyException
@@ -102,6 +95,18 @@ public class VideoStorageService {
             | MinioException e) {
             LOGGER.error(e.getLocalizedMessage());
         }
+    }
+
+    /**
+     * This method creates a MinioClient that this VideoStorage connects to.
+     *
+     * @return the MinioClient
+     */
+    private MinioClient buildClient() {
+        return MinioClient.builder()
+            .endpoint(this.minioUrl)
+            .credentials(this.accessKey, this.secretKey)
+            .build();
     }
 
     /**
@@ -116,7 +121,13 @@ public class VideoStorageService {
         storeFile(file);
     }
 
+    /**
+     * Actually stores the file.
+     *
+     * @param file The video file to store.
+     */
     private void storeFile(final MultipartFile file) {
+        MinioClient minioClient = buildClient();
         try {
             minioClient.putObject(
                 PutObjectArgs.builder()
@@ -137,5 +148,41 @@ public class VideoStorageService {
             | MinioException e) {
             LOGGER.error(e.getLocalizedMessage());
         }
+    }
+
+    public String getMinioUrl() {
+        return minioUrl;
+    }
+
+    @Autowired
+    public void setMinioUrl(@Value("${minio.url}") final String minioUrl) {
+        this.minioUrl = minioUrl;
+    }
+
+    public String getAccessKey() {
+        return accessKey;
+    }
+
+    @Autowired
+    public void setAccessKey(@Value("${minio.access-key}") final String accessKey) {
+        this.accessKey = accessKey;
+    }
+
+    public String getSecretKey() {
+        return secretKey;
+    }
+
+    @Autowired
+    public void setSecretKey(@Value("${minio.secret-key}") final String secretKey) {
+        this.secretKey = secretKey;
+    }
+
+    public Path getRootLocation() {
+        return rootLocation;
+    }
+
+    @Autowired
+    public void setRootLocation(@Value("${minio.root-location}") final Path rootLocation) {
+        this.rootLocation = rootLocation;
     }
 }
