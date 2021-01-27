@@ -246,6 +246,8 @@ public class VideoStorageService {
      */
     public long getLength(final String filename) {
 
+        MinioClient minioClient = buildClient();
+
         try {
 
             StatObjectResponse stat = minioClient.statObject(
@@ -276,6 +278,8 @@ public class VideoStorageService {
      */
     public Resource loadAsResource(final String filename, final long offset,
                                    final long length) {
+
+        MinioClient minioClient = buildClient();
 
         // get object given the bucket and object name
         try {
