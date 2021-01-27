@@ -130,3 +130,4 @@ minio:
   url: http://minio_test:${minio.port}
   access-key: minio_itrex
   secret-key: minio_itrex_secret
+  root-location: videos
