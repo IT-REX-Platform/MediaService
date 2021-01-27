@@ -247,6 +247,7 @@ public class VideoStorageService {
     public long getLength(final String filename) {
 
         try {
+
             StatObjectResponse stat = minioClient.statObject(
                 StatObjectArgs.builder()
                     .bucket(rootLocation.toString())
@@ -255,11 +256,11 @@ public class VideoStorageService {
 
             return stat.size();
 
-        } catch (InvalidKeyException e) {
-        } catch (NoSuchAlgorithmException e) {
-        } catch (MinioException e) {
-            throw new StorageException("Failed to read stored files", e);
-        } catch (IOException e) {
+        } catch (InvalidKeyException
+            | NoSuchAlgorithmException
+            | MinioException
+            | IOException e) {
+            LOGGER.error(e.getLocalizedMessage());
         }
 
         return 0L;
@@ -278,6 +279,7 @@ public class VideoStorageService {
 
         // get object given the bucket and object name
         try {
+
             InputStream stream = minioClient.getObject(
                 GetObjectArgs.builder()
                     .bucket(rootLocation.toString())
@@ -289,17 +291,19 @@ public class VideoStorageService {
             // Read data from stream
             InputStreamResource
                 resource = new InputStreamResource(stream, filename);
+
             if (resource.exists() || resource.isReadable()) {
                 return resource;
             } else {
                 throw new StorageFileNotFoundException(
                     "Could not read file: " + filename);
             }
-        } catch (InvalidKeyException e) {
-        } catch (NoSuchAlgorithmException e) {
-        } catch (MinioException e) {
-            throw new StorageException("Failed to read stored files", e);
-        } catch (IOException e) {
+
+        } catch (InvalidKeyException
+            | NoSuchAlgorithmException
+            | MinioException
+            | IOException e) {
+            LOGGER.error(e.getLocalizedMessage());
         }
 
         return null;
