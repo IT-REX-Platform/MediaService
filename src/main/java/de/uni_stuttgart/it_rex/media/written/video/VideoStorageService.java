@@ -1,16 +1,17 @@
 package de.uni_stuttgart.it_rex.media.written.video;
 
+import de.uni_stuttgart.it_rex.media.service.VideoService;
+import de.uni_stuttgart.it_rex.media.service.dto.VideoDTO;
 import de.uni_stuttgart.it_rex.media.written.StorageException;
-import io.minio.BucketExistsArgs;
-import io.minio.MakeBucketArgs;
-import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
+import io.minio.*;
 import io.minio.errors.MinioException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
@@ -27,6 +28,11 @@ public class VideoStorageService {
      */
     private static final Logger LOGGER =
         LoggerFactory.getLogger(VideoStorageService.class);
+
+    /**
+     * Service for storing meta data.
+     */
+    private VideoService videoService;
 
     /**
      * The url to minio.
@@ -115,41 +121,76 @@ public class VideoStorageService {
      * Store a video file.
      *
      * @param file The video file to store.
+     * @return the video meta data
      */
-    public void store(final MultipartFile file) {
+    public VideoDTO store(final MultipartFile file) {
         if (file.isEmpty()) {
             throw new StorageException("Failed to store empty file.");
         }
-        storeFile(file);
+        VideoDTO videoDTO = storeFile(file);
+
+        Assert.notNull(videoDTO.getLocation(), String.format(
+            "Your upload of %s failed",
+            file.getOriginalFilename()));
+
+        return videoService.save(videoDTO);
     }
 
     /**
      * Actually stores the file.
      *
      * @param file The video file to store.
+     * @return the files metadata from Minio.
      */
-    private void storeFile(final MultipartFile file) {
+    private VideoDTO storeFile(final MultipartFile file) {
         MinioClient minioClient = buildClient();
+        VideoDTO videoDTO = new VideoDTO();
         try {
-            minioClient.putObject(
+            ObjectWriteResponse result = minioClient.putObject(
                 PutObjectArgs.builder()
                     .bucket(rootLocation.toString())
                     .object(file.getOriginalFilename())
                     .stream(file.getInputStream(), -1, UNKNOWN_FILE_SIZE)
                     .build());
 
+            final String minioBucket = result.bucket();
+            final String minioFileName = result.object();
+
             String uploadSuccessLog = String
                 .format(
                     "%s is successfully uploaded as object %s to bucket '%s'.",
-                    file.getOriginalFilename(), file.getOriginalFilename(),
-                    rootLocation.toString());
+                    file.getOriginalFilename(), minioFileName,
+                    minioBucket);
             LOGGER.info(uploadSuccessLog);
+
+            videoDTO.setLocation(minioBucket);
+            videoDTO.setTitle(minioFileName);
         } catch (InvalidKeyException
             | NoSuchAlgorithmException
             | IOException
             | MinioException e) {
             LOGGER.error(e.getLocalizedMessage());
         }
+        return videoDTO;
+    }
+
+    /**
+     * Getter.
+     *
+     * @return the service for storing meta data.
+     */
+    public VideoService getVideoService() {
+        return videoService;
+    }
+
+    /**
+     * Setter.
+     *
+     * @param newVideoService service for storing meta data.
+     */
+    @Autowired
+    public void setVideoService(final VideoService newVideoService) {
+        this.videoService = newVideoService;
     }
 
     /**

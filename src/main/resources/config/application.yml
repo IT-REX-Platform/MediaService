@@ -231,7 +231,7 @@ jhipster:
 
 minio:
   port: 8087
-  url: http://minio_test:${minio.port}
+  url: http://minio:${minio.port}
   access-key: minio_itrex
   secret-key: minio_itrex_secret
   root-location: videos
