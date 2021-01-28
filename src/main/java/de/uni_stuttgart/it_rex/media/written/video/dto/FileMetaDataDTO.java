@@ -3,7 +3,7 @@ package de.uni_stuttgart.it_rex.media.written.video.dto;
 import java.nio.file.Path;
 import java.util.Objects;
 
-public class FileMetaData {
+public class FileMetaDataDTO {
   /**
    * The path where the file is stored in minio.
    */
@@ -48,10 +48,10 @@ public class FileMetaData {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof FileMetaData)) {
+    if (!(o instanceof FileMetaDataDTO)) {
       return false;
     }
-    FileMetaData that = (FileMetaData) o;
+    FileMetaDataDTO that = (FileMetaDataDTO) o;
     return Objects.equals(getMinioPath(), that.getMinioPath());
   }
 
