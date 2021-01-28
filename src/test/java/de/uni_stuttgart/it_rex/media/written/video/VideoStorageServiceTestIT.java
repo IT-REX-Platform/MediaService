@@ -65,6 +65,15 @@ class VideoStorageServiceTestIT {
   }
 
   @Test
+  void contextLoads() {
+    assertThat(videoStorageService).isNotNull();
+    assertThat(environment).isNotNull();
+    assertThat(minioMappedHost).isNotNull();
+    assertThat(minioMappedPort).isNotNull();
+    assertThat(minioUrl).isNotNull();
+  }
+
+  @Test
   void makeAlreadyExistingBucket() {
     LogCaptor logCaptor = LogCaptor.forClass(VideoStorageService.class);
     videoStorageService.makeBucket(MAGIC_BUCKET);
