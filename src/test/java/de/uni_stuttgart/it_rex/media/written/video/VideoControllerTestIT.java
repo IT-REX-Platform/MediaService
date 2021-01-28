@@ -1,6 +1,7 @@
 package de.uni_stuttgart.it_rex.media.written.video;
 
 import de.uni_stuttgart.it_rex.media.config.TestSecurityConfiguration;
+import nl.altindag.log.LogCaptor;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = {TestSecurityConfiguration.class})
 class VideoControllerTestIT {
   private static final Integer MINIO_PORT = 9000;
+  private final String LOG_MESSAGE =
+      "hello.txt is successfully uploaded as object hello.txt to bucket 'videos'.";
   private Integer minioMappedPort;
   private String minioMappedHost;
   private String minioUrl;
@@ -85,8 +88,10 @@ class VideoControllerTestIT {
         "Hello, World!".getBytes()
     );
 
+    LogCaptor logCaptor = LogCaptor.forClass(VideoStorageService.class);
     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     mockMvc.perform(multipart("/api/videos/upload").file(file)).andExpect(status().isOk());
+    assertThat(logCaptor.getInfoLogs()).containsExactly(LOG_MESSAGE);
   }
 
   @Test
