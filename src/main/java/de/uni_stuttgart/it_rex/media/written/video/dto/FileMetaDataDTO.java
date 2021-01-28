@@ -7,15 +7,15 @@ public class FileMetaDataDTO {
   /**
    * The path where the file is stored in minio.
    */
-  private Path minioPath;
+  private Path minioBucket;
 
   /**
    * Getter.
    *
    * @return the path where the file is stored in minio.
    */
-  public Path getMinioPath() {
-    return minioPath;
+  public Path getMinioBucket() {
+    return minioBucket;
   }
 
   /**
@@ -23,8 +23,8 @@ public class FileMetaDataDTO {
    *
    * @param newMinioPath the new path where the file is stored in minio.
    */
-  public void setMinioPath(final Path newMinioPath) {
-    this.minioPath = newMinioPath;
+  public void setMinioBucket(final Path newMinioPath) {
+    this.minioBucket = newMinioPath;
   }
 
   /**
@@ -34,7 +34,7 @@ public class FileMetaDataDTO {
    */
   @Override
   public String toString() {
-    return "FileMetaData{" + "minioPath=" + minioPath + '}';
+    return "FileMetaData{" + "minioPath=" + minioBucket + '}';
   }
 
   /**
@@ -52,7 +52,7 @@ public class FileMetaDataDTO {
       return false;
     }
     FileMetaDataDTO that = (FileMetaDataDTO) o;
-    return Objects.equals(getMinioPath(), that.getMinioPath());
+    return Objects.equals(getMinioBucket(), that.getMinioBucket());
   }
 
   /**
@@ -62,6 +62,6 @@ public class FileMetaDataDTO {
    */
   @Override
   public int hashCode() {
-    return Objects.hash(getMinioPath());
+    return Objects.hash(getMinioBucket());
   }
 }
