@@ -15,6 +15,9 @@ public class FileValidatorService {
    */
   public boolean validate(final MultipartFile file) {
     Assert.notNull(file.getContentType(), "The Content Type cannot be null!");
+    if (file.isEmpty()) {
+      throw new StorageException("The file has to contain data!");
+    }
     return true;
   }
 }

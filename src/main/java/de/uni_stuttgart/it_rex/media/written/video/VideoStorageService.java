@@ -20,8 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
@@ -134,17 +133,18 @@ public class VideoStorageService {
      * @param file The video file to store.
      * @return the video meta data
      */
-    @Transactional
     public VideoDTO store(final MultipartFile file) {
-        if (file.isEmpty()) {
-            throw new StorageException("Failed to store empty file.");
+        VideoDTO videoDTO = null;
+        try {
+            videoDTO = storeFile(file);
+            videoDTO = videoService.save(videoDTO);
+        } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus()
+                .setRollbackOnly();
+            deleteFile(file.getOriginalFilename());
+            LOGGER.error(e.getLocalizedMessage());
         }
-        VideoDTO videoDTO = storeFile(file);
-
-        Assert.notNull(videoDTO.getLocation(), String.format(
-            "Your upload of %s failed", file.getOriginalFilename()));
-
-        return videoService.save(videoDTO);
+        return videoDTO;
     }
 
     /**
@@ -153,36 +153,58 @@ public class VideoStorageService {
      * @param file The video file to store.
      * @return the files metadata from Minio.
      */
-    private VideoDTO storeFile(final MultipartFile file) {
+    private VideoDTO storeFile(final MultipartFile file) throws
+        IOException,
+        ServerException,
+        InsufficientDataException,
+        InternalException,
+        InvalidResponseException,
+        InvalidKeyException,
+        NoSuchAlgorithmException,
+        XmlParserException,
+        ErrorResponseException {
         MinioClient minioClient = buildClient();
-        VideoDTO videoDTO = new VideoDTO();
-        try {
-            ObjectWriteResponse result = minioClient.putObject(
-                PutObjectArgs.builder()
-                    .bucket(rootLocation.toString())
-                    .object(file.getOriginalFilename())
-                    .stream(file.getInputStream(), -1, UNKNOWN_FILE_SIZE)
-                    .build());
 
-            final String minioBucket = result.bucket();
-            final String minioFileName = result.object();
+        ObjectWriteResponse result = minioClient.putObject(
+            PutObjectArgs.builder()
+                .bucket(rootLocation.toString())
+                .object(file.getOriginalFilename())
+                .stream(file.getInputStream(), -1, UNKNOWN_FILE_SIZE)
+                .build());
+
+        String uploadSuccessLog = String
+            .format(
+                "%s is successfully uploaded as object %s to bucket '%s'.",
+                file.getOriginalFilename(), result.object(),
+                result.bucket());
+        LOGGER.info(uploadSuccessLog);
+
+        VideoDTO videoDTO = new VideoDTO();
+        videoDTO.setLocation(result.bucket());
+        videoDTO.setTitle(result.object());
+
+        return videoDTO;
+    }
+
+    /**
+     * Removes a file from Minio.
+     *
+     * @param fileName The video file to delete.
+     */
+    private void deleteFile(final String fileName) {
+        try {
+            MinioClient minioClient = buildClient();
+            minioClient.removeObject(
+                RemoveObjectArgs.builder().bucket(rootLocation.toString())
+                    .object(fileName).build());
 
             String uploadSuccessLog = String
-                .format(
-                    "%s is successfully uploaded as object %s to bucket '%s'.",
-                    file.getOriginalFilename(), minioFileName,
-                    minioBucket);
+                .format("%s was successfully removed from %s.",
+                    fileName, rootLocation.toString());
             LOGGER.info(uploadSuccessLog);
-
-            videoDTO.setLocation(minioBucket);
-            videoDTO.setTitle(minioFileName);
-        } catch (InvalidKeyException
-            | NoSuchAlgorithmException
-            | IOException
-            | MinioException e) {
+        } catch (Exception e) {
             LOGGER.error(e.getLocalizedMessage());
         }
-        return videoDTO;
     }
 
     /**
