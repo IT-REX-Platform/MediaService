@@ -30,7 +30,7 @@ class VideoStorageServiceTestIT {
   private static final Integer MINIO_PORT = 9000;
   private static final Path MAGIC_BUCKET = Paths.get("wizard-hat");
   private static final String LOG_MESSAGE = String.format("Bucket %s already exists.", MAGIC_BUCKET);
-  private static final String EXCEPTION_MESSAGE = "Failed to store empty file.";
+  private static final String EXCEPTION_MESSAGE = "Failed to store empty file!";
 
   private Integer minioMappedPort;
   private String minioMappedHost;

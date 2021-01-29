@@ -1,6 +1,5 @@
 package de.uni_stuttgart.it_rex.media.written.video;
 
-import de.uni_stuttgart.it_rex.media.written.FileValidatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -21,11 +20,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class VideoController {
 
   /**
-   * Service for validating files.
-   */
-  private final FileValidatorService fileValidatorService;
-
-  /**
    * Service for storing videos.
    */
   private final VideoStorageService videoStorageService;
@@ -33,13 +27,10 @@ public class VideoController {
   /**
    * Constructor.
    *
-   * @param fvs the service for validating files.
    * @param vss The service for storing videos.
    */
   @Autowired
-  public VideoController(final FileValidatorService fvs,
-                         final VideoStorageService vss) {
-    this.fileValidatorService = fvs;
+  public VideoController(final VideoStorageService vss) {
     this.videoStorageService = vss;
   }
 
@@ -55,7 +46,6 @@ public class VideoController {
   @PostMapping("/videos/upload")
   public String uploadVideo(@RequestParam("file") final MultipartFile file,
                             final RedirectAttributes redirectAttributes) {
-    fileValidatorService.validate(file);
     videoStorageService.store(file);
 
     redirectAttributes.addFlashAttribute("message",

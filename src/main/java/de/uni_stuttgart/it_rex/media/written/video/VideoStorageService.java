@@ -2,17 +2,24 @@ package de.uni_stuttgart.it_rex.media.written.video;
 
 import de.uni_stuttgart.it_rex.media.service.VideoService;
 import de.uni_stuttgart.it_rex.media.service.dto.VideoDTO;
-import de.uni_stuttgart.it_rex.media.written.StorageException;
+import de.uni_stuttgart.it_rex.media.written.FileValidatorService;
 import de.uni_stuttgart.it_rex.media.written.StorageFileNotFoundException;
 import io.minio.BucketExistsArgs;
 import io.minio.GetObjectArgs;
-import io.minio.MinioClient;
-import io.minio.errors.MinioException;
 import io.minio.MakeBucketArgs;
+import io.minio.MinioClient;
 import io.minio.ObjectWriteResponse;
 import io.minio.PutObjectArgs;
+import io.minio.RemoveObjectArgs;
 import io.minio.StatObjectArgs;
 import io.minio.StatObjectResponse;
+import io.minio.errors.ErrorResponseException;
+import io.minio.errors.InsufficientDataException;
+import io.minio.errors.InternalException;
+import io.minio.errors.InvalidResponseException;
+import io.minio.errors.MinioException;
+import io.minio.errors.ServerException;
+import io.minio.errors.XmlParserException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +45,11 @@ public class VideoStorageService {
      */
     private static final Logger LOGGER =
         LoggerFactory.getLogger(VideoStorageService.class);
+
+    /**
+     * Service for validating files.
+     */
+    private FileValidatorService fileValidatorService;
 
     /**
      * Service for storing meta data.
@@ -134,6 +146,7 @@ public class VideoStorageService {
      * @return the video meta data
      */
     public VideoDTO store(final MultipartFile file) {
+        fileValidatorService.validate(file);
         VideoDTO videoDTO = null;
         try {
             videoDTO = storeFile(file);
@@ -205,6 +218,25 @@ public class VideoStorageService {
         } catch (Exception e) {
             LOGGER.error(e.getLocalizedMessage());
         }
+    }
+
+    /**
+     * Getter.
+     *
+     * @return the fileValidatorService
+     */
+    public FileValidatorService getFileValidatorService() {
+        return fileValidatorService;
+    }
+
+    /**
+     * Setter.
+     *
+     * @param fileValidatorService the fileValidatorService
+     */
+    @Autowired
+    public void setFileValidatorService(FileValidatorService fileValidatorService) {
+        this.fileValidatorService = fileValidatorService;
     }
 
     /**
