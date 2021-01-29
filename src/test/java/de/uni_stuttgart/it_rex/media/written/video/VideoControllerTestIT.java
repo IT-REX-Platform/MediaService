@@ -1,6 +1,7 @@
 package de.uni_stuttgart.it_rex.media.written.video;
 
 import de.uni_stuttgart.it_rex.media.config.TestSecurityConfiguration;
+import de.uni_stuttgart.it_rex.media.written.testutils.UnwrapProxied;
 import nl.altindag.log.LogCaptor;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -13,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.containers.DockerComposeContainer;
 
@@ -23,6 +25,7 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Transactional
 @TestInstance(PER_CLASS)
 @SpringBootTest(classes = {TestSecurityConfiguration.class})
 class VideoControllerTestIT {
@@ -57,10 +60,15 @@ class VideoControllerTestIT {
     minioMappedPort = environment.getServicePort("minio", MINIO_PORT);
     minioMappedHost = environment.getServiceHost("minio", MINIO_PORT);
     minioUrl = String.format("http://%s:%d", minioMappedHost, minioMappedPort);
-    videoStorageService.setMinioUrl(this.minioUrl);
-    videoStorageService.setAccessKey(minioAccessKey);
-    videoStorageService.setSecretKey(minioSecretKey);
-    videoStorageService.makeBucket(videoStorageService.getRootLocation());
+    try {
+      VideoStorageService videoStorageServiceUnwrapped = ((VideoStorageService) UnwrapProxied.unwrap(videoStorageService));
+      videoStorageServiceUnwrapped.setMinioUrl(minioUrl);
+      videoStorageServiceUnwrapped.setAccessKey(minioAccessKey);
+      videoStorageServiceUnwrapped.setSecretKey(minioSecretKey);
+      videoStorageService.makeBucket(videoStorageServiceUnwrapped.getRootLocation());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   @AfterAll

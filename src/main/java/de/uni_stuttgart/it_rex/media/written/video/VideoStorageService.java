@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,6 +24,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 
 @Service
 public class VideoStorageService {
@@ -126,6 +129,7 @@ public class VideoStorageService {
      * @param file The video file to store.
      * @return the video meta data
      */
+    @Transactional
     public VideoDTO store(final MultipartFile file) {
         if (file.isEmpty()) {
             throw new StorageException("Failed to store empty file.");
@@ -133,8 +137,7 @@ public class VideoStorageService {
         VideoDTO videoDTO = storeFile(file);
 
         Assert.notNull(videoDTO.getLocation(), String.format(
-            "Your upload of %s failed",
-            file.getOriginalFilename()));
+            "Your upload of %s failed", file.getOriginalFilename()));
 
         return videoService.save(videoDTO);
     }
