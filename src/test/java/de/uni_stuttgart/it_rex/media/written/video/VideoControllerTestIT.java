@@ -1,6 +1,8 @@
 package de.uni_stuttgart.it_rex.media.written.video;
 
 import de.uni_stuttgart.it_rex.media.config.TestSecurityConfiguration;
+import de.uni_stuttgart.it_rex.media.written.testutils.UnwrapProxied;
+import nl.altindag.log.LogCaptor;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -13,6 +15,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockMultipartHttpServletRequest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.containers.DockerComposeContainer;
 
@@ -25,10 +28,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Transactional
 @TestInstance(PER_CLASS)
 @SpringBootTest(classes = {TestSecurityConfiguration.class})
 class VideoControllerTestIT {
   private static final Integer MINIO_PORT = 9000;
+  private final String LOG_MESSAGE =
+      "hello.txt is successfully uploaded as object hello.txt to bucket 'videos'.";
   private Integer minioMappedPort;
   private String minioMappedHost;
   private String minioUrl;
@@ -57,10 +63,15 @@ class VideoControllerTestIT {
     minioMappedPort = environment.getServicePort("minio", MINIO_PORT);
     minioMappedHost = environment.getServiceHost("minio", MINIO_PORT);
     minioUrl = String.format("http://%s:%d", minioMappedHost, minioMappedPort);
-    videoStorageService.setMinioUrl(this.minioUrl);
-    videoStorageService.setAccessKey(minioAccessKey);
-    videoStorageService.setSecretKey(minioSecretKey);
-    videoStorageService.makeBucket(videoStorageService.getRootLocation());
+    try {
+      VideoStorageService videoStorageServiceUnwrapped = ((VideoStorageService) UnwrapProxied.unwrap(videoStorageService));
+      videoStorageServiceUnwrapped.setMinioUrl(minioUrl);
+      videoStorageServiceUnwrapped.setAccessKey(minioAccessKey);
+      videoStorageServiceUnwrapped.setSecretKey(minioSecretKey);
+      videoStorageService.makeBucket(videoStorageServiceUnwrapped.getRootLocation());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   @AfterAll
@@ -88,8 +99,10 @@ class VideoControllerTestIT {
         "Hello, World!".getBytes()
     );
 
+    LogCaptor logCaptor = LogCaptor.forClass(VideoStorageService.class);
     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     mockMvc.perform(multipart("/api/videos/upload").file(file)).andExpect(status().isOk());
+    assertThat(logCaptor.getInfoLogs()).containsExactly(LOG_MESSAGE);
   }
 
   @Test

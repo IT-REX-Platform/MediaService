@@ -57,6 +57,7 @@ public class VideoController {
                             final RedirectAttributes redirectAttributes) {
     fileValidatorService.validate(file);
     videoStorageService.store(file);
+
     redirectAttributes.addFlashAttribute("message",
         "You successfully uploaded " + file.getOriginalFilename() + "!");
 
