@@ -27,7 +27,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
@@ -45,6 +49,10 @@ public class VideoStorageService {
      */
     private static final Logger LOGGER =
         LoggerFactory.getLogger(VideoStorageService.class);
+
+    private PlatformTransactionManager transactionManager;
+
+    private TransactionTemplate transactionTemplate;
 
     /**
      * Service for validating files.
@@ -147,13 +155,24 @@ public class VideoStorageService {
      */
     public VideoDTO store(final MultipartFile file) {
         fileValidatorService.validate(file);
-        VideoDTO videoDTO = null;
+
+        DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
+        definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+        definition.setIsolationLevel(TransactionDefinition.ISOLATION_DEFAULT);
+        definition.setTimeout(3600);
+        TransactionStatus status = transactionManager.getTransaction(definition);
+        VideoDTO videoDTO = new VideoDTO();
         try {
-            videoDTO = storeFile(file);
+            videoDTO.setTitle(file.getOriginalFilename());
+            videoDTO.setLocation(this.rootLocation.toString());
             videoDTO = videoService.save(videoDTO);
+            storeFile(videoDTO.getId(), file);
+            transactionManager.commit(status);
         } catch (Exception e) {
-            TransactionAspectSupport.currentTransactionStatus()
-                .setRollbackOnly();
+            transactionManager.rollback(status);
+            if (videoDTO.getId() != null) {
+                videoService.delete(videoDTO.getId());
+            }
             deleteFile(file.getOriginalFilename());
             LOGGER.error(e.getLocalizedMessage());
         }
@@ -166,7 +185,7 @@ public class VideoStorageService {
      * @param file The video file to store.
      * @return the files metadata from Minio.
      */
-    private VideoDTO storeFile(final MultipartFile file) throws
+    private String storeFile(final Long videoId, final MultipartFile file) throws
         IOException,
         ServerException,
         InsufficientDataException,
@@ -181,7 +200,7 @@ public class VideoStorageService {
         ObjectWriteResponse result = minioClient.putObject(
             PutObjectArgs.builder()
                 .bucket(rootLocation.toString())
-                .object(file.getOriginalFilename())
+                .object(videoId.toString())
                 .stream(file.getInputStream(), -1, UNKNOWN_FILE_SIZE)
                 .build());
 
@@ -192,11 +211,7 @@ public class VideoStorageService {
                 result.bucket());
         LOGGER.info(uploadSuccessLog);
 
-        VideoDTO videoDTO = new VideoDTO();
-        videoDTO.setLocation(result.bucket());
-        videoDTO.setTitle(result.object());
-
-        return videoDTO;
+        return result.bucket();
     }
 
     /**
@@ -218,6 +233,24 @@ public class VideoStorageService {
         } catch (Exception e) {
             LOGGER.error(e.getLocalizedMessage());
         }
+    }
+
+    public PlatformTransactionManager getTransactionManager() {
+        return transactionManager;
+    }
+
+    @Autowired
+    public void setTransactionManager(PlatformTransactionManager transactionManager) {
+        this.transactionManager = transactionManager;
+    }
+
+    public TransactionTemplate getTransactionTemplate() {
+        return transactionTemplate;
+    }
+
+    @Autowired
+    public void setTransactionTemplate(TransactionTemplate transactionTemplate) {
+        this.transactionTemplate = transactionTemplate;
     }
 
     /**
