@@ -78,13 +78,13 @@ public class VideoController {
    * @param id The id of the video file to delete.
    * @return the filename and id
    */
-  @DeleteMapping("/videos/upload/{id:.+}")
+  @DeleteMapping("/videos/delete/{id:.+}")
   public ResponseEntity<VideoDTO> deleteVideo(@PathVariable final String id,
                                               final RedirectAttributes redirectAttributes) {
     VideoDTO result = videoStorageService.delete(Long.valueOf(id));
 
     redirectAttributes.addFlashAttribute("message",
-        "You successfully deleted " + id.toString() + "!");
+        "You successfully deleted " + id + "!");
 
     return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(
         applicationName, true, ENTITY_NAME, result.getId().toString())).build();
