@@ -39,6 +39,7 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Optional;
 
 @Service
 public class VideoStorageService {
@@ -169,18 +170,54 @@ public class VideoStorageService {
             transactionManager.rollback(status);
             if (videoDTO.getId() != null) {
                 videoService.delete(videoDTO.getId());
+                try {
+                    deleteFile(videoDTO.getId());
+                } catch (Exception ex) {
+                    LOGGER.error(ex.getLocalizedMessage());
+                }
             }
-            deleteFile(file.getOriginalFilename());
             LOGGER.error(e.getLocalizedMessage());
         }
         return videoDTO;
     }
 
     /**
-     * Actually stores the file.
+     * Store a video file from the system.
+     *
+     * @param videoId the id of the video file to remove.
+     * @return the video meta data and null if the file doesn't exist
+     */
+    public VideoDTO delete(final Long videoId) {
+        Optional<VideoDTO> result = videoService.findOne(videoId);
+        if (result.isPresent()) {
+            VideoDTO videoDTO = result.get();
+
+            DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
+            definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+            definition.setIsolationLevel(TransactionDefinition.ISOLATION_DEFAULT);
+            definition.setTimeout(3600);
+            TransactionStatus status = transactionManager.getTransaction(definition);
+            try {
+                videoService.delete(videoId);
+                deleteFile(videoDTO.getId());
+                transactionManager.commit(status);
+            } catch (Exception e) {
+                transactionManager.rollback(status);
+                if (videoDTO.getId() != null) {
+                    videoService.save(videoDTO);
+                }
+                LOGGER.error(e.getLocalizedMessage());
+            }
+            return videoDTO;
+        }
+        return null;
+    }
+
+    /**
+     * Stores a file in Minio.
      *
      * @param file The video file to store.
-     * @return the files metadata from Minio.
+     * @return the files location.
      */
     private String storeFile(final Long videoId, final MultipartFile file) throws
         IOException,
@@ -214,22 +251,27 @@ public class VideoStorageService {
     /**
      * Removes a file from Minio.
      *
-     * @param fileName The video file to delete.
+     * @param id The video file to delete.
      */
-    private void deleteFile(final String fileName) {
-        try {
-            MinioClient minioClient = buildClient();
-            minioClient.removeObject(
-                RemoveObjectArgs.builder().bucket(rootLocation.toString())
-                    .object(fileName).build());
+    private void deleteFile(final Long id)
+        throws IOException,
+        InvalidKeyException,
+        InvalidResponseException,
+        InsufficientDataException,
+        NoSuchAlgorithmException,
+        ServerException,
+        InternalException,
+        XmlParserException,
+        ErrorResponseException {
+        MinioClient minioClient = buildClient();
+        minioClient.removeObject(
+            RemoveObjectArgs.builder().bucket(rootLocation.toString())
+                .object(id.toString()).build());
 
-            String uploadSuccessLog = String
-                .format("%s was successfully removed from %s.",
-                    fileName, rootLocation.toString());
-            LOGGER.info(uploadSuccessLog);
-        } catch (Exception e) {
-            LOGGER.error(e.getLocalizedMessage());
-        }
+        String uploadSuccessLog = String
+            .format("The file with the id %s was successfully removed from %s.",
+                id, rootLocation.toString());
+        LOGGER.info(uploadSuccessLog);
     }
 
     /**

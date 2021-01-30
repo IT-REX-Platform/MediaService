@@ -8,6 +8,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRange;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,19 +55,39 @@ public class VideoController {
    *
    * @param file               The video file to upload.
    * @param redirectAttributes The redirect attributes.
-   * @return test message
+   * @return the filename and id
    */
   @PostMapping("/videos/upload")
   public ResponseEntity<VideoDTO> uploadVideo(@RequestParam("file") final MultipartFile file,
-                                              final RedirectAttributes redirectAttributes) throws URISyntaxException {
+                                              final RedirectAttributes redirectAttributes)
+      throws URISyntaxException {
     VideoDTO result = videoStorageService.store(file);
 
     redirectAttributes.addFlashAttribute("message",
         "You successfully uploaded " + file.getOriginalFilename() + "!");
 
     return ResponseEntity.created(new URI("/api/videos/" + result.getId()))
-        .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
+        .headers(HeaderUtil.createEntityCreationAlert(applicationName,
+            true, ENTITY_NAME, result.getId().toString()))
         .body(result);
+  }
+
+  /**
+   * Delete a video from the system.
+   *
+   * @param id The id of the video file to delete.
+   * @return the filename and id
+   */
+  @DeleteMapping("/videos/upload/{id:.+}")
+  public ResponseEntity<VideoDTO> deleteVideo(@PathVariable final String id,
+                                              final RedirectAttributes redirectAttributes) {
+    VideoDTO result = videoStorageService.delete(Long.valueOf(id));
+
+    redirectAttributes.addFlashAttribute("message",
+        "You successfully deleted " + id.toString() + "!");
+
+    return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(
+        applicationName, true, ENTITY_NAME, result.getId().toString())).build();
   }
 
   /**
