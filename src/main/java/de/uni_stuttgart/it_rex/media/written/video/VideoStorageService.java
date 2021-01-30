@@ -31,7 +31,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
@@ -51,8 +50,6 @@ public class VideoStorageService {
         LoggerFactory.getLogger(VideoStorageService.class);
 
     private PlatformTransactionManager transactionManager;
-
-    private TransactionTemplate transactionTemplate;
 
     /**
      * Service for validating files.
@@ -235,26 +232,28 @@ public class VideoStorageService {
         }
     }
 
+    /**
+     * Getter.
+     *
+     * @return the transaction manager.
+     */
     public PlatformTransactionManager getTransactionManager() {
         return transactionManager;
     }
 
+    /**
+     * Setter.
+     *
+     * @param transactionManager the transaction manager.
+     */
     @Autowired
     public void setTransactionManager(PlatformTransactionManager transactionManager) {
         this.transactionManager = transactionManager;
     }
 
-    public TransactionTemplate getTransactionTemplate() {
-        return transactionTemplate;
-    }
-
-    @Autowired
-    public void setTransactionTemplate(TransactionTemplate transactionTemplate) {
-        this.transactionTemplate = transactionTemplate;
-    }
-
     /**
      * Get the size of a stored file.
+     *
      * @param filename Name of the file to stat
      * @return Length of file
      */
@@ -284,11 +283,12 @@ public class VideoStorageService {
 
     /**
      * Get the contents of a stored file.
+     *
      * @param filename Name of file to load
-     * @param offset Starting offset to read from
-     * @param length How many bytes to read
+     * @param offset   Starting offset to read from
+     * @param length   How many bytes to read
      * @return *length* bytes of requested file starting from *offset* if file
-     *         exists, null otherwise
+     * exists, null otherwise
      */
     public Resource loadAsResource(final String filename, final long offset,
                                    final long length) {
@@ -326,7 +326,7 @@ public class VideoStorageService {
 
         return null;
     }
-    
+
     /**
      * Getter.
      *
