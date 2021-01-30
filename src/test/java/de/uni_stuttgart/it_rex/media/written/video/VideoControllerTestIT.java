@@ -1,8 +1,8 @@
 package de.uni_stuttgart.it_rex.media.written.video;
 
+import com.jayway.jsonpath.JsonPath;
 import de.uni_stuttgart.it_rex.media.config.TestSecurityConfiguration;
 import de.uni_stuttgart.it_rex.media.written.testutils.UnwrapProxied;
-import nl.altindag.log.LogCaptor;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.mock.web.MockMultipartHttpServletRequest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +21,6 @@ import org.testcontainers.containers.DockerComposeContainer;
 import java.io.File;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.setRemoveAssertJRelatedElementsFromStackTrace;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -99,10 +97,11 @@ class VideoControllerTestIT {
         "Hello, World!".getBytes()
     );
 
-    LogCaptor logCaptor = LogCaptor.forClass(VideoStorageService.class);
     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-    mockMvc.perform(multipart("/api/videos/upload").file(file)).andExpect(status().isOk());
-    assertThat(logCaptor.getInfoLogs()).containsExactly(LOG_MESSAGE);
+    String result = mockMvc.perform(multipart("/api/videos/upload").file(file)).
+        andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
+    Integer id = JsonPath.read(result, "$.id");
+    mockMvc.perform(get("/api/videos/download/" + id.toString())).andExpect(status().isOk());
   }
 
   @Test
@@ -116,12 +115,6 @@ class VideoControllerTestIT {
 
     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     mockMvc.perform(multipart("/api/videos/upload6969").file(file)).andExpect(status().is4xxClientError());
-  }
-
-  @Test
-  void downloadFile() throws Exception {
-      MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-      mockMvc.perform(get("/api/videos/download/hello.txt")).andExpect(status().isOk());
   }
 
   @Test

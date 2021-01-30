@@ -3,36 +3,34 @@ package de.uni_stuttgart.it_rex.media.written.video;
 import de.uni_stuttgart.it_rex.media.config.TestSecurityConfiguration;
 import de.uni_stuttgart.it_rex.media.service.VideoService;
 import de.uni_stuttgart.it_rex.media.service.dto.VideoDTO;
-import de.uni_stuttgart.it_rex.media.written.StorageException;
 import de.uni_stuttgart.it_rex.media.written.testutils.UnwrapProxied;
-import nl.altindag.log.LogCaptor;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.DockerComposeContainer;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
+import static org.mockito.ArgumentMatchers.any;
 
+@Transactional
 @TestInstance(PER_CLASS)
-@SpringBootTest(classes = {TestSecurityConfiguration.class})
-class VideoStorageServiceTestIT {
+@SpringBootTest(classes = {TestSecurityConfiguration.class, VideoServiceMockConfig.class})
+public class VideoStorageServiceTransactionTestIT {
 
   private static final Integer MINIO_PORT = 9000;
-  private static final Path MAGIC_BUCKET = Paths.get("wizard-hat");
-  private static final String LOG_MESSAGE = String.format("Bucket %s already exists.", MAGIC_BUCKET);
-  private static final String EXCEPTION_MESSAGE = "Failed to store empty file!";
 
   private Integer minioMappedPort;
   private String minioMappedHost;
@@ -43,6 +41,9 @@ class VideoStorageServiceTestIT {
 
   @Autowired
   private VideoStorageService videoStorageService;
+
+  @Autowired
+  private VideoService videoService;
 
   @BeforeAll
   public void setUp(@Value("${minio.access-key}") final String accessKey,
@@ -74,33 +75,17 @@ class VideoStorageServiceTestIT {
   }
 
   @Test
-  void contextLoads() {
-    assertThat(videoStorageService).isNotNull();
-    assertThat(environment).isNotNull();
-    assertThat(minioMappedHost).isNotNull();
-    assertThat(minioMappedPort).isNotNull();
-    assertThat(minioUrl).isNotNull();
-  }
-
-  @Test
-  void makeAlreadyExistingBucket() {
-    LogCaptor logCaptor = LogCaptor.forClass(VideoStorageService.class);
-    videoStorageService.makeBucket(MAGIC_BUCKET);
-    videoStorageService.makeBucket(MAGIC_BUCKET);
-    assertThat(logCaptor.getInfoLogs()).containsExactly(LOG_MESSAGE);
-  }
-
-  @Test
-  void storeEmptyFile() {
+  void failDatabaseWrite() {
     MockMultipartFile emptyFile = new MockMultipartFile(
-        "empty",
-        "empty.txt",
+        "FailedMetatDataWrite",
+        "FailedMetatDataWrite.txt",
         MediaType.TEXT_PLAIN_VALUE,
-        "".getBytes()
+        "Hihi".getBytes()
     );
-
-    Exception storageException = assertThrows(StorageException.class, () ->
-        videoStorageService.store(emptyFile));
-    assertThat(storageException.getMessage()).isEqualTo(EXCEPTION_MESSAGE);
+    videoStorageService.store(emptyFile);
+    List<VideoDTO> dtos = videoService.findAll();
+    Optional<VideoDTO> result = dtos.stream().filter(dto
+        -> dto.getTitle().equals("FailedMetatDataWrite.txt")).findFirst();
+    assertThat(result).isEmpty();
   }
 }
