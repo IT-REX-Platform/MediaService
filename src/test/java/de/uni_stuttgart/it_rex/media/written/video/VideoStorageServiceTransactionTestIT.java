@@ -8,7 +8,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +22,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
-import static org.mockito.ArgumentMatchers.any;
 
 @Transactional
 @TestInstance(PER_CLASS)
@@ -87,5 +85,10 @@ public class VideoStorageServiceTransactionTestIT {
     Optional<VideoDTO> result = dtos.stream().filter(dto
         -> dto.getTitle().equals("FailedMetatDataWrite.txt")).findFirst();
     assertThat(result).isEmpty();
+  }
+
+  @Test
+  void deleteNotExisting() {
+    assertThat(videoStorageService.delete(999999999L)).isNull();
   }
 }

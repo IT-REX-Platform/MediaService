@@ -22,8 +22,7 @@ import java.io.File;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Transactional
@@ -89,7 +88,7 @@ class VideoControllerTestIT {
   }
 
   @Test
-  void uploadFile() throws Exception {
+  void uploadDownloadAndDeleteFile() throws Exception {
     MockMultipartFile file = new MockMultipartFile(
         "file",
         "hello.txt",
@@ -102,6 +101,9 @@ class VideoControllerTestIT {
         andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
     Integer id = JsonPath.read(result, "$.id");
     mockMvc.perform(get("/api/videos/download/" + id.toString())).andExpect(status().isOk());
+    mockMvc.perform(delete("/api/videos/delete/" + id.toString())).andExpect(status().isNoContent());
+    mockMvc.perform(get("/api/videos/download/" + id.toString())).andExpect(status().
+        is4xxClientError());
   }
 
   @Test

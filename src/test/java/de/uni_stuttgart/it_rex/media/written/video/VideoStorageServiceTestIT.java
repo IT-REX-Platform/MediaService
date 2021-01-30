@@ -103,4 +103,9 @@ class VideoStorageServiceTestIT {
         videoStorageService.store(emptyFile));
     assertThat(storageException.getMessage()).isEqualTo(EXCEPTION_MESSAGE);
   }
+
+  @Test
+  void deleteNotExisting() {
+    assertThat(videoStorageService.delete(999999999L)).isNull();
+  }
 }
