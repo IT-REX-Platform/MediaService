@@ -180,7 +180,7 @@ public class VideoServiceExtended extends VideoService {
     }
 
     /**
-     * Store a video file from the system.
+     * Delete a video file from the system.
      *
      * @param videoId the id of the video file to remove.
      * @return the video meta data and null if the file doesn't exist
