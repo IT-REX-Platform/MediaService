@@ -30,7 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 @Transactional
 @TestInstance(PER_CLASS)
 @SpringBootTest(classes = {TestSecurityConfiguration.class, VideoServiceExtendedTransactionConfig.class})
-public class VideoServiceExtendedTransactionTestIT {
+class VideoServiceExtendedTransactionTestIT {
 
   private static final Integer MINIO_PORT = 9000;
   private static final Long MAGIC_NON_EXISTING_ID = 999999999L;

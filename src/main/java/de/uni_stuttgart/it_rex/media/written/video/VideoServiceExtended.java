@@ -47,11 +47,19 @@ import java.util.Optional;
 public class VideoServiceExtended extends VideoService {
 
     /**
+     * One hour in seconds.
+     */
+    private static final Integer ONE_HOUR = 3600;
+
+    /**
      * Logger.
      */
     private static final Logger LOGGER =
         LoggerFactory.getLogger(VideoServiceExtended.class);
 
+    /**
+     * Transaction manager.
+     */
     private PlatformTransactionManager transactionManager;
 
     /**
@@ -87,9 +95,12 @@ public class VideoServiceExtended extends VideoService {
 
     /**
      * Constructor.
+     * @param vm the VideoMapper
+     * @param vr the VideoRepository
      */
     @Autowired
-    public VideoServiceExtended(final VideoRepository vr, final VideoMapper vm) {
+    public VideoServiceExtended(
+        final VideoRepository vr, final VideoMapper vm) {
         super(vr, vm);
     }
 
@@ -149,14 +160,19 @@ public class VideoServiceExtended extends VideoService {
      * @param file The video file to store.
      * @return the video meta data
      */
-    public VideoDTO store(final MultipartFile file) {
+    public VideoDTO store(
+        final MultipartFile file) {
         fileValidatorService.validate(file);
 
-        DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
-        definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-        definition.setIsolationLevel(TransactionDefinition.ISOLATION_DEFAULT);
-        definition.setTimeout(3600);
-        TransactionStatus status = transactionManager.getTransaction(definition);
+        DefaultTransactionDefinition definition
+            = new DefaultTransactionDefinition();
+        definition.setPropagationBehavior(
+            TransactionDefinition.PROPAGATION_REQUIRED);
+        definition.setIsolationLevel(
+            TransactionDefinition.ISOLATION_DEFAULT);
+        definition.setTimeout(ONE_HOUR);
+        TransactionStatus status =
+            transactionManager.getTransaction(definition);
         VideoDTO videoDTO = new VideoDTO();
         try {
             videoDTO.setTitle(file.getOriginalFilename());
@@ -183,21 +199,26 @@ public class VideoServiceExtended extends VideoService {
      * Delete a video file from the system.
      *
      * @param videoId the id of the video file to remove.
-     * @return the video meta data and null if the file doesn't exist
      */
     public void delete(final Long videoId) {
         Optional<VideoDTO> result = super.findOne(videoId);
         if (!result.isPresent()) {
-            LOGGER.info(String.format("There is no video with the id %d!", videoId));
+            LOGGER.info(String.
+                format("There is no video with the id %d!",
+                    videoId));
             return;
         }
         VideoDTO videoDTO = result.get();
 
-        DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
-        definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-        definition.setIsolationLevel(TransactionDefinition.ISOLATION_DEFAULT);
-        definition.setTimeout(3600);
-        TransactionStatus status = transactionManager.getTransaction(definition);
+        DefaultTransactionDefinition definition =
+            new DefaultTransactionDefinition();
+        definition.setPropagationBehavior(
+            TransactionDefinition.PROPAGATION_REQUIRED);
+        definition.setIsolationLevel(
+            TransactionDefinition.ISOLATION_DEFAULT);
+        definition.setTimeout(ONE_HOUR);
+        TransactionStatus status =
+            transactionManager.getTransaction(definition);
         try {
             super.delete(videoId);
             deleteFile(videoDTO.getId());
@@ -214,10 +235,12 @@ public class VideoServiceExtended extends VideoService {
     /**
      * Stores a file in Minio.
      *
+     * @param videoId the id of the video
      * @param file The video file to store.
      * @return the files location.
      */
-    private String storeFile(final Long videoId, final MultipartFile file) throws
+    private String storeFile(final Long videoId, final MultipartFile file)
+        throws
         IOException,
         ServerException,
         InsufficientDataException,
@@ -284,11 +307,12 @@ public class VideoServiceExtended extends VideoService {
     /**
      * Setter.
      *
-     * @param transactionManager the transaction manager.
+     * @param newTransactionManager the transaction manager.
      */
     @Autowired
-    public void setTransactionManager(PlatformTransactionManager transactionManager) {
-        this.transactionManager = transactionManager;
+    public void setTransactionManager(
+        final PlatformTransactionManager newTransactionManager) {
+        this.transactionManager = newTransactionManager;
     }
 
     /**
@@ -379,11 +403,12 @@ public class VideoServiceExtended extends VideoService {
     /**
      * Setter.
      *
-     * @param fileValidatorService the fileValidatorService
+     * @param newFileValidatorService the fileValidatorService
      */
     @Autowired
-    public void setFileValidatorService(FileValidatorService fileValidatorService) {
-        this.fileValidatorService = fileValidatorService;
+    public void setFileValidatorService(
+        final FileValidatorService newFileValidatorService) {
+        this.fileValidatorService = newFileValidatorService;
     }
 
     /**

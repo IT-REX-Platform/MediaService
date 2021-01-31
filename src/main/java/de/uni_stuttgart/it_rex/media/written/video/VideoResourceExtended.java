@@ -44,7 +44,7 @@ public class VideoResourceExtended {
    * @param vss VideoStorageService.
    */
   @Autowired
-  public VideoResourceExtended(VideoServiceExtended vss) {
+  public VideoResourceExtended(final VideoServiceExtended vss) {
     this.videoServiceExtended = vss;
   }
 
@@ -58,8 +58,9 @@ public class VideoResourceExtended {
    * @return the filename and id
    */
   @PostMapping("/videos")
-  public ResponseEntity<VideoDTO> uploadVideo(@RequestParam("file") final MultipartFile file,
-                                              final RedirectAttributes redirectAttributes)
+  public ResponseEntity<VideoDTO> uploadVideo(
+      @RequestParam("file") final MultipartFile file,
+      final RedirectAttributes redirectAttributes)
       throws URISyntaxException {
     VideoDTO result = videoServiceExtended.store(file);
 
@@ -75,19 +76,23 @@ public class VideoResourceExtended {
   /**
    * Delete a video from the system.
    *
-   * @param id of the video file to delete.
+   * @param id                 of the video file to delete.
+   * @param redirectAttributes redirectAttributes
    * @return the filename and id
    */
   @DeleteMapping("/videos/{id:.+}")
-  public ResponseEntity<VideoDTO> deleteVideo(@PathVariable final String id,
-                                              final RedirectAttributes redirectAttributes) {
+  public ResponseEntity<VideoDTO> deleteVideo(
+      @PathVariable final String id,
+      final RedirectAttributes redirectAttributes) {
     videoServiceExtended.delete(Long.valueOf(id));
 
-    redirectAttributes.addFlashAttribute("message",
-        "You successfully deleted " + id + "!");
+    redirectAttributes.addFlashAttribute(
+        "message", "You successfully deleted " + id + "!");
 
-    return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(
-        this.getApplicationName(), true, ENTITY_NAME, id.toString())).build();
+    return ResponseEntity.noContent().headers(
+        HeaderUtil.createEntityDeletionAlert(
+            this.getApplicationName(),
+            true, ENTITY_NAME, id.toString())).build();
   }
 
   /**
@@ -148,11 +153,11 @@ public class VideoResourceExtended {
   /**
    * Setter.
    *
-   * @param applicationName the application name.
+   * @param newApplicationName the application name.
    */
   @Autowired
   public void setApplicationName(@Value("${jhipster.clientApp.name}")
-                                     String applicationName) {
-    this.applicationName = applicationName;
+                                     final String newApplicationName) {
+    this.applicationName = newApplicationName;
   }
 }
