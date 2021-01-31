@@ -1,0 +1,147 @@
+{
+	"info": {
+		"_postman_id": "300d047f-aa4e-4d92-8948-fc0e4367a451",
+		"name": "media-service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "uploadVideo",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/home/christian/GitRepos/MediaService/src/main/resources/2_5435963561916500351.mp4"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8082/api/extended/videos",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"extended",
+						"videos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "downloadVideo",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/home/christian/GitRepos/MediaService/src/main/resources/2_5435963561916500351.mp4"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8082/api/extended/videos/1001",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"extended",
+						"videos",
+						"1001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteVideo",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8082/api/extended/videos/1001",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"extended",
+						"videos",
+						"1001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAllVideos",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8082/api/videos/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"api",
+						"videos",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
