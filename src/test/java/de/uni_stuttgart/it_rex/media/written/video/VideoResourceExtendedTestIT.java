@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @TestInstance(PER_CLASS)
 @SpringBootTest(classes = {TestSecurityConfiguration.class})
-class VideoControllerTestIT {
+class VideoResourceExtendedTestIT {
   private static final Integer MINIO_PORT = 9000;
   private final String LOG_MESSAGE =
       "hello.txt is successfully uploaded as object hello.txt to bucket 'videos'.";
@@ -40,10 +40,10 @@ class VideoControllerTestIT {
   private DockerComposeContainer environment;
 
   @Autowired
-  private VideoStorageService videoStorageService;
+  private VideoServiceExtended videoServiceExtended;
 
   @Autowired
-  private VideoController videoController;
+  private VideoResourceExtended videoResourceExtended;
 
   @Autowired
   private WebApplicationContext webApplicationContext;
@@ -61,11 +61,11 @@ class VideoControllerTestIT {
     minioMappedHost = environment.getServiceHost("minio", MINIO_PORT);
     minioUrl = String.format("http://%s:%d", minioMappedHost, minioMappedPort);
     try {
-      VideoStorageService videoStorageServiceUnwrapped = ((VideoStorageService) UnwrapProxied.unwrap(videoStorageService));
-      videoStorageServiceUnwrapped.setMinioUrl(minioUrl);
-      videoStorageServiceUnwrapped.setAccessKey(minioAccessKey);
-      videoStorageServiceUnwrapped.setSecretKey(minioSecretKey);
-      videoStorageService.makeBucket(videoStorageServiceUnwrapped.getRootLocation());
+      VideoServiceExtended videoServiceExtendedUnwrapped = ((VideoServiceExtended) UnwrapProxied.unwrap(videoServiceExtended));
+      videoServiceExtendedUnwrapped.setMinioUrl(minioUrl);
+      videoServiceExtendedUnwrapped.setAccessKey(minioAccessKey);
+      videoServiceExtendedUnwrapped.setSecretKey(minioSecretKey);
+      videoServiceExtended.makeBucket(videoServiceExtendedUnwrapped.getRootLocation());
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -78,8 +78,8 @@ class VideoControllerTestIT {
 
   @Test
   void contextLoads() {
-    assertThat(videoController).isNotNull();
-    assertThat(videoStorageService).isNotNull();
+    assertThat(videoResourceExtended).isNotNull();
+    assertThat(videoServiceExtended).isNotNull();
     assertThat(environment).isNotNull();
     assertThat(webApplicationContext).isNotNull();
     assertThat(minioMappedHost).isNotNull();
@@ -97,12 +97,12 @@ class VideoControllerTestIT {
     );
 
     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-    String result = mockMvc.perform(multipart("/api/videos/upload").file(file)).
+    String result = mockMvc.perform(multipart("/api/extended/videos").file(file)).
         andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
     Integer id = JsonPath.read(result, "$.id");
-    mockMvc.perform(get("/api/videos/download/" + id.toString())).andExpect(status().isOk());
-    mockMvc.perform(delete("/api/videos/delete/" + id.toString())).andExpect(status().isNoContent());
-    mockMvc.perform(get("/api/videos/download/" + id.toString())).andExpect(status().
+    mockMvc.perform(get("/api/extended/videos/" + id.toString())).andExpect(status().isOk());
+    mockMvc.perform(delete("/api/extended/videos/" + id.toString())).andExpect(status().isNoContent());
+    mockMvc.perform(get("/api/extended/videos/" + id.toString())).andExpect(status().
         is4xxClientError());
   }
 
@@ -116,12 +116,12 @@ class VideoControllerTestIT {
     );
 
     MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-    mockMvc.perform(multipart("/api/videos/upload6969").file(file)).andExpect(status().is4xxClientError());
+    mockMvc.perform(multipart("/api/extended/videos6969").file(file)).andExpect(status().is4xxClientError());
   }
 
   @Test
   void downloadNonExistingFile() throws Exception {
       MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-      mockMvc.perform(get("/api/videos/download/hello1.txt")).andExpect(status().isNotFound());
+      mockMvc.perform(get("/api/extended/videos/999999999")).andExpect(status().isNotFound());
   }
 }

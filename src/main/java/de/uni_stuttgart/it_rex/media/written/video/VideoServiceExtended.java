@@ -1,7 +1,9 @@
 package de.uni_stuttgart.it_rex.media.written.video;
 
+import de.uni_stuttgart.it_rex.media.repository.VideoRepository;
 import de.uni_stuttgart.it_rex.media.service.VideoService;
 import de.uni_stuttgart.it_rex.media.service.dto.VideoDTO;
+import de.uni_stuttgart.it_rex.media.service.mapper.VideoMapper;
 import de.uni_stuttgart.it_rex.media.written.FileValidatorService;
 import de.uni_stuttgart.it_rex.media.written.StorageFileNotFoundException;
 import io.minio.BucketExistsArgs;
@@ -42,13 +44,13 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
 @Service
-public class VideoStorageService {
+public class VideoServiceExtended extends VideoService {
 
     /**
      * Logger.
      */
     private static final Logger LOGGER =
-        LoggerFactory.getLogger(VideoStorageService.class);
+        LoggerFactory.getLogger(VideoServiceExtended.class);
 
     private PlatformTransactionManager transactionManager;
 
@@ -56,11 +58,6 @@ public class VideoStorageService {
      * Service for validating files.
      */
     private FileValidatorService fileValidatorService;
-
-    /**
-     * Service for storing meta data.
-     */
-    private VideoService videoService;
 
     /**
      * The url to minio.
@@ -91,8 +88,9 @@ public class VideoStorageService {
     /**
      * Constructor.
      */
-    public VideoStorageService() {
-        // Empty because Spring autowiring is used for initialization
+    @Autowired
+    public VideoServiceExtended(final VideoRepository vr, final VideoMapper vm) {
+        super(vr, vm);
     }
 
     /**
@@ -163,13 +161,13 @@ public class VideoStorageService {
         try {
             videoDTO.setTitle(file.getOriginalFilename());
             videoDTO.setLocation(this.rootLocation.toString());
-            videoDTO = videoService.save(videoDTO);
+            videoDTO = super.save(videoDTO);
             storeFile(videoDTO.getId(), file);
             transactionManager.commit(status);
         } catch (Exception e) {
             transactionManager.rollback(status);
             if (videoDTO.getId() != null) {
-                videoService.delete(videoDTO.getId());
+                super.delete(videoDTO.getId());
                 try {
                     deleteFile(videoDTO.getId());
                 } catch (Exception ex) {
@@ -187,30 +185,30 @@ public class VideoStorageService {
      * @param videoId the id of the video file to remove.
      * @return the video meta data and null if the file doesn't exist
      */
-    public VideoDTO delete(final Long videoId) {
-        Optional<VideoDTO> result = videoService.findOne(videoId);
-        if (result.isPresent()) {
-            VideoDTO videoDTO = result.get();
-
-            DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
-            definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-            definition.setIsolationLevel(TransactionDefinition.ISOLATION_DEFAULT);
-            definition.setTimeout(3600);
-            TransactionStatus status = transactionManager.getTransaction(definition);
-            try {
-                videoService.delete(videoId);
-                deleteFile(videoDTO.getId());
-                transactionManager.commit(status);
-            } catch (Exception e) {
-                transactionManager.rollback(status);
-                if (videoDTO.getId() != null) {
-                    videoService.save(videoDTO);
-                }
-                LOGGER.error(e.getLocalizedMessage());
-            }
-            return videoDTO;
+    public void delete(final Long videoId) {
+        Optional<VideoDTO> result = super.findOne(videoId);
+        if (!result.isPresent()) {
+            LOGGER.info(String.format("There is no video with the id %d!", videoId));
+            return;
         }
-        return null;
+        VideoDTO videoDTO = result.get();
+
+        DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
+        definition.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+        definition.setIsolationLevel(TransactionDefinition.ISOLATION_DEFAULT);
+        definition.setTimeout(3600);
+        TransactionStatus status = transactionManager.getTransaction(definition);
+        try {
+            super.delete(videoId);
+            deleteFile(videoDTO.getId());
+            transactionManager.commit(status);
+        } catch (Exception e) {
+            transactionManager.rollback(status);
+            if (videoDTO.getId() != null) {
+                super.save(videoDTO);
+            }
+            LOGGER.error(e.getLocalizedMessage());
+        }
     }
 
     /**
@@ -386,25 +384,6 @@ public class VideoStorageService {
     @Autowired
     public void setFileValidatorService(FileValidatorService fileValidatorService) {
         this.fileValidatorService = fileValidatorService;
-    }
-
-    /**
-     * Getter.
-     *
-     * @return the service for storing meta data.
-     */
-    public VideoService getVideoService() {
-        return videoService;
-    }
-
-    /**
-     * Setter.
-     *
-     * @param newVideoService service for storing meta data.
-     */
-    @Autowired
-    public void setVideoService(final VideoService newVideoService) {
-        this.videoService = newVideoService;
     }
 
     /**

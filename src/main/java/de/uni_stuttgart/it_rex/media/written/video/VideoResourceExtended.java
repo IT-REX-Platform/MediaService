@@ -25,8 +25,8 @@ import java.net.URISyntaxException;
 import static org.hibernate.id.IdentifierGenerator.ENTITY_NAME;
 
 @RestController
-@RequestMapping("/api")
-public class VideoController {
+@RequestMapping("/api/extended")
+public class VideoResourceExtended {
 
   /**
    * The application name.
@@ -36,16 +36,16 @@ public class VideoController {
   /**
    * Service for storing videos.
    */
-  private final VideoStorageService videoStorageService;
+  private final VideoServiceExtended videoServiceExtended;
 
   /**
    * Constructor.
    *
-   * @param vss The service for storing videos.
+   * @param vss VideoStorageService.
    */
   @Autowired
-  public VideoController(final VideoStorageService vss) {
-    this.videoStorageService = vss;
+  public VideoResourceExtended(VideoServiceExtended vss) {
+    this.videoServiceExtended = vss;
   }
 
   /**
@@ -57,17 +57,17 @@ public class VideoController {
    * @param redirectAttributes The redirect attributes.
    * @return the filename and id
    */
-  @PostMapping("/videos/upload")
+  @PostMapping("/videos")
   public ResponseEntity<VideoDTO> uploadVideo(@RequestParam("file") final MultipartFile file,
                                               final RedirectAttributes redirectAttributes)
       throws URISyntaxException {
-    VideoDTO result = videoStorageService.store(file);
+    VideoDTO result = videoServiceExtended.store(file);
 
     redirectAttributes.addFlashAttribute("message",
         "You successfully uploaded " + file.getOriginalFilename() + "!");
 
     return ResponseEntity.created(new URI("/api/videos/" + result.getId()))
-        .headers(HeaderUtil.createEntityCreationAlert(applicationName,
+        .headers(HeaderUtil.createEntityCreationAlert(this.getApplicationName(),
             true, ENTITY_NAME, result.getId().toString()))
         .body(result);
   }
@@ -75,36 +75,36 @@ public class VideoController {
   /**
    * Delete a video from the system.
    *
-   * @param id The id of the video file to delete.
+   * @param id of the video file to delete.
    * @return the filename and id
    */
-  @DeleteMapping("/videos/delete/{id:.+}")
+  @DeleteMapping("/videos/{id:.+}")
   public ResponseEntity<VideoDTO> deleteVideo(@PathVariable final String id,
                                               final RedirectAttributes redirectAttributes) {
-    VideoDTO result = videoStorageService.delete(Long.valueOf(id));
+    videoServiceExtended.delete(Long.valueOf(id));
 
     redirectAttributes.addFlashAttribute("message",
         "You successfully deleted " + id + "!");
 
     return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(
-        applicationName, true, ENTITY_NAME, result.getId().toString())).build();
+        this.getApplicationName(), true, ENTITY_NAME, id.toString())).build();
   }
 
   /**
    * Download a video from the system.
    *
-   * @param filename The video file to download.
-   * @param headers  The request headers.
+   * @param id      of the video file to download.
+   * @param headers The request headers.
    * @return A ResponseEntity to stream the file to the client.
    */
-  @GetMapping("/videos/download/{filename:.+}")
+  @GetMapping("/videos/{id:.+}")
   public ResponseEntity<Resource> downloadVideo(
-      @PathVariable final String filename,
+      @PathVariable final String id,
       @RequestHeader final HttpHeaders headers) {
 
     HttpHeaders responseHeaders = new HttpHeaders();
 
-    long chosenFileLength = videoStorageService.getLength(filename);
+    long chosenFileLength = videoServiceExtended.getLength(id);
 
     if (chosenFileLength == 0L) {
       return ResponseEntity.notFound().headers(responseHeaders).build();
@@ -122,15 +122,15 @@ public class VideoController {
     long end = range.getRangeEnd(chosenFileLength);
     long length = end - start + 1;
 
-    Resource file = videoStorageService
-        .loadAsResource(filename, start, length);
+    Resource file = videoServiceExtended
+        .loadAsResource(id, start, length);
 
     if (file == null) {
       return ResponseEntity.notFound().headers(responseHeaders).build();
     }
 
     responseHeaders.add(HttpHeaders.CONTENT_DISPOSITION,
-        "inline; filename=\"" + filename + "\"");
+        "inline; filename=\"" + id + "\"");
     responseHeaders.add("Content-Type", "video/mp4");
 
     return ResponseEntity.ok().headers(responseHeaders).body(file);
