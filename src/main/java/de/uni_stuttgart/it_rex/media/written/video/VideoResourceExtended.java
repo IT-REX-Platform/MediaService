@@ -92,7 +92,7 @@ public class VideoResourceExtended {
     return ResponseEntity.noContent().headers(
         HeaderUtil.createEntityDeletionAlert(
             this.getApplicationName(),
-            true, ENTITY_NAME, id.toString())).build();
+            true, ENTITY_NAME, id)).build();
   }
 
   /**

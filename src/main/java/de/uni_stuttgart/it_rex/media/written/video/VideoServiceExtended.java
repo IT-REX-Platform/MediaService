@@ -95,6 +95,7 @@ public class VideoServiceExtended extends VideoService {
 
     /**
      * Constructor.
+     *
      * @param vm the VideoMapper
      * @param vr the VideoRepository
      */
@@ -200,12 +201,13 @@ public class VideoServiceExtended extends VideoService {
      *
      * @param videoId the id of the video file to remove.
      */
+    @Override
     public void delete(final Long videoId) {
         Optional<VideoDTO> result = super.findOne(videoId);
         if (!result.isPresent()) {
-            LOGGER.info(String.
-                format("There is no video with the id %d!",
-                    videoId));
+            String videoMissingLog =
+                String.format("There is no video with the id %d!", videoId);
+            LOGGER.info(videoMissingLog);
             return;
         }
         VideoDTO videoDTO = result.get();
@@ -236,7 +238,7 @@ public class VideoServiceExtended extends VideoService {
      * Stores a file in Minio.
      *
      * @param videoId the id of the video
-     * @param file The video file to store.
+     * @param file    The video file to store.
      * @return the files location.
      */
     private String storeFile(final Long videoId, final MultipartFile file)
