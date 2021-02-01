@@ -167,6 +167,10 @@ spring:
           oidc:
             client-id: internal
             client-secret: internal
+  servlet:
+    multipart:
+      max-file-size: 2GB
+      max-request-size: 2GB
 
 server:
   servlet:
@@ -224,3 +228,10 @@ jhipster:
 # ===================================================================
 
 # application:
+
+minio:
+  port: 8087
+  url: http://minio:${minio.port}
+  access-key: minio_itrex
+  secret-key: minio_itrex_secret
+  root-location: videos
