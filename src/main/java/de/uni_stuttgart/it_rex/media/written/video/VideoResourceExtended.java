@@ -113,8 +113,18 @@ public class VideoResourceExtended {
   @DeleteMapping("/videos/{id:.+}")
   public ResponseEntity<VideoDTO> deleteVideo(
       @PathVariable final String id,
-      final RedirectAttributes redirectAttributes) {
-    videoServiceExtended.delete(Long.valueOf(id));
+      final RedirectAttributes redirectAttributes)
+      throws
+      IOException,
+      InvalidResponseException,
+      InvalidKeyException,
+      NoSuchAlgorithmException,
+      ServerException,
+      InternalException,
+      XmlParserException,
+      InsufficientDataException,
+      ErrorResponseException {
+    videoServiceExtended.deleteFile(Long.valueOf(id));
 
     redirectAttributes.addFlashAttribute(
         "message", "You successfully deleted " + id + "!");

@@ -32,12 +32,9 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
@@ -46,15 +43,9 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Optional;
 
 @Service
 public class VideoServiceExtended extends VideoService {
-
-    /**
-     * One hour in seconds.
-     */
-    private static final Integer ONE_HOUR = 3600;
 
     /**
      * Logger.
@@ -202,9 +193,10 @@ public class VideoServiceExtended extends VideoService {
      * @param fileCreatedEvent the event
      */
     @TransactionalEventListener(phase = TransactionPhase.AFTER_ROLLBACK)
-    protected void rollBackFileStorage(final FileCreatedEvent fileCreatedEvent) {
+    protected void rollBackFileStorage(
+        final FileCreatedEvent fileCreatedEvent) {
         try {
-            deleteFile(fileCreatedEvent.getId());
+            deleteFromMinio(fileCreatedEvent.getId());
         } catch (Exception e) {
             LOGGER.error(e.getLocalizedMessage());
         }
@@ -215,37 +207,20 @@ public class VideoServiceExtended extends VideoService {
      *
      * @param videoId the id of the video file to remove.
      */
-    @Override
-    public void delete(final Long videoId) {
-        Optional<VideoDTO> result = super.findOne(videoId);
-        if (!result.isPresent()) {
-            String videoMissingLog =
-                String.format("There is no video with the id %d!", videoId);
-            LOGGER.info(videoMissingLog);
-            return;
-        }
-        VideoDTO videoDTO = result.get();
-
-        DefaultTransactionDefinition definition =
-            new DefaultTransactionDefinition();
-        definition.setPropagationBehavior(
-            TransactionDefinition.PROPAGATION_REQUIRED);
-        definition.setIsolationLevel(
-            TransactionDefinition.ISOLATION_DEFAULT);
-        definition.setTimeout(ONE_HOUR);
-        TransactionStatus status =
-            transactionManager.getTransaction(definition);
-        try {
-            super.delete(videoId);
-            deleteFile(videoDTO.getId());
-            transactionManager.commit(status);
-        } catch (Exception e) {
-            transactionManager.rollback(status);
-            if (videoDTO.getId() != null) {
-                super.save(videoDTO);
-            }
-            LOGGER.error(e.getLocalizedMessage());
-        }
+    @Transactional
+    public void deleteFile(final Long videoId)
+        throws
+        InvalidResponseException,
+        InvalidKeyException,
+        NoSuchAlgorithmException,
+        ServerException,
+        ErrorResponseException,
+        XmlParserException,
+        InsufficientDataException,
+        InternalException,
+        IOException {
+        super.delete(videoId);
+        deleteFromMinio(videoId);
     }
 
     /**
@@ -290,7 +265,7 @@ public class VideoServiceExtended extends VideoService {
      *
      * @param id The video file to delete.
      */
-    private void deleteFile(final Long id)
+    private void deleteFromMinio(final Long id)
         throws IOException,
         InvalidKeyException,
         InvalidResponseException,
