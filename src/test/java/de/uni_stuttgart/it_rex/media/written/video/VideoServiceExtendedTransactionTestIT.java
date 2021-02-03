@@ -90,7 +90,11 @@ class VideoServiceExtendedTransactionTestIT {
         MediaType.TEXT_PLAIN_VALUE,
         "Hihi".getBytes()
     );
-    videoServiceExtended.store(emptyFile);
+    try {
+      videoServiceExtended.store(emptyFile);
+    } catch (Exception e) {
+      // Empty because we expect an exception to be thrown.
+    }
     List<VideoDTO> dtos = videoService.findAll();
     Optional<VideoDTO> result = dtos.stream().filter(dto
         -> dto.getTitle().equals("FailedMetatDataWrite.txt")).findFirst();

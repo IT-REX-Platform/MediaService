@@ -2,6 +2,14 @@ package de.uni_stuttgart.it_rex.media.written.video;
 
 import de.uni_stuttgart.it_rex.media.service.dto.VideoDTO;
 import io.github.jhipster.web.util.HeaderUtil;
+import io.minio.errors.ErrorResponseException;
+import io.minio.errors.InsufficientDataException;
+import io.minio.errors.InternalException;
+import io.minio.errors.InvalidResponseException;
+import io.minio.errors.ServerException;
+import io.minio.errors.XmlParserException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -19,14 +27,23 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 import static org.hibernate.id.IdentifierGenerator.ENTITY_NAME;
 
 @RestController
 @RequestMapping("/api/extended")
 public class VideoResourceExtended {
+
+  /**
+   * Logger.
+   */
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger(VideoResourceExtended.class);
 
   /**
    * The application name.
@@ -61,9 +78,22 @@ public class VideoResourceExtended {
   public ResponseEntity<VideoDTO> uploadVideo(
       @RequestParam("file") final MultipartFile file,
       final RedirectAttributes redirectAttributes)
-      throws URISyntaxException {
-    VideoDTO result = videoServiceExtended.store(file);
+      throws URISyntaxException,
+      IOException,
+      InvalidResponseException,
+      InvalidKeyException,
+      NoSuchAlgorithmException,
+      ServerException,
+      InternalException,
+      XmlParserException,
+      InsufficientDataException,
+      ErrorResponseException {
 
+    VideoDTO result = videoServiceExtended.store(file);
+    String logMessage =
+        String.format("A video with the id %d was successfully created!",
+            result.getId());
+    LOGGER.info(logMessage);
     redirectAttributes.addFlashAttribute("message",
         "You successfully uploaded " + file.getOriginalFilename() + "!");
 
