@@ -6,6 +6,7 @@ import de.uni_stuttgart.it_rex.media.service.dto.VideoDTO;
 import de.uni_stuttgart.it_rex.media.service.mapper.VideoMapper;
 import de.uni_stuttgart.it_rex.media.written.FileValidatorService;
 import de.uni_stuttgart.it_rex.media.written.StorageFileNotFoundException;
+import de.uni_stuttgart.it_rex.media.written.events.FileCreatedEvent;
 import io.minio.BucketExistsArgs;
 import io.minio.GetObjectArgs;
 import io.minio.MakeBucketArgs;
@@ -26,13 +27,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
@@ -41,21 +43,20 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Optional;
 
 @Service
 public class VideoServiceExtended extends VideoService {
-
-    /**
-     * One hour in seconds.
-     */
-    private static final Integer ONE_HOUR = 3600;
 
     /**
      * Logger.
      */
     private static final Logger LOGGER =
         LoggerFactory.getLogger(VideoServiceExtended.class);
+
+    /**
+     * ApplicationEvent publisher.
+     */
+    private ApplicationEventPublisher applicationEventPublisher;
 
     /**
      * Transaction manager.
@@ -161,39 +162,44 @@ public class VideoServiceExtended extends VideoService {
      * @param file The video file to store.
      * @return the video meta data
      */
+    @Transactional(rollbackFor = {Exception.class})
     public VideoDTO store(
-        final MultipartFile file) {
+        final MultipartFile file)
+        throws IOException,
+        InvalidKeyException,
+        InvalidResponseException,
+        InsufficientDataException,
+        NoSuchAlgorithmException,
+        ServerException,
+        ErrorResponseException,
+        XmlParserException,
+        InternalException {
         fileValidatorService.validate(file);
 
-        DefaultTransactionDefinition definition
-            = new DefaultTransactionDefinition();
-        definition.setPropagationBehavior(
-            TransactionDefinition.PROPAGATION_REQUIRED);
-        definition.setIsolationLevel(
-            TransactionDefinition.ISOLATION_DEFAULT);
-        definition.setTimeout(ONE_HOUR);
-        TransactionStatus status =
-            transactionManager.getTransaction(definition);
         VideoDTO videoDTO = new VideoDTO();
+        videoDTO.setLocation(this.rootLocation.toString());
+        videoDTO.setTitle(file.getOriginalFilename());
+        videoDTO = super.save(videoDTO);
+        applicationEventPublisher.publishEvent(
+            new FileCreatedEvent(this, videoDTO.getId()));
+        storeFile(videoDTO.getId(), file);
+
+        return videoDTO;
+    }
+
+    /**
+     * Rolls back the creation of files in minio.
+     *
+     * @param fileCreatedEvent the event
+     */
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_ROLLBACK)
+    protected void rollBackFileStorage(
+        final FileCreatedEvent fileCreatedEvent) {
         try {
-            videoDTO.setTitle(file.getOriginalFilename());
-            videoDTO.setLocation(this.rootLocation.toString());
-            videoDTO = super.save(videoDTO);
-            storeFile(videoDTO.getId(), file);
-            transactionManager.commit(status);
+            deleteFromMinio(fileCreatedEvent.getId());
         } catch (Exception e) {
-            transactionManager.rollback(status);
-            if (videoDTO.getId() != null) {
-                super.delete(videoDTO.getId());
-                try {
-                    deleteFile(videoDTO.getId());
-                } catch (Exception ex) {
-                    LOGGER.error(ex.getLocalizedMessage());
-                }
-            }
             LOGGER.error(e.getLocalizedMessage());
         }
-        return videoDTO;
     }
 
     /**
@@ -201,37 +207,20 @@ public class VideoServiceExtended extends VideoService {
      *
      * @param videoId the id of the video file to remove.
      */
-    @Override
-    public void delete(final Long videoId) {
-        Optional<VideoDTO> result = super.findOne(videoId);
-        if (!result.isPresent()) {
-            String videoMissingLog =
-                String.format("There is no video with the id %d!", videoId);
-            LOGGER.info(videoMissingLog);
-            return;
-        }
-        VideoDTO videoDTO = result.get();
-
-        DefaultTransactionDefinition definition =
-            new DefaultTransactionDefinition();
-        definition.setPropagationBehavior(
-            TransactionDefinition.PROPAGATION_REQUIRED);
-        definition.setIsolationLevel(
-            TransactionDefinition.ISOLATION_DEFAULT);
-        definition.setTimeout(ONE_HOUR);
-        TransactionStatus status =
-            transactionManager.getTransaction(definition);
-        try {
-            super.delete(videoId);
-            deleteFile(videoDTO.getId());
-            transactionManager.commit(status);
-        } catch (Exception e) {
-            transactionManager.rollback(status);
-            if (videoDTO.getId() != null) {
-                super.save(videoDTO);
-            }
-            LOGGER.error(e.getLocalizedMessage());
-        }
+    @Transactional
+    public void deleteFile(final Long videoId)
+        throws
+        InvalidResponseException,
+        InvalidKeyException,
+        NoSuchAlgorithmException,
+        ServerException,
+        ErrorResponseException,
+        XmlParserException,
+        InsufficientDataException,
+        InternalException,
+        IOException {
+        super.delete(videoId);
+        deleteFromMinio(videoId);
     }
 
     /**
@@ -276,7 +265,7 @@ public class VideoServiceExtended extends VideoService {
      *
      * @param id The video file to delete.
      */
-    private void deleteFile(final Long id)
+    private void deleteFromMinio(final Long id)
         throws IOException,
         InvalidKeyException,
         InvalidResponseException,
@@ -491,5 +480,25 @@ public class VideoServiceExtended extends VideoService {
     public final void setRootLocation(
         @Value("${minio.root-location}") final Path newLocation) {
         this.rootLocation = newLocation;
+    }
+
+    /**
+     * Getter.
+     *
+     * @return the applicationEventPublisher
+     */
+    public ApplicationEventPublisher getApplicationEventPublisher() {
+        return applicationEventPublisher;
+    }
+
+    /**
+     * Setter.
+     *
+     * @param newApplicationEventPublisher the applicationEventPublisher
+     */
+    @Autowired
+    public void setApplicationEventPublisher(
+        final ApplicationEventPublisher newApplicationEventPublisher) {
+        this.applicationEventPublisher = newApplicationEventPublisher;
     }
 }

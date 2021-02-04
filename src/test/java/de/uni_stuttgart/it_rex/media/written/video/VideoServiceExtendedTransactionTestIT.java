@@ -5,7 +5,6 @@ import de.uni_stuttgart.it_rex.media.service.VideoService;
 import de.uni_stuttgart.it_rex.media.service.dto.VideoDTO;
 import de.uni_stuttgart.it_rex.media.written.StorageException;
 import de.uni_stuttgart.it_rex.media.written.testutils.UnwrapProxied;
-import nl.altindag.log.LogCaptor;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -14,6 +13,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.ArgumentMatchers.any;
 
@@ -34,7 +35,6 @@ class VideoServiceExtendedTransactionTestIT {
 
   private static final Integer MINIO_PORT = 9000;
   private static final Long MAGIC_NON_EXISTING_ID = 999999999L;
-  private static final String LOG_MESSAGE = String.format("There is no video with the id %d!", MAGIC_NON_EXISTING_ID);
 
   private Integer minioMappedPort;
   private String minioMappedHost;
@@ -90,7 +90,11 @@ class VideoServiceExtendedTransactionTestIT {
         MediaType.TEXT_PLAIN_VALUE,
         "Hihi".getBytes()
     );
-    videoServiceExtended.store(emptyFile);
+    try {
+      videoServiceExtended.store(emptyFile);
+    } catch (Exception e) {
+      // Empty because we expect an exception to be thrown.
+    }
     List<VideoDTO> dtos = videoService.findAll();
     Optional<VideoDTO> result = dtos.stream().filter(dto
         -> dto.getTitle().equals("FailedMetatDataWrite.txt")).findFirst();
@@ -99,8 +103,7 @@ class VideoServiceExtendedTransactionTestIT {
 
   @Test
   void deleteNotExisting() {
-    LogCaptor logCaptor = LogCaptor.forClass(VideoServiceExtended.class);
-    videoServiceExtended.delete(MAGIC_NON_EXISTING_ID);
-    assertThat(logCaptor.getInfoLogs()).containsExactly(LOG_MESSAGE);
+    assertThrows(EmptyResultDataAccessException.class,
+        () -> videoServiceExtended.deleteFile(MAGIC_NON_EXISTING_ID));
   }
 }
