@@ -5,9 +5,9 @@ import java.io.Serializable;
 import de.uni_stuttgart.it_rex.media.domain.enumeration.MIMETYPE;
 
 /**
- * A DTO for the {@link de.uni_stuttgart.it_rex.media.domain.Video} entity.
+ * A DTO for the {@link de.uni_stuttgart.it_rex.media.domain.Audio} entity.
  */
-public class VideoDTO implements Serializable {
+public class AudioDTO implements Serializable {
     
     private Long id;
 
@@ -18,10 +18,6 @@ public class VideoDTO implements Serializable {
     private LocalDate endDate;
 
     private MIMETYPE mimeType;
-
-    private Integer width;
-
-    private Integer height;
 
     private Integer length;
 
@@ -66,22 +62,6 @@ public class VideoDTO implements Serializable {
         this.mimeType = mimeType;
     }
 
-    public Integer getWidth() {
-        return width;
-    }
-
-    public void setWidth(Integer width) {
-        this.width = width;
-    }
-
-    public Integer getHeight() {
-        return height;
-    }
-
-    public void setHeight(Integer height) {
-        this.height = height;
-    }
-
     public Integer getLength() {
         return length;
     }
@@ -95,11 +75,11 @@ public class VideoDTO implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof VideoDTO)) {
+        if (!(o instanceof AudioDTO)) {
             return false;
         }
 
-        return id != null && id.equals(((VideoDTO) o).id);
+        return id != null && id.equals(((AudioDTO) o).id);
     }
 
     @Override
@@ -110,14 +90,12 @@ public class VideoDTO implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "VideoDTO{" +
+        return "AudioDTO{" +
             "id=" + getId() +
             ", title='" + getTitle() + "'" +
             ", startDate='" + getStartDate() + "'" +
             ", endDate='" + getEndDate() + "'" +
             ", mimeType='" + getMimeType() + "'" +
-            ", width=" + getWidth() +
-            ", height=" + getHeight() +
             ", length=" + getLength() +
             "}";
     }

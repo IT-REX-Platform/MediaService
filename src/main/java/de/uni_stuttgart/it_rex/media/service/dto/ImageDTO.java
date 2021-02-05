@@ -5,21 +5,23 @@ import java.io.Serializable;
 import de.uni_stuttgart.it_rex.media.domain.enumeration.MIMETYPE;
 
 /**
- * A DTO for the {@link de.uni_stuttgart.it_rex.media.domain.Media} entity.
+ * A DTO for the {@link de.uni_stuttgart.it_rex.media.domain.Image} entity.
  */
-public class MediaDTO implements Serializable {
+public class ImageDTO implements Serializable {
     
     private Long id;
 
     private String title;
 
-    private LocalDate uploadDate;
+    private LocalDate startDate;
+
+    private LocalDate endDate;
 
     private MIMETYPE mimeType;
 
-    private String format;
+    private Integer width;
 
-    private String location;
+    private Integer height;
 
     
     public Long getId() {
@@ -38,12 +40,20 @@ public class MediaDTO implements Serializable {
         this.title = title;
     }
 
-    public LocalDate getUploadDate() {
-        return uploadDate;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    public void setUploadDate(LocalDate uploadDate) {
-        this.uploadDate = uploadDate;
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
     public MIMETYPE getMimeType() {
@@ -54,20 +64,20 @@ public class MediaDTO implements Serializable {
         this.mimeType = mimeType;
     }
 
-    public String getFormat() {
-        return format;
+    public Integer getWidth() {
+        return width;
     }
 
-    public void setFormat(String format) {
-        this.format = format;
+    public void setWidth(Integer width) {
+        this.width = width;
     }
 
-    public String getLocation() {
-        return location;
+    public Integer getHeight() {
+        return height;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setHeight(Integer height) {
+        this.height = height;
     }
 
     @Override
@@ -75,11 +85,11 @@ public class MediaDTO implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof MediaDTO)) {
+        if (!(o instanceof ImageDTO)) {
             return false;
         }
 
-        return id != null && id.equals(((MediaDTO) o).id);
+        return id != null && id.equals(((ImageDTO) o).id);
     }
 
     @Override
@@ -90,13 +100,14 @@ public class MediaDTO implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "MediaDTO{" +
+        return "ImageDTO{" +
             "id=" + getId() +
             ", title='" + getTitle() + "'" +
-            ", uploadDate='" + getUploadDate() + "'" +
+            ", startDate='" + getStartDate() + "'" +
+            ", endDate='" + getEndDate() + "'" +
             ", mimeType='" + getMimeType() + "'" +
-            ", format='" + getFormat() + "'" +
-            ", location='" + getLocation() + "'" +
+            ", width=" + getWidth() +
+            ", height=" + getHeight() +
             "}";
     }
 }

@@ -1,5 +1,5 @@
 {
-  "name": "Video",
+  "name": "Image",
   "fields": [
     {
       "fieldName": "title",
@@ -25,15 +25,11 @@
     {
       "fieldName": "height",
       "fieldType": "Integer"
-    },
-    {
-      "fieldName": "length",
-      "fieldType": "Integer"
     }
   ],
   "relationships": [],
-  "changelogDate": "20210116162217",
-  "entityTableName": "video",
+  "changelogDate": "20210205135645",
+  "entityTableName": "image",
   "dto": "mapstruct",
   "pagination": "no",
   "service": "serviceClass",

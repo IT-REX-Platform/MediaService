@@ -4,19 +4,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MediaMapperTest {
+public class AudioMapperTest {
 
-    private MediaMapper mediaMapper;
+    private AudioMapper audioMapper;
 
     @BeforeEach
     public void setUp() {
-        mediaMapper = new MediaMapperImpl();
+        audioMapper = new AudioMapperImpl();
     }
 
     @Test
     public void testEntityFromId() {
         Long id = 1L;
-        assertThat(mediaMapper.fromId(id).getId()).isEqualTo(id);
-        assertThat(mediaMapper.fromId(null)).isNull();
+        assertThat(audioMapper.fromId(id).getId()).isEqualTo(id);
+        assertThat(audioMapper.fromId(null)).isNull();
     }
 }

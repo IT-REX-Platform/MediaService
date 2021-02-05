@@ -1,31 +1,47 @@
-package de.uni_stuttgart.it_rex.media.service.dto;
+package de.uni_stuttgart.it_rex.media.domain;
 
-import java.time.LocalDate;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import javax.persistence.*;
+
 import java.io.Serializable;
+import java.time.LocalDate;
+
 import de.uni_stuttgart.it_rex.media.domain.enumeration.MIMETYPE;
 
 /**
- * A DTO for the {@link de.uni_stuttgart.it_rex.media.domain.Video} entity.
+ * A Audio.
  */
-public class VideoDTO implements Serializable {
-    
+@Entity
+@Table(name = "audio")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+public class Audio implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
+    @Column(name = "title")
     private String title;
 
+    @Column(name = "start_date")
     private LocalDate startDate;
 
+    @Column(name = "end_date")
     private LocalDate endDate;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "mime_type")
     private MIMETYPE mimeType;
 
-    private Integer width;
-
-    private Integer height;
-
+    @Column(name = "length")
     private Integer length;
 
-    
+    // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
         return id;
     }
@@ -38,12 +54,22 @@ public class VideoDTO implements Serializable {
         return title;
     }
 
+    public Audio title(String title) {
+        this.title = title;
+        return this;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
 
     public LocalDate getStartDate() {
         return startDate;
+    }
+
+    public Audio startDate(LocalDate startDate) {
+        this.startDate = startDate;
+        return this;
     }
 
     public void setStartDate(LocalDate startDate) {
@@ -54,6 +80,11 @@ public class VideoDTO implements Serializable {
         return endDate;
     }
 
+    public Audio endDate(LocalDate endDate) {
+        this.endDate = endDate;
+        return this;
+    }
+
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
@@ -62,44 +93,38 @@ public class VideoDTO implements Serializable {
         return mimeType;
     }
 
+    public Audio mimeType(MIMETYPE mimeType) {
+        this.mimeType = mimeType;
+        return this;
+    }
+
     public void setMimeType(MIMETYPE mimeType) {
         this.mimeType = mimeType;
-    }
-
-    public Integer getWidth() {
-        return width;
-    }
-
-    public void setWidth(Integer width) {
-        this.width = width;
-    }
-
-    public Integer getHeight() {
-        return height;
-    }
-
-    public void setHeight(Integer height) {
-        this.height = height;
     }
 
     public Integer getLength() {
         return length;
     }
 
+    public Audio length(Integer length) {
+        this.length = length;
+        return this;
+    }
+
     public void setLength(Integer length) {
         this.length = length;
     }
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof VideoDTO)) {
+        if (!(o instanceof Audio)) {
             return false;
         }
-
-        return id != null && id.equals(((VideoDTO) o).id);
+        return id != null && id.equals(((Audio) o).id);
     }
 
     @Override
@@ -110,14 +135,12 @@ public class VideoDTO implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "VideoDTO{" +
+        return "Audio{" +
             "id=" + getId() +
             ", title='" + getTitle() + "'" +
             ", startDate='" + getStartDate() + "'" +
             ", endDate='" + getEndDate() + "'" +
             ", mimeType='" + getMimeType() + "'" +
-            ", width=" + getWidth() +
-            ", height=" + getHeight() +
             ", length=" + getLength() +
             "}";
     }
