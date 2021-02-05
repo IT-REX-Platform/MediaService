@@ -11,12 +11,12 @@ import java.time.LocalDate;
 import de.uni_stuttgart.it_rex.media.domain.enumeration.MIMETYPE;
 
 /**
- * A Media.
+ * A Image.
  */
 @Entity
-@Table(name = "media")
+@Table(name = "image")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Media implements Serializable {
+public class Image implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -28,18 +28,21 @@ public class Media implements Serializable {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "upload_date")
-    private LocalDate uploadDate;
+    @Column(name = "start_date")
+    private LocalDate startDate;
+
+    @Column(name = "end_date")
+    private LocalDate endDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "mime_type")
     private MIMETYPE mimeType;
 
-    @Column(name = "format")
-    private String format;
+    @Column(name = "width")
+    private Integer width;
 
-    @Column(name = "location")
-    private String location;
+    @Column(name = "height")
+    private Integer height;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -54,7 +57,7 @@ public class Media implements Serializable {
         return title;
     }
 
-    public Media title(String title) {
+    public Image title(String title) {
         this.title = title;
         return this;
     }
@@ -63,24 +66,37 @@ public class Media implements Serializable {
         this.title = title;
     }
 
-    public LocalDate getUploadDate() {
-        return uploadDate;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    public Media uploadDate(LocalDate uploadDate) {
-        this.uploadDate = uploadDate;
+    public Image startDate(LocalDate startDate) {
+        this.startDate = startDate;
         return this;
     }
 
-    public void setUploadDate(LocalDate uploadDate) {
-        this.uploadDate = uploadDate;
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public Image endDate(LocalDate endDate) {
+        this.endDate = endDate;
+        return this;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
     public MIMETYPE getMimeType() {
         return mimeType;
     }
 
-    public Media mimeType(MIMETYPE mimeType) {
+    public Image mimeType(MIMETYPE mimeType) {
         this.mimeType = mimeType;
         return this;
     }
@@ -89,30 +105,30 @@ public class Media implements Serializable {
         this.mimeType = mimeType;
     }
 
-    public String getFormat() {
-        return format;
+    public Integer getWidth() {
+        return width;
     }
 
-    public Media format(String format) {
-        this.format = format;
+    public Image width(Integer width) {
+        this.width = width;
         return this;
     }
 
-    public void setFormat(String format) {
-        this.format = format;
+    public void setWidth(Integer width) {
+        this.width = width;
     }
 
-    public String getLocation() {
-        return location;
+    public Integer getHeight() {
+        return height;
     }
 
-    public Media location(String location) {
-        this.location = location;
+    public Image height(Integer height) {
+        this.height = height;
         return this;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setHeight(Integer height) {
+        this.height = height;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
@@ -121,10 +137,10 @@ public class Media implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Media)) {
+        if (!(o instanceof Image)) {
             return false;
         }
-        return id != null && id.equals(((Media) o).id);
+        return id != null && id.equals(((Image) o).id);
     }
 
     @Override
@@ -135,13 +151,14 @@ public class Media implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "Media{" +
+        return "Image{" +
             "id=" + getId() +
             ", title='" + getTitle() + "'" +
-            ", uploadDate='" + getUploadDate() + "'" +
+            ", startDate='" + getStartDate() + "'" +
+            ", endDate='" + getEndDate() + "'" +
             ", mimeType='" + getMimeType() + "'" +
-            ", format='" + getFormat() + "'" +
-            ", location='" + getLocation() + "'" +
+            ", width=" + getWidth() +
+            ", height=" + getHeight() +
             "}";
     }
 }

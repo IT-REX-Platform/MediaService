@@ -177,7 +177,6 @@ public class VideoServiceExtended extends VideoService {
         fileValidatorService.validate(file);
 
         VideoDTO videoDTO = new VideoDTO();
-        videoDTO.setLocation(this.rootLocation.toString());
         videoDTO.setTitle(file.getOriginalFilename());
         videoDTO = super.save(videoDTO);
         applicationEventPublisher.publishEvent(

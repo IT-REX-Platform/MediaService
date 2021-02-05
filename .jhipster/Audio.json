@@ -1,5 +1,5 @@
 {
-  "name": "Video",
+  "name": "Audio",
   "fields": [
     {
       "fieldName": "title",
@@ -19,21 +19,13 @@
       "fieldValues": "AUDIO_MPEG (audio/mpeg),IMAGE_GIF (image/gif),IMAGE_JPEG (image/jpeg),IMAGE_PNG (image/png),IMAGE_SVG (image/svg),VIDEO_MP4 (video/mp4)"
     },
     {
-      "fieldName": "width",
-      "fieldType": "Integer"
-    },
-    {
-      "fieldName": "height",
-      "fieldType": "Integer"
-    },
-    {
       "fieldName": "length",
       "fieldType": "Integer"
     }
   ],
   "relationships": [],
-  "changelogDate": "20210116162217",
-  "entityTableName": "video",
+  "changelogDate": "20210205135545",
+  "entityTableName": "audio",
   "dto": "mapstruct",
   "pagination": "no",
   "service": "serviceClass",

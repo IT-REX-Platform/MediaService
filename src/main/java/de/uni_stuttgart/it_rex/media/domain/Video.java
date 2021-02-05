@@ -28,18 +28,21 @@ public class Video implements Serializable {
     @Column(name = "title")
     private String title;
 
-    @Column(name = "upload_date")
-    private LocalDate uploadDate;
+    @Column(name = "start_date")
+    private LocalDate startDate;
+
+    @Column(name = "end_date")
+    private LocalDate endDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "mime_type")
     private MIMETYPE mimeType;
 
-    @Column(name = "format")
-    private String format;
+    @Column(name = "width")
+    private Integer width;
 
-    @Column(name = "location")
-    private String location;
+    @Column(name = "height")
+    private Integer height;
 
     @Column(name = "length")
     private Integer length;
@@ -66,17 +69,30 @@ public class Video implements Serializable {
         this.title = title;
     }
 
-    public LocalDate getUploadDate() {
-        return uploadDate;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    public Video uploadDate(LocalDate uploadDate) {
-        this.uploadDate = uploadDate;
+    public Video startDate(LocalDate startDate) {
+        this.startDate = startDate;
         return this;
     }
 
-    public void setUploadDate(LocalDate uploadDate) {
-        this.uploadDate = uploadDate;
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public Video endDate(LocalDate endDate) {
+        this.endDate = endDate;
+        return this;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
     public MIMETYPE getMimeType() {
@@ -92,30 +108,30 @@ public class Video implements Serializable {
         this.mimeType = mimeType;
     }
 
-    public String getFormat() {
-        return format;
+    public Integer getWidth() {
+        return width;
     }
 
-    public Video format(String format) {
-        this.format = format;
+    public Video width(Integer width) {
+        this.width = width;
         return this;
     }
 
-    public void setFormat(String format) {
-        this.format = format;
+    public void setWidth(Integer width) {
+        this.width = width;
     }
 
-    public String getLocation() {
-        return location;
+    public Integer getHeight() {
+        return height;
     }
 
-    public Video location(String location) {
-        this.location = location;
+    public Video height(Integer height) {
+        this.height = height;
         return this;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setHeight(Integer height) {
+        this.height = height;
     }
 
     public Integer getLength() {
@@ -154,10 +170,11 @@ public class Video implements Serializable {
         return "Video{" +
             "id=" + getId() +
             ", title='" + getTitle() + "'" +
-            ", uploadDate='" + getUploadDate() + "'" +
+            ", startDate='" + getStartDate() + "'" +
+            ", endDate='" + getEndDate() + "'" +
             ", mimeType='" + getMimeType() + "'" +
-            ", format='" + getFormat() + "'" +
-            ", location='" + getLocation() + "'" +
+            ", width=" + getWidth() +
+            ", height=" + getHeight() +
             ", length=" + getLength() +
             "}";
     }

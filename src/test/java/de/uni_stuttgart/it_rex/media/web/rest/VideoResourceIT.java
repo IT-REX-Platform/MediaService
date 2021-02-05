@@ -40,17 +40,20 @@ public class VideoResourceIT {
     private static final String DEFAULT_TITLE = "AAAAAAAAAA";
     private static final String UPDATED_TITLE = "BBBBBBBBBB";
 
-    private static final LocalDate DEFAULT_UPLOAD_DATE = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_UPLOAD_DATE = LocalDate.now(ZoneId.systemDefault());
+    private static final LocalDate DEFAULT_START_DATE = LocalDate.ofEpochDay(0L);
+    private static final LocalDate UPDATED_START_DATE = LocalDate.now(ZoneId.systemDefault());
 
-    private static final MIMETYPE DEFAULT_MIME_TYPE = MIMETYPE.VIDEO;
-    private static final MIMETYPE UPDATED_MIME_TYPE = MIMETYPE.IMAGE;
+    private static final LocalDate DEFAULT_END_DATE = LocalDate.ofEpochDay(0L);
+    private static final LocalDate UPDATED_END_DATE = LocalDate.now(ZoneId.systemDefault());
 
-    private static final String DEFAULT_FORMAT = "AAAAAAAAAA";
-    private static final String UPDATED_FORMAT = "BBBBBBBBBB";
+    private static final MIMETYPE DEFAULT_MIME_TYPE = MIMETYPE.AUDIO_MPEG;
+    private static final MIMETYPE UPDATED_MIME_TYPE = MIMETYPE.IMAGE_GIF;
 
-    private static final String DEFAULT_LOCATION = "AAAAAAAAAA";
-    private static final String UPDATED_LOCATION = "BBBBBBBBBB";
+    private static final Integer DEFAULT_WIDTH = 1;
+    private static final Integer UPDATED_WIDTH = 2;
+
+    private static final Integer DEFAULT_HEIGHT = 1;
+    private static final Integer UPDATED_HEIGHT = 2;
 
     private static final Integer DEFAULT_LENGTH = 1;
     private static final Integer UPDATED_LENGTH = 2;
@@ -81,10 +84,11 @@ public class VideoResourceIT {
     public static Video createEntity(EntityManager em) {
         Video video = new Video()
             .title(DEFAULT_TITLE)
-            .uploadDate(DEFAULT_UPLOAD_DATE)
+            .startDate(DEFAULT_START_DATE)
+            .endDate(DEFAULT_END_DATE)
             .mimeType(DEFAULT_MIME_TYPE)
-            .format(DEFAULT_FORMAT)
-            .location(DEFAULT_LOCATION)
+            .width(DEFAULT_WIDTH)
+            .height(DEFAULT_HEIGHT)
             .length(DEFAULT_LENGTH);
         return video;
     }
@@ -97,10 +101,11 @@ public class VideoResourceIT {
     public static Video createUpdatedEntity(EntityManager em) {
         Video video = new Video()
             .title(UPDATED_TITLE)
-            .uploadDate(UPDATED_UPLOAD_DATE)
+            .startDate(UPDATED_START_DATE)
+            .endDate(UPDATED_END_DATE)
             .mimeType(UPDATED_MIME_TYPE)
-            .format(UPDATED_FORMAT)
-            .location(UPDATED_LOCATION)
+            .width(UPDATED_WIDTH)
+            .height(UPDATED_HEIGHT)
             .length(UPDATED_LENGTH);
         return video;
     }
@@ -126,10 +131,11 @@ public class VideoResourceIT {
         assertThat(videoList).hasSize(databaseSizeBeforeCreate + 1);
         Video testVideo = videoList.get(videoList.size() - 1);
         assertThat(testVideo.getTitle()).isEqualTo(DEFAULT_TITLE);
-        assertThat(testVideo.getUploadDate()).isEqualTo(DEFAULT_UPLOAD_DATE);
+        assertThat(testVideo.getStartDate()).isEqualTo(DEFAULT_START_DATE);
+        assertThat(testVideo.getEndDate()).isEqualTo(DEFAULT_END_DATE);
         assertThat(testVideo.getMimeType()).isEqualTo(DEFAULT_MIME_TYPE);
-        assertThat(testVideo.getFormat()).isEqualTo(DEFAULT_FORMAT);
-        assertThat(testVideo.getLocation()).isEqualTo(DEFAULT_LOCATION);
+        assertThat(testVideo.getWidth()).isEqualTo(DEFAULT_WIDTH);
+        assertThat(testVideo.getHeight()).isEqualTo(DEFAULT_HEIGHT);
         assertThat(testVideo.getLength()).isEqualTo(DEFAULT_LENGTH);
     }
 
@@ -166,10 +172,11 @@ public class VideoResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(video.getId().intValue())))
             .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)))
-            .andExpect(jsonPath("$.[*].uploadDate").value(hasItem(DEFAULT_UPLOAD_DATE.toString())))
+            .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
+            .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())))
             .andExpect(jsonPath("$.[*].mimeType").value(hasItem(DEFAULT_MIME_TYPE.toString())))
-            .andExpect(jsonPath("$.[*].format").value(hasItem(DEFAULT_FORMAT)))
-            .andExpect(jsonPath("$.[*].location").value(hasItem(DEFAULT_LOCATION)))
+            .andExpect(jsonPath("$.[*].width").value(hasItem(DEFAULT_WIDTH)))
+            .andExpect(jsonPath("$.[*].height").value(hasItem(DEFAULT_HEIGHT)))
             .andExpect(jsonPath("$.[*].length").value(hasItem(DEFAULT_LENGTH)));
     }
     
@@ -185,10 +192,11 @@ public class VideoResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(video.getId().intValue()))
             .andExpect(jsonPath("$.title").value(DEFAULT_TITLE))
-            .andExpect(jsonPath("$.uploadDate").value(DEFAULT_UPLOAD_DATE.toString()))
+            .andExpect(jsonPath("$.startDate").value(DEFAULT_START_DATE.toString()))
+            .andExpect(jsonPath("$.endDate").value(DEFAULT_END_DATE.toString()))
             .andExpect(jsonPath("$.mimeType").value(DEFAULT_MIME_TYPE.toString()))
-            .andExpect(jsonPath("$.format").value(DEFAULT_FORMAT))
-            .andExpect(jsonPath("$.location").value(DEFAULT_LOCATION))
+            .andExpect(jsonPath("$.width").value(DEFAULT_WIDTH))
+            .andExpect(jsonPath("$.height").value(DEFAULT_HEIGHT))
             .andExpect(jsonPath("$.length").value(DEFAULT_LENGTH));
     }
     @Test
@@ -213,10 +221,11 @@ public class VideoResourceIT {
         em.detach(updatedVideo);
         updatedVideo
             .title(UPDATED_TITLE)
-            .uploadDate(UPDATED_UPLOAD_DATE)
+            .startDate(UPDATED_START_DATE)
+            .endDate(UPDATED_END_DATE)
             .mimeType(UPDATED_MIME_TYPE)
-            .format(UPDATED_FORMAT)
-            .location(UPDATED_LOCATION)
+            .width(UPDATED_WIDTH)
+            .height(UPDATED_HEIGHT)
             .length(UPDATED_LENGTH);
         VideoDTO videoDTO = videoMapper.toDto(updatedVideo);
 
@@ -230,10 +239,11 @@ public class VideoResourceIT {
         assertThat(videoList).hasSize(databaseSizeBeforeUpdate);
         Video testVideo = videoList.get(videoList.size() - 1);
         assertThat(testVideo.getTitle()).isEqualTo(UPDATED_TITLE);
-        assertThat(testVideo.getUploadDate()).isEqualTo(UPDATED_UPLOAD_DATE);
+        assertThat(testVideo.getStartDate()).isEqualTo(UPDATED_START_DATE);
+        assertThat(testVideo.getEndDate()).isEqualTo(UPDATED_END_DATE);
         assertThat(testVideo.getMimeType()).isEqualTo(UPDATED_MIME_TYPE);
-        assertThat(testVideo.getFormat()).isEqualTo(UPDATED_FORMAT);
-        assertThat(testVideo.getLocation()).isEqualTo(UPDATED_LOCATION);
+        assertThat(testVideo.getWidth()).isEqualTo(UPDATED_WIDTH);
+        assertThat(testVideo.getHeight()).isEqualTo(UPDATED_HEIGHT);
         assertThat(testVideo.getLength()).isEqualTo(UPDATED_LENGTH);
     }
 
