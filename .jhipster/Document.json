@@ -1,0 +1,39 @@
+{
+  "name": "Document",
+  "fields": [
+    {
+      "fieldName": "uuid",
+      "fieldType": "UUID"
+    },
+    {
+      "fieldName": "title",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "startDate",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "endDate",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "mimeType",
+      "fieldType": "MIMETYPE",
+      "fieldValues": "AUDIO_MPEG (audio/mpeg),IMAGE_GIF (image/gif),IMAGE_JPEG (image/jpeg),IMAGE_PNG (image/png),IMAGE_SVG (image/svg),VIDEO_MP4 (video/mp4)"
+    }
+  ],
+  "relationships": [],
+  "changelogDate": "20210211150527",
+  "entityTableName": "document",
+  "dto": "mapstruct",
+  "pagination": "no",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": ["Gateway", "MediaService"],
+  "microserviceName": "MediaService"
+}
