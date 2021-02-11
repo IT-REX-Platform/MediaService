@@ -44,16 +44,14 @@ public class VideoResourceExtended {
    */
   private static final Logger LOGGER =
       LoggerFactory.getLogger(VideoResourceExtended.class);
-
-  /**
-   * The application name.
-   */
-  private String applicationName;
-
   /**
    * Service for storing videos.
    */
   private final VideoServiceExtended videoServiceExtended;
+  /**
+   * The application name.
+   */
+  private String applicationName;
 
   /**
    * Constructor.
@@ -196,8 +194,8 @@ public class VideoResourceExtended {
    * @param newApplicationName the application name.
    */
   @Autowired
-  public void setApplicationName(@Value("${jhipster.clientApp.name}")
-                                     final String newApplicationName) {
+  public void setApplicationName(
+      @Value("${jhipster.clientApp.name}") final String newApplicationName) {
     this.applicationName = newApplicationName;
   }
 }

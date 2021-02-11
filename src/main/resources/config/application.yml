@@ -137,6 +137,8 @@ spring:
       naming:
         physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
         implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+  liquibase:
+    change-log: classpath:resources/config/master.xml
   messages:
     basename: i18n/messages
   main:
