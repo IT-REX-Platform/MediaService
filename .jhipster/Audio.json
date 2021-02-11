@@ -2,6 +2,10 @@
   "name": "Audio",
   "fields": [
     {
+      "fieldName": "uuid",
+      "fieldType": "UUID"
+    },
+    {
       "fieldName": "title",
       "fieldType": "String"
     },
@@ -34,9 +38,6 @@
   "readOnly": false,
   "embedded": false,
   "clientRootFolder": "",
-  "applications": [
-    "Gateway",
-    "MediaService"
-  ],
+  "applications": ["Gateway", "MediaService"],
   "microserviceName": "MediaService"
 }

@@ -7,6 +7,7 @@ import javax.persistence.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.UUID;
 
 import de.uni_stuttgart.it_rex.media.domain.enumeration.MIMETYPE;
 
@@ -24,6 +25,9 @@ public class Audio implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
+
+    @Column(name = "uuid")
+    private UUID uuid;
 
     @Column(name = "title")
     private String title;
@@ -48,6 +52,19 @@ public class Audio implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public Audio uuid(UUID uuid) {
+        this.uuid = uuid;
+        return this;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
     public String getTitle() {
@@ -137,6 +154,7 @@ public class Audio implements Serializable {
     public String toString() {
         return "Audio{" +
             "id=" + getId() +
+            ", uuid='" + getUuid() + "'" +
             ", title='" + getTitle() + "'" +
             ", startDate='" + getStartDate() + "'" +
             ", endDate='" + getEndDate() + "'" +

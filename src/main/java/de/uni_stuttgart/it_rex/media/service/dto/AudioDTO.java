@@ -2,6 +2,7 @@ package de.uni_stuttgart.it_rex.media.service.dto;
 
 import java.time.LocalDate;
 import java.io.Serializable;
+import java.util.UUID;
 import de.uni_stuttgart.it_rex.media.domain.enumeration.MIMETYPE;
 
 /**
@@ -10,6 +11,8 @@ import de.uni_stuttgart.it_rex.media.domain.enumeration.MIMETYPE;
 public class AudioDTO implements Serializable {
     
     private Long id;
+
+    private UUID uuid;
 
     private String title;
 
@@ -28,6 +31,14 @@ public class AudioDTO implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 
     public String getTitle() {
@@ -92,6 +103,7 @@ public class AudioDTO implements Serializable {
     public String toString() {
         return "AudioDTO{" +
             "id=" + getId() +
+            ", uuid='" + getUuid() + "'" +
             ", title='" + getTitle() + "'" +
             ", startDate='" + getStartDate() + "'" +
             ", endDate='" + getEndDate() + "'" +

@@ -21,6 +21,7 @@ import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -36,6 +37,9 @@ import de.uni_stuttgart.it_rex.media.domain.enumeration.MIMETYPE;
 @AutoConfigureMockMvc
 @WithMockUser
 public class VideoResourceIT {
+
+    private static final UUID DEFAULT_UUID = UUID.randomUUID();
+    private static final UUID UPDATED_UUID = UUID.randomUUID();
 
     private static final String DEFAULT_TITLE = "AAAAAAAAAA";
     private static final String UPDATED_TITLE = "BBBBBBBBBB";
@@ -83,6 +87,7 @@ public class VideoResourceIT {
      */
     public static Video createEntity(EntityManager em) {
         Video video = new Video()
+            .uuid(DEFAULT_UUID)
             .title(DEFAULT_TITLE)
             .startDate(DEFAULT_START_DATE)
             .endDate(DEFAULT_END_DATE)
@@ -100,6 +105,7 @@ public class VideoResourceIT {
      */
     public static Video createUpdatedEntity(EntityManager em) {
         Video video = new Video()
+            .uuid(UPDATED_UUID)
             .title(UPDATED_TITLE)
             .startDate(UPDATED_START_DATE)
             .endDate(UPDATED_END_DATE)
@@ -130,6 +136,7 @@ public class VideoResourceIT {
         List<Video> videoList = videoRepository.findAll();
         assertThat(videoList).hasSize(databaseSizeBeforeCreate + 1);
         Video testVideo = videoList.get(videoList.size() - 1);
+        assertThat(testVideo.getUuid()).isEqualTo(DEFAULT_UUID);
         assertThat(testVideo.getTitle()).isEqualTo(DEFAULT_TITLE);
         assertThat(testVideo.getStartDate()).isEqualTo(DEFAULT_START_DATE);
         assertThat(testVideo.getEndDate()).isEqualTo(DEFAULT_END_DATE);
@@ -171,6 +178,7 @@ public class VideoResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(video.getId().intValue())))
+            .andExpect(jsonPath("$.[*].uuid").value(hasItem(DEFAULT_UUID.toString())))
             .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)))
             .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
             .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())))
@@ -191,6 +199,7 @@ public class VideoResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(video.getId().intValue()))
+            .andExpect(jsonPath("$.uuid").value(DEFAULT_UUID.toString()))
             .andExpect(jsonPath("$.title").value(DEFAULT_TITLE))
             .andExpect(jsonPath("$.startDate").value(DEFAULT_START_DATE.toString()))
             .andExpect(jsonPath("$.endDate").value(DEFAULT_END_DATE.toString()))
@@ -220,6 +229,7 @@ public class VideoResourceIT {
         // Disconnect from session so that the updates on updatedVideo are not directly saved in db
         em.detach(updatedVideo);
         updatedVideo
+            .uuid(UPDATED_UUID)
             .title(UPDATED_TITLE)
             .startDate(UPDATED_START_DATE)
             .endDate(UPDATED_END_DATE)
@@ -238,6 +248,7 @@ public class VideoResourceIT {
         List<Video> videoList = videoRepository.findAll();
         assertThat(videoList).hasSize(databaseSizeBeforeUpdate);
         Video testVideo = videoList.get(videoList.size() - 1);
+        assertThat(testVideo.getUuid()).isEqualTo(UPDATED_UUID);
         assertThat(testVideo.getTitle()).isEqualTo(UPDATED_TITLE);
         assertThat(testVideo.getStartDate()).isEqualTo(UPDATED_START_DATE);
         assertThat(testVideo.getEndDate()).isEqualTo(UPDATED_END_DATE);

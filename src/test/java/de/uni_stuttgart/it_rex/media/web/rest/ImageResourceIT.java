@@ -21,6 +21,7 @@ import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -36,6 +37,9 @@ import de.uni_stuttgart.it_rex.media.domain.enumeration.MIMETYPE;
 @AutoConfigureMockMvc
 @WithMockUser
 public class ImageResourceIT {
+
+    private static final UUID DEFAULT_UUID = UUID.randomUUID();
+    private static final UUID UPDATED_UUID = UUID.randomUUID();
 
     private static final String DEFAULT_TITLE = "AAAAAAAAAA";
     private static final String UPDATED_TITLE = "BBBBBBBBBB";
@@ -80,6 +84,7 @@ public class ImageResourceIT {
      */
     public static Image createEntity(EntityManager em) {
         Image image = new Image()
+            .uuid(DEFAULT_UUID)
             .title(DEFAULT_TITLE)
             .startDate(DEFAULT_START_DATE)
             .endDate(DEFAULT_END_DATE)
@@ -96,6 +101,7 @@ public class ImageResourceIT {
      */
     public static Image createUpdatedEntity(EntityManager em) {
         Image image = new Image()
+            .uuid(UPDATED_UUID)
             .title(UPDATED_TITLE)
             .startDate(UPDATED_START_DATE)
             .endDate(UPDATED_END_DATE)
@@ -125,6 +131,7 @@ public class ImageResourceIT {
         List<Image> imageList = imageRepository.findAll();
         assertThat(imageList).hasSize(databaseSizeBeforeCreate + 1);
         Image testImage = imageList.get(imageList.size() - 1);
+        assertThat(testImage.getUuid()).isEqualTo(DEFAULT_UUID);
         assertThat(testImage.getTitle()).isEqualTo(DEFAULT_TITLE);
         assertThat(testImage.getStartDate()).isEqualTo(DEFAULT_START_DATE);
         assertThat(testImage.getEndDate()).isEqualTo(DEFAULT_END_DATE);
@@ -165,6 +172,7 @@ public class ImageResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(image.getId().intValue())))
+            .andExpect(jsonPath("$.[*].uuid").value(hasItem(DEFAULT_UUID.toString())))
             .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)))
             .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
             .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())))
@@ -184,6 +192,7 @@ public class ImageResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(image.getId().intValue()))
+            .andExpect(jsonPath("$.uuid").value(DEFAULT_UUID.toString()))
             .andExpect(jsonPath("$.title").value(DEFAULT_TITLE))
             .andExpect(jsonPath("$.startDate").value(DEFAULT_START_DATE.toString()))
             .andExpect(jsonPath("$.endDate").value(DEFAULT_END_DATE.toString()))
@@ -212,6 +221,7 @@ public class ImageResourceIT {
         // Disconnect from session so that the updates on updatedImage are not directly saved in db
         em.detach(updatedImage);
         updatedImage
+            .uuid(UPDATED_UUID)
             .title(UPDATED_TITLE)
             .startDate(UPDATED_START_DATE)
             .endDate(UPDATED_END_DATE)
@@ -229,6 +239,7 @@ public class ImageResourceIT {
         List<Image> imageList = imageRepository.findAll();
         assertThat(imageList).hasSize(databaseSizeBeforeUpdate);
         Image testImage = imageList.get(imageList.size() - 1);
+        assertThat(testImage.getUuid()).isEqualTo(UPDATED_UUID);
         assertThat(testImage.getTitle()).isEqualTo(UPDATED_TITLE);
         assertThat(testImage.getStartDate()).isEqualTo(UPDATED_START_DATE);
         assertThat(testImage.getEndDate()).isEqualTo(UPDATED_END_DATE);

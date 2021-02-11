@@ -15,6 +15,9 @@
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
+            <column name="uuid" type="${uuidType}">
+                <constraints nullable="true" />
+            </column>
             <column name="title" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
@@ -59,6 +62,7 @@
                   separator=";"
                   tableName="video">
             <column name="id" type="numeric"/>
+            <column name="uuid" type="${uuidType}"/>
             <column name="title" type="string"/>
             <column name="start_date" type="date"/>
             <column name="end_date" type="date"/>

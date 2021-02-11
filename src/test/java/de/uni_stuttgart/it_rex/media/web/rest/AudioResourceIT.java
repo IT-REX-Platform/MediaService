@@ -21,6 +21,7 @@ import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -36,6 +37,9 @@ import de.uni_stuttgart.it_rex.media.domain.enumeration.MIMETYPE;
 @AutoConfigureMockMvc
 @WithMockUser
 public class AudioResourceIT {
+
+    private static final UUID DEFAULT_UUID = UUID.randomUUID();
+    private static final UUID UPDATED_UUID = UUID.randomUUID();
 
     private static final String DEFAULT_TITLE = "AAAAAAAAAA";
     private static final String UPDATED_TITLE = "BBBBBBBBBB";
@@ -77,6 +81,7 @@ public class AudioResourceIT {
      */
     public static Audio createEntity(EntityManager em) {
         Audio audio = new Audio()
+            .uuid(DEFAULT_UUID)
             .title(DEFAULT_TITLE)
             .startDate(DEFAULT_START_DATE)
             .endDate(DEFAULT_END_DATE)
@@ -92,6 +97,7 @@ public class AudioResourceIT {
      */
     public static Audio createUpdatedEntity(EntityManager em) {
         Audio audio = new Audio()
+            .uuid(UPDATED_UUID)
             .title(UPDATED_TITLE)
             .startDate(UPDATED_START_DATE)
             .endDate(UPDATED_END_DATE)
@@ -120,6 +126,7 @@ public class AudioResourceIT {
         List<Audio> audioList = audioRepository.findAll();
         assertThat(audioList).hasSize(databaseSizeBeforeCreate + 1);
         Audio testAudio = audioList.get(audioList.size() - 1);
+        assertThat(testAudio.getUuid()).isEqualTo(DEFAULT_UUID);
         assertThat(testAudio.getTitle()).isEqualTo(DEFAULT_TITLE);
         assertThat(testAudio.getStartDate()).isEqualTo(DEFAULT_START_DATE);
         assertThat(testAudio.getEndDate()).isEqualTo(DEFAULT_END_DATE);
@@ -159,6 +166,7 @@ public class AudioResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(audio.getId().intValue())))
+            .andExpect(jsonPath("$.[*].uuid").value(hasItem(DEFAULT_UUID.toString())))
             .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)))
             .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
             .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())))
@@ -177,6 +185,7 @@ public class AudioResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(audio.getId().intValue()))
+            .andExpect(jsonPath("$.uuid").value(DEFAULT_UUID.toString()))
             .andExpect(jsonPath("$.title").value(DEFAULT_TITLE))
             .andExpect(jsonPath("$.startDate").value(DEFAULT_START_DATE.toString()))
             .andExpect(jsonPath("$.endDate").value(DEFAULT_END_DATE.toString()))
@@ -204,6 +213,7 @@ public class AudioResourceIT {
         // Disconnect from session so that the updates on updatedAudio are not directly saved in db
         em.detach(updatedAudio);
         updatedAudio
+            .uuid(UPDATED_UUID)
             .title(UPDATED_TITLE)
             .startDate(UPDATED_START_DATE)
             .endDate(UPDATED_END_DATE)
@@ -220,6 +230,7 @@ public class AudioResourceIT {
         List<Audio> audioList = audioRepository.findAll();
         assertThat(audioList).hasSize(databaseSizeBeforeUpdate);
         Audio testAudio = audioList.get(audioList.size() - 1);
+        assertThat(testAudio.getUuid()).isEqualTo(UPDATED_UUID);
         assertThat(testAudio.getTitle()).isEqualTo(UPDATED_TITLE);
         assertThat(testAudio.getStartDate()).isEqualTo(UPDATED_START_DATE);
         assertThat(testAudio.getEndDate()).isEqualTo(UPDATED_END_DATE);
