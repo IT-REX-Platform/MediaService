@@ -1,6 +1,7 @@
-package de.uni_stuttgart.it_rex.media.written.video;
+package de.uni_stuttgart.it_rex.media.web.rest.written;
 
-import de.uni_stuttgart.it_rex.media.service.dto.VideoDTO;
+import de.uni_stuttgart.it_rex.media.domain.written.Video;
+import de.uni_stuttgart.it_rex.media.service.written.VideoService;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
@@ -32,11 +33,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.UUID;
 
 import static org.hibernate.id.IdentifierGenerator.ENTITY_NAME;
 
 @RestController
-@RequestMapping("/api/extended")
+@RequestMapping("/api")
 public class VideoResourceExtended {
 
   /**
@@ -47,7 +50,7 @@ public class VideoResourceExtended {
   /**
    * Service for storing videos.
    */
-  private final VideoServiceExtended videoServiceExtended;
+  private final VideoService videoService;
   /**
    * The application name.
    */
@@ -59,8 +62,8 @@ public class VideoResourceExtended {
    * @param vss VideoStorageService.
    */
   @Autowired
-  public VideoResourceExtended(final VideoServiceExtended vss) {
-    this.videoServiceExtended = vss;
+  public VideoResourceExtended(final VideoService vss) {
+    this.videoService = vss;
   }
 
   /**
@@ -73,7 +76,7 @@ public class VideoResourceExtended {
    * @return the filename and id
    */
   @PostMapping("/videos")
-  public ResponseEntity<VideoDTO> uploadVideo(
+  public ResponseEntity<Video> uploadVideo(
       @RequestParam("file") final MultipartFile file,
       final RedirectAttributes redirectAttributes)
       throws URISyntaxException,
@@ -87,9 +90,9 @@ public class VideoResourceExtended {
       InsufficientDataException,
       ErrorResponseException {
 
-    VideoDTO result = videoServiceExtended.store(file);
+    Video result = videoService.store(file);
     String logMessage =
-        String.format("A video with the id %d was successfully created!",
+        String.format("A video with the id %s was successfully created!",
             result.getId());
     LOGGER.info(logMessage);
     redirectAttributes.addFlashAttribute("message",
@@ -109,8 +112,8 @@ public class VideoResourceExtended {
    * @return the filename and id
    */
   @DeleteMapping("/videos/{id:.+}")
-  public ResponseEntity<VideoDTO> deleteVideo(
-      @PathVariable final String id,
+  public ResponseEntity<Video> deleteVideo(
+      @PathVariable final UUID id,
       final RedirectAttributes redirectAttributes)
       throws
       IOException,
@@ -122,7 +125,7 @@ public class VideoResourceExtended {
       XmlParserException,
       InsufficientDataException,
       ErrorResponseException {
-    videoServiceExtended.deleteFile(Long.valueOf(id));
+    videoService.deleteFile(id);
 
     redirectAttributes.addFlashAttribute(
         "message", "You successfully deleted " + id + "!");
@@ -130,7 +133,18 @@ public class VideoResourceExtended {
     return ResponseEntity.noContent().headers(
         HeaderUtil.createEntityDeletionAlert(
             this.getApplicationName(),
-            true, ENTITY_NAME, id)).build();
+            true, ENTITY_NAME, id.toString())).build();
+  }
+
+  /**
+   * {@code GET  /videos} : get all the videos.
+   *
+   * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of videos in body.
+   */
+  @GetMapping("/videos")
+  public List<Video> getAllVideos() {
+    LOGGER.debug("REST request to get all Videos");
+    return videoService.findAll();
   }
 
   /**
@@ -142,12 +156,12 @@ public class VideoResourceExtended {
    */
   @GetMapping("/videos/{id:.+}")
   public ResponseEntity<Resource> downloadVideo(
-      @PathVariable final String id,
+      @PathVariable final UUID id,
       @RequestHeader final HttpHeaders headers) {
 
     HttpHeaders responseHeaders = new HttpHeaders();
 
-    long chosenFileLength = videoServiceExtended.getLength(id);
+    long chosenFileLength = videoService.getLength(id);
 
     if (chosenFileLength == 0L) {
       return ResponseEntity.notFound().headers(responseHeaders).build();
@@ -165,7 +179,7 @@ public class VideoResourceExtended {
     long end = range.getRangeEnd(chosenFileLength);
     long length = end - start + 1;
 
-    Resource file = videoServiceExtended
+    Resource file = videoService
         .loadAsResource(id, start, length);
 
     if (file == null) {

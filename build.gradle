@@ -33,8 +33,8 @@ version = "0.0.1-SNAPSHOT"
 
 description = ""
 
-sourceCompatibility=1.8
-targetCompatibility=1.8
+sourceCompatibility = 11
+targetCompatibility = 11
 assert System.properties["java.specification.version"] == "1.8" || "11" || "12" || "13" || "14"
 
 apply from: "gradle/docker.gradle"
@@ -266,6 +266,7 @@ dependencies {
     testImplementation "org.testcontainers:postgresql"
     testImplementation "org.testcontainers:testcontainers:1.15.1"
     testImplementation "io.github.hakky54:logcaptor:2.3.2"
+    testImplementation 'org.mockito:mockito-inline:2.13.0'
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation ("org.springframework.boot:spring-boot-starter-web") {
         exclude module: "spring-boot-starter-tomcat"

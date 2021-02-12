@@ -308,10 +308,12 @@ public class VideoService {
     LOGGER.info(uploadSuccessLog);
   }
 
+  @Transactional(readOnly = true)
   public List<Video> findAll() {
     return videoRepository.findAll();
   }
 
+  @Transactional(readOnly = true)
   public List<Video> findAll(Iterable<UUID> ids) {
     return videoRepository.findAllById(ids);
   }
@@ -355,7 +357,7 @@ public class VideoService {
    * @return *length* bytes of requested file starting from *offset* if file
    * exists, null otherwise
    */
-  public Resource loadAsResource(final String filename, final long offset,
+  public Resource loadAsResource(final UUID filename, final long offset,
                                  final long length) {
 
     MinioClient minioClient = buildClient();
@@ -366,14 +368,14 @@ public class VideoService {
       InputStream stream = minioClient.getObject(
           GetObjectArgs.builder()
               .bucket(rootLocation.toString())
-              .object(filename)
+              .object(filename.toString())
               .offset(offset)
               .length(length)
               .build());
 
       // Read data from stream
       InputStreamResource
-          resource = new InputStreamResource(stream, filename);
+          resource = new InputStreamResource(stream, filename.toString());
 
       if (resource.exists() || resource.isReadable()) {
         return resource;
