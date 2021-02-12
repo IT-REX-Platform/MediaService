@@ -2,11 +2,13 @@ package de.uni_stuttgart.it_rex.media.written.events;
 
 import org.springframework.context.ApplicationEvent;
 
+import java.util.UUID;
+
 public final class FileCreatedEvent extends ApplicationEvent {
   /**
    * Video id.
    */
-  private final Long id;
+  private final UUID id;
 
   /**
    * Constructor.
@@ -14,7 +16,7 @@ public final class FileCreatedEvent extends ApplicationEvent {
    * @param source  the object that emitted the event.
    * @param videoId the video id.
    */
-  public FileCreatedEvent(final Object source, final Long videoId) {
+  public FileCreatedEvent(final Object source, final UUID videoId) {
     super(source);
     this.id = videoId;
   }
@@ -24,7 +26,7 @@ public final class FileCreatedEvent extends ApplicationEvent {
    *
    * @return the video id.
    */
-  public Long getId() {
+  public UUID getId() {
     return id;
   }
 }

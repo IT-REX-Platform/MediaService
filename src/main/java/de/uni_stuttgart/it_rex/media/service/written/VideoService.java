@@ -40,6 +40,7 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -162,7 +163,8 @@ public class VideoService {
    */
   private Video save(final Video video) {
     LOGGER.debug("Request to save Video : {}", video);
-    return videoRepository.save(video);
+    Video savedVideo = videoRepository.save(video);
+    return savedVideo;
   }
 
   /**
@@ -304,6 +306,14 @@ public class VideoService {
         .format("The file with the id %s was successfully removed from %s.",
             id, rootLocation.toString());
     LOGGER.info(uploadSuccessLog);
+  }
+
+  public List<Video> findAll() {
+    return videoRepository.findAll();
+  }
+
+  public List<Video> findAll(Iterable<UUID> ids) {
+    return videoRepository.findAllById(ids);
   }
 
   /**
