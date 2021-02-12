@@ -24,82 +24,183 @@ import java.util.UUID;
 )
 public class Content implements Serializable {
 
+  /**
+   * Identifier.
+   */
   @Id
   @GeneratedValue
   private UUID id;
 
+  /**
+   * Title of the Content Item.
+   */
   @Column(name = "title")
   private String title;
 
+  /**
+   * Start date of the Content item.
+   */
   @Column(name = "start_date")
   private LocalDate startDate;
 
+  /**
+   * End date of the Content item.
+   */
   @Column(name = "end_date")
   private LocalDate endDate;
 
+  /**
+   * Id of the course this item belongs to.
+   */
   @Column(name = "course_id")
   private Long courseId;
 
+  /**
+   * Id of the chapter this item belongs to.
+   */
   @Column(name = "chapter_id")
   private Long chapterId;
 
+  /**
+   * Id of the uploader of this Content item.
+   */
   @Column(name = "uploader_id")
   private Long uploaderId;
 
+  /**
+   * Getter.
+   *
+   * @return the id.
+   */
   public UUID getId() {
     return id;
   }
 
+  /**
+   * Setter. Necessary for tests. DON't use this.
+   *
+   * @param newId
+   */
+  public void setId(final UUID newId) {
+    this.id = newId;
+  }
+
+  /**
+   * Getter.
+   *
+   * @return the title.
+   */
   public String getTitle() {
     return title;
   }
 
-  public void setTitle(String title) {
-    this.title = title;
+  /**
+   * Setter.
+   *
+   * @param newTitle the title.
+   */
+  public void setTitle(final String newTitle) {
+    this.title = newTitle;
   }
 
+  /**
+   * Getter.
+   *
+   * @return the start date.
+   */
   public LocalDate getStartDate() {
     return startDate;
   }
 
-  public void setStartDate(LocalDate startDate) {
-    this.startDate = startDate;
+  /**
+   * Setter.
+   *
+   * @param newStartDate the start date.
+   */
+  public void setStartDate(final LocalDate newStartDate) {
+    this.startDate = newStartDate;
   }
 
+  /**
+   * Getter.
+   *
+   * @return the end date.
+   */
   public LocalDate getEndDate() {
     return endDate;
   }
 
-  public void setEndDate(LocalDate endDate) {
-    this.endDate = endDate;
+  /**
+   * Setter.
+   *
+   * @param newEndDate the end date.
+   */
+  public void setEndDate(final LocalDate newEndDate) {
+    this.endDate = newEndDate;
   }
 
+  /**
+   * Getter.
+   *
+   * @return the course id.
+   */
   public Long getCourseId() {
     return courseId;
   }
 
-  public void setCourseId(Long courseId) {
-    this.courseId = courseId;
+  /**
+   * Setter.
+   *
+   * @param newCourseId the course id.
+   */
+  public void setCourseId(final Long newCourseId) {
+    this.courseId = newCourseId;
   }
 
+  /**
+   * Getter.
+   *
+   * @return the chapter id.
+   */
   public Long getChapterId() {
     return chapterId;
   }
 
-  public void setChapterId(Long chapterId) {
-    this.chapterId = chapterId;
+  /**
+   * Setter.
+   *
+   * @param newChapterId the chapter id.
+   */
+  public void setChapterId(final Long newChapterId) {
+    this.chapterId = newChapterId;
   }
 
+  /**
+   * Getter.
+   *
+   * @return the uploader id
+   */
   public Long getUploaderId() {
     return uploaderId;
   }
 
-  public void setUploaderId(Long uploaderId) {
-    this.uploaderId = uploaderId;
+  /**
+   * Setter.
+   *
+   * @param newUploaderId the uploader id
+   */
+  public void setUploaderId(final Long newUploaderId) {
+    this.uploaderId = newUploaderId;
   }
 
+  /**
+   * Equals method.
+   *
+   * @param o the other object.
+   * @return if they are equal.
+   */
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(final Object o) {
     if (this == o) {
       return true;
     }
@@ -117,21 +218,37 @@ public class Content implements Serializable {
         && Objects.equals(getUploaderId(), content.getUploaderId());
   }
 
+  /**
+   * Hash code.
+   *
+   * @return the hash code.
+   */
   @Override
   public int hashCode() {
-    return Objects.hash(getId(), getTitle(), getStartDate(), getEndDate(), getCourseId(), getChapterId(), getUploaderId());
+    return Objects.hash(getId(),
+        getTitle(),
+        getStartDate(),
+        getEndDate(),
+        getCourseId(),
+        getChapterId(),
+        getUploaderId());
   }
 
+  /**
+   * To string method.
+   *
+   * @return this object as a string.
+   */
   @Override
   public String toString() {
-    return "Content{" +
-        "id=" + id +
-        ", title='" + title + '\'' +
-        ", startDate=" + startDate +
-        ", endDate=" + endDate +
-        ", courseId=" + courseId +
-        ", chapterId=" + chapterId +
-        ", uploaderId=" + uploaderId +
-        '}';
+    return "Content{"
+        + "id=" + id
+        + ", title='" + title + '\''
+        + ", startDate=" + startDate
+        + ", endDate=" + endDate
+        + ", courseId=" + courseId
+        + ", chapterId=" + chapterId
+        + ", uploaderId=" + uploaderId
+        + '}';
   }
 }

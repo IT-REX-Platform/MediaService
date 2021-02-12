@@ -13,63 +13,131 @@ import java.util.Objects;
 @Entity
 @Table(name = "content")
 @DiscriminatorValue("1")
-public class Video extends Media implements Serializable {
+public final class Video extends Media implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Length in seconds.
+     */
     @Column(name = "length")
     private Integer length;
 
+    /**
+     * Width in pixels.
+     */
     @Column(name = "width")
     private Integer width;
 
+    /**
+     * Height in pixels.
+     */
     @Column(name = "height")
     private Integer height;
 
+    /**
+     * Getter.
+     *
+     * @return the length.
+     */
     public Integer getLength() {
         return length;
     }
 
-    public void setLength(Integer length) {
-        this.length = length;
+    /**
+     * Setter.
+     *
+     * @param newLength the length.
+     */
+    public void setLength(final Integer newLength) {
+        this.length = newLength;
     }
 
+    /**
+     * Getter.
+     *
+     * @return the width.
+     */
     public Integer getWidth() {
         return width;
     }
 
-    public void setWidth(Integer width) {
-        this.width = width;
+    /**
+     * Setter.
+     *
+     * @param newWidth the width.
+     */
+    public void setWidth(final Integer newWidth) {
+        this.width = newWidth;
     }
 
+    /**
+     * Getter.
+     *
+     * @return the height.
+     */
     public Integer getHeight() {
         return height;
     }
 
-    public void setHeight(Integer height) {
-        this.height = height;
+    /**
+     * Setter.
+     *
+     * @param newHeight the height.
+     */
+    public void setHeight(final Integer newHeight) {
+        this.height = newHeight;
     }
 
+    /**
+     * Equals method.
+     *
+     * @param o the other object.
+     * @return if they are equal.
+     */
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Video)) return false;
-        if (!super.equals(o)) return false;
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Video)) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         Video video = (Video) o;
-        return Objects.equals(getLength(), video.getLength()) && Objects.equals(getWidth(), video.getWidth()) && Objects.equals(getHeight(), video.getHeight());
+        return Objects.equals(getLength(),
+            video.getLength()) && Objects.equals(getWidth(),
+            video.getWidth()) && Objects.equals(getHeight(),
+            video.getHeight());
     }
 
+    /**
+     * Hash code.
+     *
+     * @return the hash code.
+     */
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getLength(), getWidth(), getHeight());
+        return Objects.hash(
+            super.hashCode(),
+            getLength(),
+            getWidth(),
+            getHeight());
     }
 
+    /**
+     * To string method.
+     *
+     * @return this object as a string.
+     */
     @Override
     public String toString() {
-        return "Video{" +
-            "length=" + length +
-            ", width=" + width +
-            ", height=" + height +
-            '}';
+        return "Video{"
+            + "length=" + length
+            + ", width=" + width
+            + ", height=" + height
+            + '}';
     }
 }

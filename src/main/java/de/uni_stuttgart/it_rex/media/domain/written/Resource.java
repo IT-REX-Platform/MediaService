@@ -13,6 +13,9 @@ import java.util.Objects;
 @Table(name = "content")
 public class Resource extends Content {
 
+  /**
+   * Mimetype of this Resource.
+   */
   @Enumerated(EnumType.STRING)
   @Column(name = "mime_type")
   private MIMETYPE mimeType;
@@ -25,6 +28,12 @@ public class Resource extends Content {
     this.mimeType = mimeType;
   }
 
+  /**
+   * Equals method.
+   *
+   * @param o the other object.
+   * @return if they are equal.
+   */
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -38,8 +47,24 @@ public class Resource extends Content {
     return getMimeType() == resource.getMimeType();
   }
 
+  /**
+   * Hash code.
+   *
+   * @return the hash code.
+   */
   @Override
   public int hashCode() {
     return Objects.hash(super.hashCode(), getMimeType());
+  }
+
+
+  /**
+   * To string method.
+   *
+   * @return this object as a string.
+   */
+  @Override
+  public String toString() {
+    return "Resource{}";
   }
 }
