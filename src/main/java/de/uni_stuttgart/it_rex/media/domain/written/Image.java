@@ -20,13 +20,13 @@ public final class Image extends Media implements Serializable {
      * Width in pixels.
      */
     @Column(name = "width")
-    private Integer width;
+    private Integer imageWidth;
 
     /**
      * Height in pixels.
      */
     @Column(name = "height")
-    private Integer height;
+    private Integer imageHeight;
 
     /**
      * Getter.
@@ -34,7 +34,7 @@ public final class Image extends Media implements Serializable {
      * @return the width.
      */
     public Integer getWidth() {
-        return width;
+        return imageWidth;
     }
 
     /**
@@ -43,7 +43,7 @@ public final class Image extends Media implements Serializable {
      * @param newWidth the width.
      */
     public void setWidth(final Integer newWidth) {
-        this.width = newWidth;
+        this.imageWidth = newWidth;
     }
 
     /**
@@ -52,7 +52,7 @@ public final class Image extends Media implements Serializable {
      * @return the height.
      */
     public Integer getHeight() {
-        return height;
+        return imageHeight;
     }
 
     /**
@@ -61,7 +61,7 @@ public final class Image extends Media implements Serializable {
      * @param newHeight the height.
      */
     public void setHeight(final Integer newHeight) {
-        this.height = newHeight;
+        this.imageHeight = newHeight;
     }
 
     /**
@@ -106,8 +106,8 @@ public final class Image extends Media implements Serializable {
     @Override
     public String toString() {
         return "Image{"
-            + "width=" + width
-            + ", height=" + height
+            + "width=" + imageWidth
+            + ", height=" + imageHeight
             + '}';
     }
 }

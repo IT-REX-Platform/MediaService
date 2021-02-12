@@ -1,4 +1,4 @@
-package de.uni_stuttgart.it_rex.media.domain.enumeration;
+package de.uni_stuttgart.it_rex.media.domain.written.enumeration;
 
 /**
  * The MIMETYPE enumeration.

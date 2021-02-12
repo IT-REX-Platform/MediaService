@@ -40,13 +40,13 @@ import static org.hibernate.id.IdentifierGenerator.ENTITY_NAME;
 
 @RestController
 @RequestMapping("/api")
-public class VideoResourceExtended {
+public class VideoResource {
 
   /**
    * Logger.
    */
   private static final Logger LOGGER =
-      LoggerFactory.getLogger(VideoResourceExtended.class);
+      LoggerFactory.getLogger(VideoResource.class);
   /**
    * Service for storing videos.
    */
@@ -62,7 +62,7 @@ public class VideoResourceExtended {
    * @param vss VideoStorageService.
    */
   @Autowired
-  public VideoResourceExtended(final VideoService vss) {
+  public VideoResource(final VideoService vss) {
     this.videoService = vss;
   }
 
@@ -139,7 +139,8 @@ public class VideoResourceExtended {
   /**
    * {@code GET  /videos} : get all the videos.
    *
-   * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of videos in body.
+   * @return the {@link ResponseEntity} with
+   * status {@code 200 (OK)} and the list of videos in body.
    */
   @GetMapping("/videos")
   public List<Video> getAllVideos() {

@@ -1,4 +1,4 @@
-package de.uni_stuttgart.it_rex.media.written;
+package de.uni_stuttgart.it_rex.media.service.written;
 
 public class StorageException extends RuntimeException {
 

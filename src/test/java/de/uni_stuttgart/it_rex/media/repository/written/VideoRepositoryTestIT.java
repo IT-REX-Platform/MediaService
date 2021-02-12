@@ -1,9 +1,8 @@
-package de.uni_stuttgart.it_rex.media.written.repository;
+package de.uni_stuttgart.it_rex.media.repository.written;
 
 import de.uni_stuttgart.it_rex.media.config.TestSecurityConfiguration;
-import de.uni_stuttgart.it_rex.media.domain.enumeration.MIMETYPE;
+import de.uni_stuttgart.it_rex.media.domain.written.enumeration.MIMETYPE;
 import de.uni_stuttgart.it_rex.media.domain.written.Video;
-import de.uni_stuttgart.it_rex.media.repository.written.VideoRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

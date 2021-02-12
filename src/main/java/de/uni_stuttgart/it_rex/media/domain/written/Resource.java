@@ -1,6 +1,6 @@
 package de.uni_stuttgart.it_rex.media.domain.written;
 
-import de.uni_stuttgart.it_rex.media.domain.enumeration.MIMETYPE;
+import de.uni_stuttgart.it_rex.media.domain.written.enumeration.MIMETYPE;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

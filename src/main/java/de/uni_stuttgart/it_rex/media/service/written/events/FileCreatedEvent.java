@@ -1,4 +1,4 @@
-package de.uni_stuttgart.it_rex.media.written.events;
+package de.uni_stuttgart.it_rex.media.service.written.events;
 
 import org.springframework.context.ApplicationEvent;
 

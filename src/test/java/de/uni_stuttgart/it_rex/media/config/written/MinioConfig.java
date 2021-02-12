@@ -2,7 +2,7 @@ package de.uni_stuttgart.it_rex.media.config.written;
 
 import de.uni_stuttgart.it_rex.media.repository.written.VideoRepository;
 import de.uni_stuttgart.it_rex.media.service.written.VideoService;
-import de.uni_stuttgart.it_rex.media.written.FileValidatorService;
+import de.uni_stuttgart.it_rex.media.service.written.FileValidatorService;
 import de.uni_stuttgart.it_rex.media.written.testutils.MinioContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,4 +1,4 @@
-package de.uni_stuttgart.it_rex.media.written.video;
+package de.uni_stuttgart.it_rex.media.service.written;
 
 import de.uni_stuttgart.it_rex.media.config.TestSecurityConfiguration;
 import de.uni_stuttgart.it_rex.media.config.written.MinioConfig;

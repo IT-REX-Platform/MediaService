@@ -1,5 +1,6 @@
 package de.uni_stuttgart.it_rex.media.written;
 
+import de.uni_stuttgart.it_rex.media.service.written.FileValidatorService;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;

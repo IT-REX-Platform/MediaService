@@ -2,9 +2,7 @@ package de.uni_stuttgart.it_rex.media.service.written;
 
 import de.uni_stuttgart.it_rex.media.domain.written.Video;
 import de.uni_stuttgart.it_rex.media.repository.written.VideoRepository;
-import de.uni_stuttgart.it_rex.media.written.FileValidatorService;
-import de.uni_stuttgart.it_rex.media.written.StorageFileNotFoundException;
-import de.uni_stuttgart.it_rex.media.written.events.FileCreatedEvent;
+import de.uni_stuttgart.it_rex.media.service.written.events.FileCreatedEvent;
 import io.minio.BucketExistsArgs;
 import io.minio.GetObjectArgs;
 import io.minio.MakeBucketArgs;
@@ -163,8 +161,7 @@ public class VideoService {
    */
   private Video save(final Video video) {
     LOGGER.debug("Request to save Video : {}", video);
-    Video savedVideo = videoRepository.save(video);
-    return savedVideo;
+    return videoRepository.save(video);
   }
 
   /**
@@ -308,13 +305,24 @@ public class VideoService {
     LOGGER.info(uploadSuccessLog);
   }
 
+  /**
+   * Finds all videos.
+   *
+   * @return all videos
+   */
   @Transactional(readOnly = true)
   public List<Video> findAll() {
     return videoRepository.findAll();
   }
 
+  /**
+   * Finds all Videos by id.
+   *
+   * @param ids the ids
+   * @return the videos
+   */
   @Transactional(readOnly = true)
-  public List<Video> findAll(Iterable<UUID> ids) {
+  public List<Video> findAll(final Iterable<UUID> ids) {
     return videoRepository.findAllById(ids);
   }
 
