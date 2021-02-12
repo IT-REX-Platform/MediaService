@@ -33,5 +33,5 @@
     "otherModules": [],
     "blueprints": []
   },
-  "entities": ["Audio", "Image", "Video", "Document"]
+  "entities": []
 }
