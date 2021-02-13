@@ -16,15 +16,15 @@ class ResourceTest {
 
   @Test
   void equalsVerifier() {
-    Resource resource1 = new Resource();
+    Resource resource1 = new Document();
     resource1.setId(FIRST_ID);
     resource1.setMimeType(MIMETYPE_1);
 
-    Resource resource2 = new Resource();
+    Resource resource2 = new Document();
     resource2.setId(SECOND_ID);
     resource2.setMimeType(MIMETYPE_2);
 
-    Resource resource3 = new Resource();
+    Resource resource3 = new Document();
     resource3.setId(FIRST_ID);
     resource3.setMimeType(MIMETYPE_1);
 

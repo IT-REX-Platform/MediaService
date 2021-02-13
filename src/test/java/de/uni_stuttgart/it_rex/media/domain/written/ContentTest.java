@@ -26,7 +26,7 @@ public class ContentTest {
 
   @Test
   void equals() {
-    final Content content1 = new Content();
+    final Content content1 = new Video();
     content1.setId(ID_1);
     content1.setTitle(TITLE_1);
     content1.setStartDate(START_DATE_1);
@@ -35,7 +35,7 @@ public class ContentTest {
     content1.setChapterId(CHAPTER_ID_1);
     content1.setUploaderId(UPLOADER_ID_1);
 
-    final Content content2 = new Content();
+    final Content content2 = new Video();
     content2.setId(ID_2);
     content2.setTitle(TITLE_2);
     content2.setStartDate(START_DATE_2);
@@ -44,7 +44,7 @@ public class ContentTest {
     content2.setChapterId(CHAPTER_ID_2);
     content2.setUploaderId(UPLOADER_ID_2);
 
-    final Content content3 = new Content();
+    final Content content3 = new Video();
     content3.setId(ID_1);
     content3.setTitle(TITLE_1);
     content3.setStartDate(START_DATE_1);

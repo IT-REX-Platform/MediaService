@@ -22,7 +22,7 @@ import java.util.UUID;
     name = "dtype",
     columnDefinition = "TINYINT(1)"
 )
-public class Content implements Serializable {
+public abstract class Content implements Serializable {
 
   /**
    * Identifier.

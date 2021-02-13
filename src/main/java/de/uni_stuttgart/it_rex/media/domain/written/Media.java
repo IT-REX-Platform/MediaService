@@ -6,5 +6,5 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "content")
-public class Media extends Resource implements Serializable {
+public abstract class Media extends Resource implements Serializable {
 }

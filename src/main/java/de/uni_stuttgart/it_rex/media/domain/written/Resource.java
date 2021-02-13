@@ -11,7 +11,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "content")
-public class Resource extends Content {
+public abstract class Resource extends Content {
 
   /**
    * Mimetype of this Resource.
