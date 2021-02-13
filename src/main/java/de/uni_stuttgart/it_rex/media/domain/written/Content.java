@@ -53,19 +53,19 @@ public abstract class Content implements Serializable {
    * Id of the course this item belongs to.
    */
   @Column(name = "course_id")
-  private Long courseId;
+  private UUID courseId;
 
   /**
    * Id of the chapter this item belongs to.
    */
   @Column(name = "chapter_id")
-  private Long chapterId;
+  private UUID chapterId;
 
   /**
    * Id of the uploader of this Content item.
    */
   @Column(name = "uploader_id")
-  private Long uploaderId;
+  private UUID uploaderId;
 
   /**
    * Getter.
@@ -144,7 +144,7 @@ public abstract class Content implements Serializable {
    *
    * @return the course id.
    */
-  public Long getCourseId() {
+  public UUID getCourseId() {
     return courseId;
   }
 
@@ -153,7 +153,7 @@ public abstract class Content implements Serializable {
    *
    * @param newCourseId the course id.
    */
-  public void setCourseId(final Long newCourseId) {
+  public void setCourseId(final UUID newCourseId) {
     this.courseId = newCourseId;
   }
 
@@ -162,7 +162,7 @@ public abstract class Content implements Serializable {
    *
    * @return the chapter id.
    */
-  public Long getChapterId() {
+  public UUID getChapterId() {
     return chapterId;
   }
 
@@ -171,7 +171,7 @@ public abstract class Content implements Serializable {
    *
    * @param newChapterId the chapter id.
    */
-  public void setChapterId(final Long newChapterId) {
+  public void setChapterId(final UUID newChapterId) {
     this.chapterId = newChapterId;
   }
 
@@ -180,7 +180,7 @@ public abstract class Content implements Serializable {
    *
    * @return the uploader id
    */
-  public Long getUploaderId() {
+  public UUID getUploaderId() {
     return uploaderId;
   }
 
@@ -189,7 +189,7 @@ public abstract class Content implements Serializable {
    *
    * @param newUploaderId the uploader id
    */
-  public void setUploaderId(final Long newUploaderId) {
+  public void setUploaderId(final UUID newUploaderId) {
     this.uploaderId = newUploaderId;
   }
 

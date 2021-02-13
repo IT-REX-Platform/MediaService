@@ -1,8 +1,8 @@
 package de.uni_stuttgart.it_rex.media.repository.written;
 
 import de.uni_stuttgart.it_rex.media.config.TestSecurityConfiguration;
-import de.uni_stuttgart.it_rex.media.domain.written.enumeration.MIMETYPE;
 import de.uni_stuttgart.it_rex.media.domain.written.Video;
+import de.uni_stuttgart.it_rex.media.domain.written.enumeration.MIMETYPE;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +29,9 @@ class VideoRepositoryTestIT {
   private static final Integer LENGTH = 10680;
   private static final LocalDate START_DATE = LocalDate.of(2001, Month.DECEMBER, 10);
   private static final LocalDate END_DATE = LocalDate.MAX;
-  private static final Long COURSE_ID = 9L;
-  private static final Long CHAPTER_ID = 99L;
-  private static final Long UPLOADER_ID = 999L;
+  private static final UUID COURSE_ID = UUID.randomUUID();
+  private static final UUID CHAPTER_ID = UUID.randomUUID();
+  private static final UUID UPLOADER_ID = UUID.randomUUID();
 
   @Autowired
   VideoRepository videoRepository;

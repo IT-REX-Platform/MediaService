@@ -16,13 +16,13 @@
             <column name="end_date" type="date">
                 <constraints nullable="true"/>
             </column>
-            <column name="course_id" type="bigint">
+            <column name="course_id" type="${uuidType}">
                 <constraints nullable="true"/>
             </column>
-            <column name="chapter_id" type="bigint">
+            <column name="chapter_id" type="${uuidType}">
                 <constraints nullable="true"/>
             </column>
-            <column name="uploader_id" type="bigint">
+            <column name="uploader_id" type="${uuidType}">
                 <constraints nullable="true"/>
             </column>
             <column name="mime_type" type="varchar(255)">

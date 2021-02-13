@@ -17,12 +17,12 @@ public class ContentTest {
   private static final LocalDate START_DATE_2 = LocalDate.MIN.plusDays(400);
   private static final LocalDate END_DATE_1 = LocalDate.MAX.minusDays(200);
   private static final LocalDate END_DATE_2 = LocalDate.MAX.minusDays(400);
-  private static final Long COURSE_ID_1 = 26773568L;
-  private static final Long COURSE_ID_2 = 1345134L;
-  private static final Long CHAPTER_ID_1 = 534253L;
-  private static final Long CHAPTER_ID_2 = 43531L;
-  private static final Long UPLOADER_ID_1 = 123413L;
-  private static final Long UPLOADER_ID_2 = 97897L;
+  private static final UUID COURSE_ID_1 = UUID.randomUUID();
+  private static final UUID COURSE_ID_2 = UUID.randomUUID();
+  private static final UUID CHAPTER_ID_1 = UUID.randomUUID();
+  private static final UUID CHAPTER_ID_2 = UUID.randomUUID();
+  private static final UUID UPLOADER_ID_1 = UUID.randomUUID();
+  private static final UUID UPLOADER_ID_2 = UUID.randomUUID();
 
   @Test
   void equals() {
