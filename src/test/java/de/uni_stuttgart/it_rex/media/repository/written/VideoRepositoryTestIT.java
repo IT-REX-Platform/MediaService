@@ -26,7 +26,7 @@ class VideoRepositoryTestIT {
   private static final MIMETYPE TEST_MIMETYPE = MIMETYPE.VIDEO_MP4;
   private static final Integer WIDTH = 3840;
   private static final Integer HEIGHT = 2160;
-  private static final Integer LENGTH = 10680;
+  private static final Long LENGTH = 10680L;
   private static final LocalDate START_DATE = LocalDate.of(2001, Month.DECEMBER, 10);
   private static final LocalDate END_DATE = LocalDate.MAX;
   private static final UUID COURSE_ID = UUID.randomUUID();

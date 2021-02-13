@@ -21,7 +21,7 @@ public final class Video extends Media implements Serializable {
      * Length in seconds.
      */
     @Column(name = "length")
-    private Integer videoLength;
+    private Long videoLength;
 
     /**
      * Width in pixels.
@@ -40,7 +40,7 @@ public final class Video extends Media implements Serializable {
      *
      * @return the length.
      */
-    public Integer getLength() {
+    public Long getLength() {
         return videoLength;
     }
 
@@ -49,7 +49,7 @@ public final class Video extends Media implements Serializable {
      *
      * @param newLength the length.
      */
-    public void setLength(final Integer newLength) {
+    public void setLength(final Long newLength) {
         this.videoLength = newLength;
     }
 

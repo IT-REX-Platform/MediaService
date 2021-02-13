@@ -184,12 +184,13 @@ public class VideoService {
       InternalException {
     fileValidatorService.validate(file);
 
-    Video video = new Video();
-    video.setTitle(file.getOriginalFilename());
-    video = this.save(video);
+    Video video = this.save(new Video());
+
+    storeFile(video.getId(), file);
     applicationEventPublisher.publishEvent(
         new FileCreatedEvent(this, video.getId()));
-    storeFile(video.getId(), file);
+    video.setLength(this.getLength(video.getId()));
+    video.setTitle(file.getOriginalFilename());
 
     return video;
   }

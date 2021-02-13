@@ -10,8 +10,8 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 class AudioTest {
   private static final UUID FIRST_ID = UUID.randomUUID();
   private static final UUID SECOND_ID = UUID.randomUUID();
-  private static final Integer FIRST_LENGTH = 42;
-  private static final Integer SECOND_LENGTH = 69;
+  private static final Long FIRST_LENGTH = 42L;
+  private static final Long SECOND_LENGTH = 69L;
 
   @Test
   void equalsVerifier() {

@@ -28,7 +28,7 @@
             <column name="mime_type" type="varchar(255)">
                 <constraints nullable="true"/>
             </column>
-            <column name="length" type="integer">
+            <column name="length" type="bigint">
                 <constraints nullable="true"/>
             </column>
             <column name="width" type="integer">

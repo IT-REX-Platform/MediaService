@@ -21,14 +21,14 @@ public final class Audio extends Media implements Serializable {
      * Length in seconds.
      */
     @Column(name = "length")
-    private Integer audioLength;
+    private Long audioLength;
 
     /**
      * Getter.
      *
      * @return the length.
      */
-    public Integer getLength() {
+    public Long getLength() {
         return audioLength;
     }
 
@@ -37,7 +37,7 @@ public final class Audio extends Media implements Serializable {
      *
      * @param newLength the length.
      */
-    public void setLength(final Integer newLength) {
+    public void setLength(final Long newLength) {
         this.audioLength = newLength;
     }
 

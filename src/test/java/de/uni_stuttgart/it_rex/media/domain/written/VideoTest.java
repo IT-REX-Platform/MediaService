@@ -9,8 +9,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class VideoTest {
   private static final UUID FIRST_ID = UUID.randomUUID();
   private static final UUID SECOND_ID = UUID.randomUUID();
-  private static final Integer FIRST_LENGTH = 42;
-  private static final Integer SECOND_LENGTH = 69;
+  private static final Long FIRST_LENGTH = 42L;
+  private static final Long SECOND_LENGTH = 69L;
   private static final Integer FIRST_WIDTH = 23423;
   private static final Integer SECOND_WIDTH = 2999423;
   private static final Integer FIRST_HEIGHT = 2342123;
