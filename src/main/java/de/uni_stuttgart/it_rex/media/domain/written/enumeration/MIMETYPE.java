@@ -9,7 +9,8 @@ public enum MIMETYPE {
     IMAGE_JPEG("image/jpeg"),
     IMAGE_PNG("image/png"),
     IMAGE_SVG("image/svg"),
-    VIDEO_MP4("video/mp4");
+    VIDEO_MP4("video/mp4"),
+    APPLICATION_PDF("application/pdf");
 
     private final String value;
 
