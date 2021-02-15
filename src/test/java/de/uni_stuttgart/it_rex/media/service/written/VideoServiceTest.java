@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class VideoServiceExtendedTest {
+class VideoServiceTest {
   private static final String MINIO_URL = "https://bit.ly/3on6jNe";
   private static final String ACCESS_KEY = "MagicAccessKey";
   private static final String SECRET_KEY = "MagicSecretKey";
