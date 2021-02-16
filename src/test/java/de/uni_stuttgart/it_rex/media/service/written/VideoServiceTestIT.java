@@ -1,11 +1,9 @@
 package de.uni_stuttgart.it_rex.media.service.written;
 
 import de.uni_stuttgart.it_rex.media.config.TestSecurityConfiguration;
-import de.uni_stuttgart.it_rex.media.service.written.StorageException;
-import de.uni_stuttgart.it_rex.media.service.written.VideoService;
-import de.uni_stuttgart.it_rex.media.written.testutils.UnwrapProxied;
+import de.uni_stuttgart.it_rex.media.config.written.MinioConfig;
+import de.uni_stuttgart.it_rex.media.written.testutils.MinioContainer;
 import nl.altindag.log.LogCaptor;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -14,9 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.testcontainers.containers.DockerComposeContainer;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -25,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 @TestInstance(PER_CLASS)
-@SpringBootTest(classes = {TestSecurityConfiguration.class})
+@SpringBootTest(classes = {TestSecurityConfiguration.class, MinioConfig.class})
 class VideoServiceTestIT {
 
   private static final Integer MINIO_PORT = 9000;
@@ -33,52 +29,23 @@ class VideoServiceTestIT {
   private static final String LOG_MESSAGE1 = String.format("Bucket %s already exists.", MAGIC_BUCKET);
   private static final String EXCEPTION_MESSAGE = "Failed to store empty file!";
 
-  private Integer minioMappedPort;
-  private String minioMappedHost;
-  private String minioUrl;
-  private String minioAccessKey;
-  private String minioSecretKey;
-  private DockerComposeContainer environment;
+  private static final String MINIO_URL = "https://bit.ly/3on6jNe";
+  private static final String ACCESS_KEY = "MagicAccessKey";
+  private static final String SECRET_KEY = "MagicSecretKey";
+  private static final String ROOT_LOCATION = "wizard-hat";
+
+  @Autowired
+  private MinioContainer minioContainer;
 
   @Autowired
   private VideoService videoService;
 
-  @BeforeAll
-  public void setUp(@Value("${minio.access-key}") final String accessKey,
-                    @Value("${minio.secret-key}") final String secretKey) {
-    minioAccessKey = accessKey;
-    minioSecretKey = secretKey;
-    // The with ".withLocalCompose(true)" is needed to use the local installation of docker-compose
-    environment = new DockerComposeContainer(new File("src/test/resources/docker/minio.yml")).
-        withExposedService("minio", MINIO_PORT).withLocalCompose(true);
-    environment.start();
-    minioMappedPort = environment.getServicePort("minio", MINIO_PORT);
-    minioMappedHost = environment.getServiceHost("minio", MINIO_PORT);
-    minioUrl = String.format("http://%s:%d", minioMappedHost, minioMappedPort);
-    try {
-      VideoService videoServiceUnwrapped =
-          ((VideoService) UnwrapProxied.unwrap(videoService));
-      videoServiceUnwrapped.setMinioUrl(minioUrl);
-      videoServiceUnwrapped.setAccessKey(minioAccessKey);
-      videoServiceUnwrapped.setSecretKey(minioSecretKey);
-      videoServiceUnwrapped.makeBucket(videoServiceUnwrapped.getRootLocation());
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-
-  @AfterAll
-  public void tearDown() {
-    environment.stop();
-  }
-
   @Test
   void contextLoads() {
     assertThat(videoService).isNotNull();
-    assertThat(environment).isNotNull();
-    assertThat(minioMappedHost).isNotNull();
-    assertThat(minioMappedPort).isNotNull();
-    assertThat(minioUrl).isNotNull();
+    assertThat(videoService.getFileValidatorService()).isNotNull();
+    assertThat(videoService.getVideoRepository()).isNotNull();
+    assertThat(videoService.getVideoRepository()).isNotNull();
   }
 
   @Test
@@ -101,5 +68,29 @@ class VideoServiceTestIT {
     Exception storageException = assertThrows(StorageException.class, () ->
         videoService.store(emptyFile));
     assertThat(storageException.getMessage()).isEqualTo(EXCEPTION_MESSAGE);
+  }
+
+  @Test
+  void getMinioUrl() {
+    videoService.setMinioUrl(MINIO_URL);
+    assertThat(videoService.getMinioUrl()).isEqualTo(MINIO_URL);
+  }
+
+  @Test
+  void getAccessKey() {
+    videoService.setAccessKey(ACCESS_KEY);
+    assertThat(videoService.getAccessKey()).isEqualTo(ACCESS_KEY);
+  }
+
+  @Test
+  void getSecretKey() {
+    videoService.setSecretKey(SECRET_KEY);
+    assertThat(videoService.getSecretKey()).isEqualTo(SECRET_KEY);
+  }
+
+  @Test
+  void getRootLocation() {
+    videoService.setSecretKey(ROOT_LOCATION);
+    assertThat(videoService.getSecretKey()).isEqualTo(ROOT_LOCATION);
   }
 }

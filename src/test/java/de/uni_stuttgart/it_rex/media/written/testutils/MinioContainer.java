@@ -15,7 +15,6 @@ public class MinioContainer {
   public MinioContainer() {
     this.container = new DockerComposeContainer(new File("src/test/resources/docker/minio.yml")).
         withExposedService("minio", MINIO_PORT).withLocalCompose(true);
-    start();
   }
 
   public String getMinioUrl() {

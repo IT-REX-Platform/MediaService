@@ -59,11 +59,14 @@ public class VideoResource {
   /**
    * Constructor.
    *
-   * @param vss VideoStorageService.
+   * @param vss                VideoStorageService.
+   * @param name application name.
    */
   @Autowired
-  public VideoResource(final VideoService vss) {
+  public VideoResource(final VideoService vss,
+                       @Value("${jhipster.clientApp.name}") final String name) {
     this.videoService = vss;
+    this.applicationName = name;
   }
 
   /**
@@ -208,9 +211,7 @@ public class VideoResource {
    *
    * @param newApplicationName the application name.
    */
-  @Autowired
-  public void setApplicationName(
-      @Value("${jhipster.clientApp.name}") final String newApplicationName) {
+  public void setApplicationName(final String newApplicationName) {
     this.applicationName = newApplicationName;
   }
 }

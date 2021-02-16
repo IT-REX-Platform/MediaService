@@ -99,8 +99,20 @@ public class VideoService {
    * Constructor.
    */
   @Autowired
-  public VideoService() {
-    // Because setter autowiring is used.
+  public VideoService(ApplicationEventPublisher newApplicationEventPublisher,
+                      FileValidatorService newFileValidatorService,
+                      VideoRepository newVideoRepository,
+                      @Value("${minio.url}") final String newMinioUrl,
+                      @Value("${minio.access-key}") final String newAccessKey,
+                      @Value("${minio.secret-key}") final String newSecretKey,
+                      @Value("${minio.root-location}") final Path newLocation) {
+    this.applicationEventPublisher = newApplicationEventPublisher;
+    this.fileValidatorService = newFileValidatorService;
+    this.videoRepository = newVideoRepository;
+    this.minioUrl = newMinioUrl;
+    this.accessKey = newAccessKey;
+    this.secretKey = newSecretKey;
+    this.rootLocation = newLocation;
   }
 
   /**
@@ -417,7 +429,6 @@ public class VideoService {
    *
    * @param newFileValidatorService the fileValidatorService
    */
-  @Autowired
   public void setFileValidatorService(
       final FileValidatorService newFileValidatorService) {
     this.fileValidatorService = newFileValidatorService;
@@ -437,9 +448,7 @@ public class VideoService {
    *
    * @param newMinioUrl the url where minio can be found
    */
-  @Autowired
-  public final void setMinioUrl(
-      @Value("${minio.url}") final String newMinioUrl) {
+  public final void setMinioUrl(final String newMinioUrl) {
     this.minioUrl = newMinioUrl;
   }
 
@@ -457,9 +466,7 @@ public class VideoService {
    *
    * @param newAccessKey the minio access key
    */
-  @Autowired
-  public final void setAccessKey(
-      @Value("${minio.access-key}") final String newAccessKey) {
+  public final void setAccessKey(final String newAccessKey) {
     this.accessKey = newAccessKey;
   }
 
@@ -477,9 +484,7 @@ public class VideoService {
    *
    * @param newSecretKey the minio secret key
    */
-  @Autowired
-  public final void setSecretKey(
-      @Value("${minio.secret-key}") final String newSecretKey) {
+  public final void setSecretKey(final String newSecretKey) {
     this.secretKey = newSecretKey;
   }
 
@@ -497,9 +502,7 @@ public class VideoService {
    *
    * @param newLocation the root bucket of minio
    */
-  @Autowired
-  public final void setRootLocation(
-      @Value("${minio.root-location}") final Path newLocation) {
+  public final void setRootLocation(final Path newLocation) {
     this.rootLocation = newLocation;
   }
 
@@ -517,7 +520,6 @@ public class VideoService {
    *
    * @param newApplicationEventPublisher the applicationEventPublisher
    */
-  @Autowired
   public void setApplicationEventPublisher(
       final ApplicationEventPublisher newApplicationEventPublisher) {
     this.applicationEventPublisher = newApplicationEventPublisher;
@@ -537,7 +539,6 @@ public class VideoService {
    *
    * @param newVideoRepository the applicationEventPublisher
    */
-  @Autowired
   public void setVideoRepository(final VideoRepository newVideoRepository) {
     this.videoRepository = newVideoRepository;
   }

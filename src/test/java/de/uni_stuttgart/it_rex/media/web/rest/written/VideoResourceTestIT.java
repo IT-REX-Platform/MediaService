@@ -2,14 +2,13 @@ package de.uni_stuttgart.it_rex.media.web.rest.written;
 
 import com.jayway.jsonpath.JsonPath;
 import de.uni_stuttgart.it_rex.media.config.TestSecurityConfiguration;
+import de.uni_stuttgart.it_rex.media.config.written.MinioConfig;
 import de.uni_stuttgart.it_rex.media.service.written.VideoService;
-import de.uni_stuttgart.it_rex.media.written.testutils.UnwrapProxied;
+import de.uni_stuttgart.it_rex.media.written.testutils.MinioContainer;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.containers.DockerComposeContainer;
 
-import java.io.File;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Transactional
 @TestInstance(PER_CLASS)
-@SpringBootTest(classes = {TestSecurityConfiguration.class})
+@SpringBootTest(classes = {TestSecurityConfiguration.class, MinioConfig.class})
 class VideoResourceTestIT {
   private static final Integer MINIO_PORT = 9000;
   private final String LOG_MESSAGE =
@@ -45,48 +43,17 @@ class VideoResourceTestIT {
   private VideoService videoService;
 
   @Autowired
-  private VideoResource videoResource;
-
-  @Autowired
   private WebApplicationContext webApplicationContext;
 
-  @BeforeAll
-  public void setUp(@Value("${minio.access-key}") final String accessKey,
-                    @Value("${minio.secret-key}") final String secretKey) {
-    minioAccessKey = accessKey;
-    minioSecretKey = secretKey;
-    // The with ".withLocalCompose(true)" is needed to use the local installation of docker-compose
-    environment = new DockerComposeContainer(new File("src/test/resources/docker/minio.yml")).
-        withExposedService("minio", MINIO_PORT).withLocalCompose(true);
-    environment.start();
-    minioMappedPort = environment.getServicePort("minio", MINIO_PORT);
-    minioMappedHost = environment.getServiceHost("minio", MINIO_PORT);
-    minioUrl = String.format("http://%s:%d", minioMappedHost, minioMappedPort);
-    try {
-      VideoService videoServiceUnwrapped = ((VideoService) UnwrapProxied.unwrap(videoService));
-      videoServiceUnwrapped.setMinioUrl(minioUrl);
-      videoServiceUnwrapped.setAccessKey(minioAccessKey);
-      videoServiceUnwrapped.setSecretKey(minioSecretKey);
-      videoService.makeBucket(videoServiceUnwrapped.getRootLocation());
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-
-  @AfterAll
-  public void tearDown() {
-    environment.stop();
-  }
+  @Autowired
+  private MinioContainer minioContainer;
 
   @Test
   void contextLoads() {
-    assertThat(videoResource).isNotNull();
     assertThat(videoService).isNotNull();
-    assertThat(environment).isNotNull();
-    assertThat(webApplicationContext).isNotNull();
-    assertThat(minioMappedHost).isNotNull();
-    assertThat(minioMappedPort).isNotNull();
-    assertThat(minioUrl).isNotNull();
+    assertThat(videoService.getFileValidatorService()).isNotNull();
+    assertThat(videoService.getVideoRepository()).isNotNull();
+    assertThat(videoService.getVideoRepository()).isNotNull();
   }
 
   @Test
