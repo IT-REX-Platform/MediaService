@@ -1,4 +1,4 @@
-package de.uni_stuttgart.it_rex.media.written;
+package de.uni_stuttgart.it_rex.media.service.written;
 
 import de.uni_stuttgart.it_rex.media.service.written.FileValidatorService;
 import org.junit.jupiter.api.Test;
