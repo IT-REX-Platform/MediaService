@@ -29,15 +29,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestInstance(PER_CLASS)
 @SpringBootTest(classes = {TestSecurityConfiguration.class, MinioConfig.class})
 class VideoResourceTestIT {
-  private static final Integer MINIO_PORT = 9000;
-  private final String LOG_MESSAGE =
-      "hello.txt is successfully uploaded as object hello.txt to bucket 'videos'.";
-  private Integer minioMappedPort;
-  private String minioMappedHost;
-  private String minioUrl;
-  private String minioAccessKey;
-  private String minioSecretKey;
-  private DockerComposeContainer environment;
 
   @Autowired
   private VideoService videoService;
