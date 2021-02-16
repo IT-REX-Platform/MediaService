@@ -201,8 +201,10 @@ public class VideoService {
     storeFile(video.getId(), file);
     applicationEventPublisher.publishEvent(
         new FileCreatedEvent(this, video.getId()));
+
     video.setLength(this.getLength(video.getId()));
     video.setTitle(file.getOriginalFilename());
+    this.save(video);
 
     return video;
   }
