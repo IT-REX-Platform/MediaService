@@ -5,8 +5,9 @@ import org.junit.jupiter.api.Test;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class VideoTest {
+class VideoTest {
   private static final UUID FIRST_ID = UUID.randomUUID();
   private static final UUID SECOND_ID = UUID.randomUUID();
   private static final Long FIRST_LENGTH = 42L;
@@ -17,7 +18,7 @@ public class VideoTest {
   private static final Integer SECOND_HEIGHT = 23345423;
 
   @Test
-  public void equalsVerifier() {
+  void equalsVerifier() {
     Video video1 = new Video();
     video1.setId(FIRST_ID);
     Video video2 = new Video();
@@ -35,6 +36,9 @@ public class VideoTest {
     assertThat(video1).isNotEqualTo(video2);
     video1.setId(null);
     assertThat(video1).isNotEqualTo(video2);
+    assertThat(video1).isNotEqualTo(UUID.randomUUID());
+    assertThat(video1).hasSameHashCodeAs(video1);
+    assertTrue(video1.hashCode() != video2.hashCode());
   }
 }
 
