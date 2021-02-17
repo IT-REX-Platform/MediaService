@@ -20,12 +20,22 @@ public abstract class Resource extends Content {
   @Column(name = "mime_type")
   private MIMETYPE mimeType;
 
+  /**
+   * Getter.
+   *
+   * @return the mime type
+   */
   public MIMETYPE getMimeType() {
     return mimeType;
   }
 
-  public void setMimeType(final MIMETYPE mimeType) {
-    this.mimeType = mimeType;
+  /**
+   * Setter.
+   *
+   * @param newMimeType the mime type.
+   */
+  public void setMimeType(final MIMETYPE newMimeType) {
+    this.mimeType = newMimeType;
   }
 
   /**
@@ -35,14 +45,16 @@ public abstract class Resource extends Content {
    * @return if they are equal.
    */
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(final Object o) {
     if (this == o) {
       return true;
     }
     if (!(o instanceof Resource)) {
       return false;
     }
-    if (!super.equals(o)) return false;
+    if (!super.equals(o)) {
+      return false;
+    }
     Resource resource = (Resource) o;
     return getMimeType() == resource.getMimeType();
   }

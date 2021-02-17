@@ -97,15 +97,24 @@ public class VideoService {
 
   /**
    * Constructor.
+   *
+   * @param newApplicationEventPublisher the event publisher
+   * @param newFileValidatorService      the file validator
+   * @param newVideoRepository           the video repository
+   * @param newMinioUrl                  the minio url
+   * @param newAccessKey                 the access key
+   * @param newSecretKey                 the secret key
+   * @param newLocation                  the location
    */
   @Autowired
-  public VideoService(ApplicationEventPublisher newApplicationEventPublisher,
-                      FileValidatorService newFileValidatorService,
-                      VideoRepository newVideoRepository,
-                      @Value("${minio.url}") final String newMinioUrl,
-                      @Value("${minio.access-key}") final String newAccessKey,
-                      @Value("${minio.secret-key}") final String newSecretKey,
-                      @Value("${minio.root-location}") final Path newLocation) {
+  public VideoService(
+      final ApplicationEventPublisher newApplicationEventPublisher,
+      final FileValidatorService newFileValidatorService,
+      final VideoRepository newVideoRepository,
+      @Value("${minio.url}") final String newMinioUrl,
+      @Value("${minio.access-key}") final String newAccessKey,
+      @Value("${minio.secret-key}") final String newSecretKey,
+      @Value("${minio.root-location}") final Path newLocation) {
     this.applicationEventPublisher = newApplicationEventPublisher;
     this.fileValidatorService = newFileValidatorService;
     this.videoRepository = newVideoRepository;
