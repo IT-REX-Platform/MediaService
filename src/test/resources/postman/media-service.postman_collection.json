@@ -1,0 +1,325 @@
+{
+	"info": {
+		"_postman_id": "0c453aa8-c4f7-484d-a42b-4099ce3e01c6",
+		"name": "media-service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "uploadVideo",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "tokenType",
+							"value": "bearer",
+							"type": "string"
+						},
+						{
+							"key": "accessToken",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI3dXdiVXdsam1Rako3RTNMUmtfanpscnExSUJZUXpWRWJyOFBxU2RpY1F3In0.eyJleHAiOjE2MTMxNTY0OTAsImlhdCI6MTYxMzE1NjE5MCwiYXV0aF90aW1lIjoxNjEzMTU1NzkxLCJqdGkiOiIxMjdmZDQ3MC1iYzY3LTQ0MmQtYTcwNC00MzBjZDY3MTBhMGYiLCJpc3MiOiJodHRwOi8va2V5Y2xvYWs6OTA4MC9hdXRoL3JlYWxtcy9qaGlwc3RlciIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiI0Yzk3Mzg5Ni01NzYxLTQxZmMtODIxNy0wN2M1ZDEzYTAwNGIiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJ3ZWJfYXBwIiwic2Vzc2lvbl9zdGF0ZSI6IjBlMzY3OTdiLTM5NjgtNDE0OC05YjdkLWVhNDNhZTE5MjQzNSIsImFjciI6IjAiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovLzEyNy4wLjAuMTo4NzYxIiwiaHR0cDovL2xvY2FsaG9zdDo4MDgwIiwiaHR0cDovL2xvY2FsaG9zdDo5MDAwIiwiaHR0cDovL2xvY2FsaG9zdDo4MTAwIiwiaHR0cHM6Ly9sb2NhbGhvc3Q6ODA4MCJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiUk9MRV9VU0VSIiwib2ZmbGluZV9hY2Nlc3MiLCJST0xFX0FETUlOIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6ImpoaXBzdGVyIGVtYWlsIHByb2ZpbGUiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicm9sZXMiOlsiUk9MRV9VU0VSIiwib2ZmbGluZV9hY2Nlc3MiLCJST0xFX0FETUlOIiwidW1hX2F1dGhvcml6YXRpb24iXSwibmFtZSI6IkFkbWluIEFkbWluaXN0cmF0b3IiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsImdpdmVuX25hbWUiOiJBZG1pbiIsImZhbWlseV9uYW1lIjoiQWRtaW5pc3RyYXRvciIsImVtYWlsIjoiYWRtaW5AbG9jYWxob3N0In0.SKvsR6Z58SwQZ72Mog5j8f9jdP0Lr1GUhVkC9pMkfXqDRN9UJt_BaugXIlc1OYQsOyQiXFxzUxdNbWu7UpdN6GpIz764FhL4Fs79zajTTxPNqphA-UlSbgR0g9zi3vEX6Fwf4Euiu0mN0tGU-rhHTQ2_DUxsKGtEVnLvhYk0YuzGL2dISaV0AgQLUzuydRytAUHVqypxWVXs1qNvBnj3Yuhr9AM9LEMoSvZibM2d10hUiFSjGg6zezFM0LvGUiMntARDvjv42S0XPC69X8_lnOnPunv80CACYXnhp_zkxRBk2DAR39esytJg2WwIhRwCznhw3WAXzoVNAVb_-SRlpA",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "MyToken",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "http://localhost:19006",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/token",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/auth",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "web_app",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "jhipster",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "./5435963561916500351.mp4",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/services/mediaservice/api/videos/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"services",
+						"mediaservice",
+						"api",
+						"videos",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "downloadVideo",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "tokenType",
+							"value": "bearer",
+							"type": "string"
+						},
+						{
+							"key": "accessToken",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJlbzVZbEthMTgzcmotN0RFa28xS3EwNFZ5RE1MNkg4WFhtamNQZWZrQXFjIn0.eyJleHAiOjE2MTIyODc0MTMsImlhdCI6MTYxMjI4NzExMywiYXV0aF90aW1lIjoxNjEyMjg3MTEyLCJqdGkiOiI1MGZiYjdhNS1mYmU1LTQ0MDktYmJiZS0wMTI4ZDNlM2MxNWEiLCJpc3MiOiJodHRwOi8va2V5Y2xvYWs6OTA4MC9hdXRoL3JlYWxtcy9qaGlwc3RlciIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiI0Yzk3Mzg5Ni01NzYxLTQxZmMtODIxNy0wN2M1ZDEzYTAwNGIiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJ3ZWJfYXBwIiwic2Vzc2lvbl9zdGF0ZSI6IjlmNThkZGYzLTMxZTMtNDQyMi1hMGM5LTcxZjkyMWFmNjk1NiIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovLzEyNy4wLjAuMTo4NzYxIiwiaHR0cDovL2xvY2FsaG9zdDo4MDgwIiwiaHR0cDovL2xvY2FsaG9zdDo5MDAwIiwiaHR0cDovL2xvY2FsaG9zdDo4MTAwIiwiaHR0cHM6Ly9sb2NhbGhvc3Q6ODA4MCJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiUk9MRV9VU0VSIiwib2ZmbGluZV9hY2Nlc3MiLCJST0xFX0FETUlOIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6ImpoaXBzdGVyIGVtYWlsIHByb2ZpbGUiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicm9sZXMiOlsiUk9MRV9VU0VSIiwib2ZmbGluZV9hY2Nlc3MiLCJST0xFX0FETUlOIiwidW1hX2F1dGhvcml6YXRpb24iXSwibmFtZSI6IkFkbWluIEFkbWluaXN0cmF0b3IiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsImdpdmVuX25hbWUiOiJBZG1pbiIsImZhbWlseV9uYW1lIjoiQWRtaW5pc3RyYXRvciIsImVtYWlsIjoiYWRtaW5AbG9jYWxob3N0In0.aylJsMU_CtDmHjAKrd_K9_E8KqfMaKXsuXZ4E5PBXLXzphMoAGcolWSOz5FxXglWcjemZHsY-dgWGUsR1UtKRib3mSVjvR9xSpojly461-4H3zLTKZcSjrUuqUWEJvxOUiFcmV02EUAUF12wMrfq_Qrp1rqloKNeTA2po6Atktxmv6RWF80X6tahkgSu6xkL3dUH2lzqraKR3KlMTtpXInrAkz6lCH28EMMwVMafCVerSjBSuJXMxHqKHqmmNutLLxUra187na-9UBZTR6ML1_U3j2plkG_ODcuJ3fH0_q6XSF7146DqNNoHnCQYv2tlkbI7CSUPt30qT4AawWb6ag",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "http://localhost:19006",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/token",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/auth",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "web_app",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "jhipster",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/services/mediaservice/api/videos/a1836edf-1e19-4b9a-8dd9-0970950417cc",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"services",
+						"mediaservice",
+						"api",
+						"videos",
+						"a1836edf-1e19-4b9a-8dd9-0970950417cc"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteVideo",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "tokenType",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "http://localhost:19006",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/token",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/auth",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "web_app",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "jhipster",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/services/mediaservice/api/videos/a1836edf-1e19-4b9a-8dd9-0970950417cc",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"services",
+						"mediaservice",
+						"api",
+						"videos",
+						"a1836edf-1e19-4b9a-8dd9-0970950417cc"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAllVideos",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "tokenType",
+							"value": "bearer",
+							"type": "string"
+						},
+						{
+							"key": "accessToken",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJhNDYxajVvTTY3RDFVVzlxUnZPV3EwTHNrVEFzZVF6NmRkNk5MSFc1REcwIn0.eyJleHAiOjE2MTI3OTU0NDgsImlhdCI6MTYxMjc5NTE0OCwiYXV0aF90aW1lIjoxNjEyNzk1MTQ4LCJqdGkiOiI4MTM4MmIzMy0zODA4LTRlMjQtODUyYi02Nzk5ZDI2NzQ0MjMiLCJpc3MiOiJodHRwOi8va2V5Y2xvYWs6OTA4MC9hdXRoL3JlYWxtcy9qaGlwc3RlciIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiI0Yzk3Mzg5Ni01NzYxLTQxZmMtODIxNy0wN2M1ZDEzYTAwNGIiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJ3ZWJfYXBwIiwic2Vzc2lvbl9zdGF0ZSI6IjgwYWY5YzkwLWRlNjgtNGFiMS1hODI0LTJkMDAyNDU3MGVjZSIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovLzEyNy4wLjAuMTo4NzYxIiwiaHR0cDovL2xvY2FsaG9zdDo4MDgwIiwiaHR0cDovL2xvY2FsaG9zdDo5MDAwIiwiaHR0cDovL2xvY2FsaG9zdDo4MTAwIiwiaHR0cHM6Ly9sb2NhbGhvc3Q6ODA4MCJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiUk9MRV9VU0VSIiwib2ZmbGluZV9hY2Nlc3MiLCJST0xFX0FETUlOIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6ImpoaXBzdGVyIGVtYWlsIHByb2ZpbGUiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicm9sZXMiOlsiUk9MRV9VU0VSIiwib2ZmbGluZV9hY2Nlc3MiLCJST0xFX0FETUlOIiwidW1hX2F1dGhvcml6YXRpb24iXSwibmFtZSI6IkFkbWluIEFkbWluaXN0cmF0b3IiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbiIsImdpdmVuX25hbWUiOiJBZG1pbiIsImZhbWlseV9uYW1lIjoiQWRtaW5pc3RyYXRvciIsImVtYWlsIjoiYWRtaW5AbG9jYWxob3N0In0.r269qyfvPmKs4j82XOT-fdaaD2CuB0aUUvvLVkBE6H96d6ZeJVQhY_WOcTodBsfXGy33-W_NDP4Wrj0h_TifOk3DKr4LP1Ywk5KHGSHOoJ_aczmcSnmc8pR4k13YET9Y444rYQU01BOxzOM6acw_MAdoAOMw1NjyZXqggMiAb69i87rSkmyGYMBYAfqhAlR78XV93q_Mdt0PpszcSvp712v3Akx_tYDrPSW6GxxLtjPX5LOvICciKcz-zePiiz4RgqTjk8_t0ZBY2WmWBRne4mS0qyZLh0iC3q-IROhqyJSLVnyJDa_FXQB5X7_s1yUCg41LnXzFo-X8W49hS1qafA",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "http://localhost:19006",
+							"type": "string"
+						},
+						{
+							"key": "accessTokenUrl",
+							"value": "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/token",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "http://keycloak:9080/auth/realms/jhipster/protocol/openid-connect/auth",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "web_app",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "jhipster",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/services/mediaservice/api/videos/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"services",
+						"mediaservice",
+						"api",
+						"videos",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

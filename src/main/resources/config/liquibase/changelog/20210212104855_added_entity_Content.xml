@@ -1,0 +1,45 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+    <changeSet id="20210211150527-1" author="christian">
+        <createTable tableName="content">
+            <column name="id" type="${uuidType}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="title" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="start_date" type="date">
+                <constraints nullable="true"/>
+            </column>
+            <column name="end_date" type="date">
+                <constraints nullable="true"/>
+            </column>
+            <column name="course_id" type="${uuidType}">
+                <constraints nullable="true"/>
+            </column>
+            <column name="chapter_id" type="${uuidType}">
+                <constraints nullable="true"/>
+            </column>
+            <column name="uploader_id" type="${uuidType}">
+                <constraints nullable="true"/>
+            </column>
+            <column name="mime_type" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="length" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="width" type="integer">
+                <constraints nullable="true"/>
+            </column>
+            <column name="height" type="integer">
+                <constraints nullable="true"/>
+            </column>
+            <column name="dtype" type="tinyint">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
