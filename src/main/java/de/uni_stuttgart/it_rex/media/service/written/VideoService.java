@@ -188,12 +188,14 @@ public class VideoService {
   /**
    * Store a video file.
    *
-   * @param file The video file to store.
+   * @param videoFile  The video file to store.
+   * @param courseUuid Course ID as UUID.
    * @return the video meta data
    */
   @Transactional(rollbackFor = {Exception.class})
   public Video store(
-      final MultipartFile file)
+      final MultipartFile videoFile,
+      final UUID courseUuid)
       throws IOException,
       InvalidKeyException,
       InvalidResponseException,
@@ -203,16 +205,17 @@ public class VideoService {
       ErrorResponseException,
       XmlParserException,
       InternalException {
-    fileValidatorService.validate(file);
+    fileValidatorService.validate(videoFile);
 
     Video video = this.save(new Video());
 
-    storeFile(video.getId(), file);
+    storeFile(video.getId(), videoFile);
     applicationEventPublisher.publishEvent(
         new FileCreatedEvent(this, video.getId()));
 
     video.setLength(this.getLength(video.getId()));
-    video.setTitle(file.getOriginalFilename());
+    video.setTitle(videoFile.getOriginalFilename());
+    video.setCourseId(courseUuid);
     this.save(video);
 
     return video;

@@ -2,6 +2,7 @@ package de.uni_stuttgart.it_rex.media.web.rest.written;
 
 import de.uni_stuttgart.it_rex.media.domain.written.Video;
 import de.uni_stuttgart.it_rex.media.service.written.VideoService;
+import de.uni_stuttgart.it_rex.media.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -71,16 +73,18 @@ public class VideoResource {
 
   /**
    * Upload a video to the system.
-   * The file ist stored in a file storage
+   * The video file is stored in a file storage
    * while metadata is persisted in an RDBMS.
    *
-   * @param file               The video file to upload.
+   * @param videoFile          The video file to upload.
+   * @param courseId           Course ID as String.
    * @param redirectAttributes The redirect attributes.
    * @return the filename and id
    */
   @PostMapping("/videos")
   public ResponseEntity<Video> uploadVideo(
-      @RequestParam("file") final MultipartFile file,
+      @RequestPart("videoFile") final MultipartFile videoFile,
+      @RequestPart("courseId") final String courseId,
       final RedirectAttributes redirectAttributes)
       throws URISyntaxException,
       IOException,
@@ -92,14 +96,20 @@ public class VideoResource {
       XmlParserException,
       InsufficientDataException,
       ErrorResponseException {
+    UUID courseUuid;
+    try {
+        courseUuid = UUID.fromString(courseId);
+    } catch (Exception e) {
+        throw new BadRequestAlertException("Invalid course ID", ENTITY_NAME, "invalidId");
+    }
 
-    Video result = videoService.store(file);
+    Video result = videoService.store(videoFile, courseUuid);
     String logMessage =
         String.format("A video with the id %s was successfully created!",
             result.getId());
     LOGGER.info(logMessage);
     redirectAttributes.addFlashAttribute("message",
-        "You successfully uploaded " + file.getOriginalFilename() + "!");
+        "You successfully uploaded " + videoFile.getOriginalFilename() + "!");
 
     return ResponseEntity.created(new URI("/api/videos/" + result.getId()))
         .headers(HeaderUtil.createEntityCreationAlert(this.getApplicationName(),
@@ -107,7 +117,7 @@ public class VideoResource {
         .body(result);
   }
 
-  /**
+    /**
    * Delete a video from the system.
    *
    * @param id                 of the video file to delete.
