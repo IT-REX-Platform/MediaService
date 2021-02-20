@@ -36,6 +36,7 @@ import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.hibernate.id.IdentifierGenerator.ENTITY_NAME;
@@ -152,13 +153,15 @@ public class VideoResource {
   /**
    * {@code GET  /videos} : get all the videos.
    *
+   * @param courseId Course ID.
    * @return the {@link ResponseEntity} with
    * status {@code 200 (OK)} and the list of videos in body.
    */
   @GetMapping("/videos")
-  public List<Video> getAllVideos() {
+  public List<Video> getAllVideos(
+          @RequestParam("course_id") final Optional<String> courseId) {
     LOGGER.debug("REST request to get all Videos");
-    return videoService.findAll();
+    return videoService.findAll(courseId);
   }
 
   /**

@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
@@ -39,6 +40,7 @@ import java.nio.file.Path;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -338,8 +340,28 @@ public class VideoService {
    * @return all videos
    */
   @Transactional(readOnly = true)
-  public List<Video> findAll() {
-    return videoRepository.findAll();
+  public List<Video> findAll(final Optional<String> courseId) {
+      LOGGER.trace("Applying filters.");
+      Video videoExample = applyFiltersToExample(courseId);
+      return videoRepository.findAll(Example.of(videoExample));
+  }
+
+  /**
+   * Method applies filters to an example instance of video,
+   * which is used for running a search over all videos.
+   * <p>
+   * More filters can be added here. @s.pastuchov 20.02.21
+   *
+   * @param courseId Filter course ID.
+   * @return Example video with applied filters for search.
+   */
+  private Video applyFiltersToExample(final Optional<String> courseId) {
+      Video video = new Video();
+      courseId.ifPresent(id -> {
+          UUID courseUuid = UUID.fromString(id);
+          video.setCourseId(courseUuid);
+      });
+      return video;
   }
 
   /**
