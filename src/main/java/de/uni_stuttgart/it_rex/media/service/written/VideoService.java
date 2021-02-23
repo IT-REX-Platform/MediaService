@@ -73,6 +73,11 @@ public class VideoService {
   private VideoRepository videoRepository;
 
   /**
+   * Video mapper.
+   */
+  private VideoMapper videoMapper;
+
+  /**
    * The url to minio.
    */
   private String minioUrl;
@@ -97,11 +102,6 @@ public class VideoService {
    * Source: https://docs.min.io/docs/java-client-api-reference.html#putObject
    */
   private static final int UNKNOWN_FILE_SIZE = 10485760;
-
-  /**
-   * Video mapper.
-   */
-  private VideoMapper videoMapper;
 
   /**
    * Constructor.
@@ -600,9 +600,27 @@ public class VideoService {
   /**
    * Setter.
    *
-   * @param newVideoRepository the applicationEventPublisher
+   * @param newVideoRepository the videoRepository
    */
   public void setVideoRepository(final VideoRepository newVideoRepository) {
     this.videoRepository = newVideoRepository;
+  }
+
+  /**
+   * Getter.
+   *
+   * @return the videoMapper
+   */
+  public VideoMapper getVideoMapper() {
+    return videoMapper;
+  }
+
+  /**
+   * Setter.
+   *
+   * @param newVideoMapper the videoMapper
+   */
+  public void setVideoMapper(final VideoMapper newVideoMapper) {
+    this.videoMapper = newVideoMapper;
   }
 }

@@ -48,9 +48,10 @@ class VideoServiceTestIT {
   @Test
   void contextLoads() {
     assertThat(videoService).isNotNull();
+    assertThat(videoService.getApplicationEventPublisher()).isNotNull();
     assertThat(videoService.getFileValidatorService()).isNotNull();
     assertThat(videoService.getVideoRepository()).isNotNull();
-    assertThat(videoService.getVideoRepository()).isNotNull();
+    assertThat(videoService.getVideoMapper()).isNotNull();
   }
 
   @Test
