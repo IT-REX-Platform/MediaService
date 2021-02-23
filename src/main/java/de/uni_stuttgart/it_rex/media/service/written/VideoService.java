@@ -2,6 +2,7 @@ package de.uni_stuttgart.it_rex.media.service.written;
 
 import de.uni_stuttgart.it_rex.media.domain.written.Video;
 import de.uni_stuttgart.it_rex.media.repository.written.VideoRepository;
+import de.uni_stuttgart.it_rex.media.service.mapper.written.VideoMapper;
 import de.uni_stuttgart.it_rex.media.service.written.events.FileCreatedEvent;
 import io.minio.BucketExistsArgs;
 import io.minio.GetObjectArgs;
@@ -98,11 +99,17 @@ public class VideoService {
   private static final int UNKNOWN_FILE_SIZE = 10485760;
 
   /**
+   * Video mapper.
+   */
+  private VideoMapper videoMapper;
+
+  /**
    * Constructor.
    *
    * @param newApplicationEventPublisher the event publisher
    * @param newFileValidatorService      the file validator
    * @param newVideoRepository           the video repository
+   * @param newVideoMapper               the video mapper
    * @param newMinioUrl                  the minio url
    * @param newAccessKey                 the access key
    * @param newSecretKey                 the secret key
@@ -113,6 +120,7 @@ public class VideoService {
       final ApplicationEventPublisher newApplicationEventPublisher,
       final FileValidatorService newFileValidatorService,
       final VideoRepository newVideoRepository,
+      final VideoMapper newVideoMapper,
       @Value("${minio.url}") final String newMinioUrl,
       @Value("${minio.access-key}") final String newAccessKey,
       @Value("${minio.secret-key}") final String newSecretKey,
@@ -120,6 +128,7 @@ public class VideoService {
     this.applicationEventPublisher = newApplicationEventPublisher;
     this.fileValidatorService = newFileValidatorService;
     this.videoRepository = newVideoRepository;
+    this.videoMapper = newVideoMapper;
     this.minioUrl = newMinioUrl;
     this.accessKey = newAccessKey;
     this.secretKey = newSecretKey;
@@ -448,6 +457,24 @@ public class VideoService {
       LOGGER.error(e.getLocalizedMessage());
     }
 
+    return null;
+  }
+
+  /**
+   * Update a video without overwriting it.
+   *
+   * @param video the entity to use to update a created entity.
+   * @return the persisted entity.
+   */
+  public Video patch(final Video video) {
+    LOGGER.debug("Request to update Video : {}", video);
+    Optional<Video> oldVideo = videoRepository.findById(video.getId());
+
+    if (oldVideo.isPresent()) {
+      Video oldVideoEntity = oldVideo.get();
+      videoMapper.updateVideoFromVideo(video, oldVideoEntity);
+      return videoRepository.save(oldVideoEntity);
+    }
     return null;
   }
 

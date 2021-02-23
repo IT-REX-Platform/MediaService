@@ -20,8 +20,10 @@ import org.springframework.http.HttpRange;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -126,7 +128,7 @@ public class VideoResource {
    * @return the filename and id
    */
   @DeleteMapping("/videos/{id:.+}")
-  public ResponseEntity<Video> deleteVideo(
+  public ResponseEntity<Void> deleteVideo(
       @PathVariable final UUID id,
       final RedirectAttributes redirectAttributes)
       throws
@@ -208,6 +210,30 @@ public class VideoResource {
     responseHeaders.add("Content-Type", "video/mp4");
 
     return ResponseEntity.ok().headers(responseHeaders).body(file);
+  }
+
+  /**
+   * {@code PATCH  /videos} : Patches an existing video.
+   *
+   * @param video The video to patch
+   * @return the {@link ResponseEntity} with status {@code 200 (OD)} and with
+   * body of the patched video,
+   * or with status {@code 400 (Bad Request)} if the video ID is not valid,
+   * or with status {@code 500 (Internal Server Error)} if the video
+   * couldn't be patched.
+   */
+  @PatchMapping("/videos")
+  public ResponseEntity<Video> patchVideo(@RequestBody final Video video) {
+    LOGGER.debug("REST request to patch a Video");
+    if (video.getId() == null) {
+      throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+    }
+
+    Video result = videoService.patch(video);
+    return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(this.getApplicationName(),
+                    true, ENTITY_NAME, result.getId().toString()))
+            .body(result);
   }
 
   /**
