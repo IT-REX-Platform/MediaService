@@ -48,9 +48,9 @@ public class AuthorizationService {
 
     public static boolean userIsCourseParticipantOrManagerOrOwner(UUID courseID) {
 
-        String participantInCourseAuthority = String.format(ROLE_COURSE_TEMPLATE, CourseRole.PARTICIPANT.toString(), courseID.toString());
-        String managerInCourseAuthority = String.format(ROLE_COURSE_TEMPLATE, CourseRole.MANAGER.toString(), courseID.toString());
-        String ownerInCourseAuthority = String.format(ROLE_COURSE_TEMPLATE, CourseRole.OWNER.toString(), courseID.toString());
+        String participantInCourseAuthority = getCourseRoleAuthorityString(CourseRole.PARTICIPANT, courseID);
+        String managerInCourseAuthority = getCourseRoleAuthorityString(CourseRole.MANAGER, courseID);
+        String ownerInCourseAuthority = getCourseRoleAuthorityString(CourseRole.OWNER, courseID);
 
         return (userHasAuthority(participantInCourseAuthority) ||
                 userHasAuthority(managerInCourseAuthority) ||
@@ -59,8 +59,8 @@ public class AuthorizationService {
 
     public static boolean userIsCourseManagerOrOwner(UUID courseID) {
 
-        String managerInCourseAuthority = String.format(ROLE_COURSE_TEMPLATE, CourseRole.MANAGER.toString(), courseID.toString());
-        String ownerInCourseAuthority = String.format(ROLE_COURSE_TEMPLATE, CourseRole.OWNER.toString(), courseID.toString());
+        String managerInCourseAuthority = getCourseRoleAuthorityString(CourseRole.MANAGER, courseID);
+        String ownerInCourseAuthority = getCourseRoleAuthorityString(CourseRole.OWNER, courseID);
 
         return (userHasAuthority(managerInCourseAuthority) ||
                 userHasAuthority(ownerInCourseAuthority));
