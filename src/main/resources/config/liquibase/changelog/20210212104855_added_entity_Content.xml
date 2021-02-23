@@ -37,6 +37,12 @@
             <column name="height" type="integer">
                 <constraints nullable="true"/>
             </column>
+            <column name="previous_id" type="${uuidType}">
+                <constraints nullable="true"/>
+            </column>
+            <column name="next_id" type="${uuidType}">
+                <constraints nullable="true"/>
+            </column>
             <column name="dtype" type="tinyint">
                 <constraints nullable="true"/>
             </column>

@@ -22,7 +22,7 @@ import java.util.UUID;
     name = "dtype",
     columnDefinition = "TINYINT(1)"
 )
-public abstract class Content implements Serializable {
+public class Content implements Serializable {
 
   /**
    * Identifier.
@@ -66,6 +66,18 @@ public abstract class Content implements Serializable {
    */
   @Column(name = "uploader_id")
   private UUID uploaderId;
+
+  /**
+   * Id of the previous content in the chapter.
+   */
+  @Column(name = "previous_id")
+  private UUID previousId;
+
+  /**
+   * Id of the next content in the chapter.
+   */
+  @Column(name = "next_id")
+  private UUID nextId;
 
   /**
    * Getter.
@@ -194,10 +206,46 @@ public abstract class Content implements Serializable {
   }
 
   /**
+   * Getter.
+   *
+   * @return id of the previous video in the chapter
+   */
+  public UUID getPreviousId() {
+    return previousId;
+  }
+
+  /**
+   * Setter.
+   *
+   * @param newPreviousId id of the previous video in the chapter
+   */
+  public void setPreviousId(final UUID newPreviousId) {
+    this.previousId = newPreviousId;
+  }
+
+  /**
+   * Getter.
+   *
+   * @return id of the next video in the chapter
+   */
+  public UUID getNextId() {
+    return nextId;
+  }
+
+  /**
+   * Setter.
+   *
+   * @param newNextId id of the next video in the chapter
+   */
+  public void setNextId(final UUID newNextId) {
+    this.nextId = newNextId;
+  }
+
+  /**
    * Equals method.
    *
-   * @param o the other object.
-   * @return if they are equal.
+   * @param o the other object
+   * @return if they are equal
    */
   @Override
   public boolean equals(final Object o) {
@@ -208,30 +256,34 @@ public abstract class Content implements Serializable {
       return false;
     }
     Content content = (Content) o;
-    return Objects.equals(getId(),
-        content.getId())
+    return Objects.equals(getId(), content.getId())
         && Objects.equals(getTitle(), content.getTitle())
         && Objects.equals(getStartDate(), content.getStartDate())
         && Objects.equals(getEndDate(), content.getEndDate())
         && Objects.equals(getCourseId(), content.getCourseId())
         && Objects.equals(getChapterId(), content.getChapterId())
-        && Objects.equals(getUploaderId(), content.getUploaderId());
+        && Objects.equals(getUploaderId(), content.getUploaderId())
+        && Objects.equals(getPreviousId(), content.getPreviousId())
+        && Objects.equals(getNextId(), content.getNextId());
   }
 
   /**
-   * Hash code.
+   * Hash code method.
    *
-   * @return the hash code.
+   * @return the hash code
    */
   @Override
   public int hashCode() {
-    return Objects.hash(getId(),
+    return Objects.hash(
+        getId(),
         getTitle(),
         getStartDate(),
         getEndDate(),
         getCourseId(),
         getChapterId(),
-        getUploaderId());
+        getUploaderId(),
+        getPreviousId(),
+        getNextId());
   }
 
   /**
@@ -249,6 +301,7 @@ public abstract class Content implements Serializable {
         + ", courseId=" + courseId
         + ", chapterId=" + chapterId
         + ", uploaderId=" + uploaderId
-        + '}';
+        + ", previousId=" + previousId
+        + ", nextId=" + nextId + '}';
   }
 }
