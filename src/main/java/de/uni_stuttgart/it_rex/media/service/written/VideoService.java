@@ -2,6 +2,7 @@ package de.uni_stuttgart.it_rex.media.service.written;
 
 import de.uni_stuttgart.it_rex.media.domain.written.Video;
 import de.uni_stuttgart.it_rex.media.repository.written.VideoRepository;
+import de.uni_stuttgart.it_rex.media.service.mapper.written.VideoMapper;
 import de.uni_stuttgart.it_rex.media.service.written.events.FileCreatedEvent;
 import io.minio.BucketExistsArgs;
 import io.minio.GetObjectArgs;
@@ -26,6 +27,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
@@ -39,6 +41,7 @@ import java.nio.file.Path;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -68,6 +71,11 @@ public class VideoService {
    * Repository to save meta information.
    */
   private VideoRepository videoRepository;
+
+  /**
+   * Video mapper.
+   */
+  private VideoMapper videoMapper;
 
   /**
    * The url to minio.
@@ -101,6 +109,7 @@ public class VideoService {
    * @param newApplicationEventPublisher the event publisher
    * @param newFileValidatorService      the file validator
    * @param newVideoRepository           the video repository
+   * @param newVideoMapper               the video mapper
    * @param newMinioUrl                  the minio url
    * @param newAccessKey                 the access key
    * @param newSecretKey                 the secret key
@@ -111,6 +120,7 @@ public class VideoService {
       final ApplicationEventPublisher newApplicationEventPublisher,
       final FileValidatorService newFileValidatorService,
       final VideoRepository newVideoRepository,
+      final VideoMapper newVideoMapper,
       @Value("${minio.url}") final String newMinioUrl,
       @Value("${minio.access-key}") final String newAccessKey,
       @Value("${minio.secret-key}") final String newSecretKey,
@@ -118,6 +128,7 @@ public class VideoService {
     this.applicationEventPublisher = newApplicationEventPublisher;
     this.fileValidatorService = newFileValidatorService;
     this.videoRepository = newVideoRepository;
+    this.videoMapper = newVideoMapper;
     this.minioUrl = newMinioUrl;
     this.accessKey = newAccessKey;
     this.secretKey = newSecretKey;
@@ -188,12 +199,14 @@ public class VideoService {
   /**
    * Store a video file.
    *
-   * @param file The video file to store.
+   * @param videoFile  The video file to store.
+   * @param courseUuid Course ID as UUID.
    * @return the video meta data
    */
   @Transactional(rollbackFor = {Exception.class})
   public Video store(
-      final MultipartFile file)
+      final MultipartFile videoFile,
+      final UUID courseUuid)
       throws IOException,
       InvalidKeyException,
       InvalidResponseException,
@@ -203,16 +216,17 @@ public class VideoService {
       ErrorResponseException,
       XmlParserException,
       InternalException {
-    fileValidatorService.validate(file);
+    fileValidatorService.validate(videoFile);
 
     Video video = this.save(new Video());
 
-    storeFile(video.getId(), file);
+    storeFile(video.getId(), videoFile);
     applicationEventPublisher.publishEvent(
         new FileCreatedEvent(this, video.getId()));
 
     video.setLength(this.getLength(video.getId()));
-    video.setTitle(file.getOriginalFilename());
+    video.setTitle(videoFile.getOriginalFilename());
+    video.setCourseId(courseUuid);
     this.save(video);
 
     return video;
@@ -335,8 +349,28 @@ public class VideoService {
    * @return all videos
    */
   @Transactional(readOnly = true)
-  public List<Video> findAll() {
-    return videoRepository.findAll();
+  public List<Video> findAll(final Optional<String> courseId) {
+      LOGGER.trace("Applying filters.");
+      Video videoExample = applyFiltersToExample(courseId);
+      return videoRepository.findAll(Example.of(videoExample));
+  }
+
+  /**
+   * Method applies filters to an example instance of video,
+   * which is used for running a search over all videos.
+   * <p>
+   * More filters can be added here. @s.pastuchov 20.02.21
+   *
+   * @param courseId Filter course ID.
+   * @return Example video with applied filters for search.
+   */
+  private Video applyFiltersToExample(final Optional<String> courseId) {
+      Video video = new Video();
+      courseId.ifPresent(id -> {
+          UUID courseUuid = UUID.fromString(id);
+          video.setCourseId(courseUuid);
+      });
+      return video;
   }
 
   /**
@@ -423,6 +457,24 @@ public class VideoService {
       LOGGER.error(e.getLocalizedMessage());
     }
 
+    return null;
+  }
+
+  /**
+   * Update a video without overwriting it.
+   *
+   * @param video the entity to use to update a created entity.
+   * @return the persisted entity.
+   */
+  public Video patch(final Video video) {
+    LOGGER.debug("Request to update Video : {}", video);
+    Optional<Video> oldVideo = videoRepository.findById(video.getId());
+
+    if (oldVideo.isPresent()) {
+      Video oldVideoEntity = oldVideo.get();
+      videoMapper.updateVideoFromVideo(video, oldVideoEntity);
+      return videoRepository.save(oldVideoEntity);
+    }
     return null;
   }
 
@@ -548,9 +600,27 @@ public class VideoService {
   /**
    * Setter.
    *
-   * @param newVideoRepository the applicationEventPublisher
+   * @param newVideoRepository the videoRepository
    */
   public void setVideoRepository(final VideoRepository newVideoRepository) {
     this.videoRepository = newVideoRepository;
+  }
+
+  /**
+   * Getter.
+   *
+   * @return the videoMapper
+   */
+  public VideoMapper getVideoMapper() {
+    return videoMapper;
+  }
+
+  /**
+   * Setter.
+   *
+   * @param newVideoMapper the videoMapper
+   */
+  public void setVideoMapper(final VideoMapper newVideoMapper) {
+    this.videoMapper = newVideoMapper;
   }
 }

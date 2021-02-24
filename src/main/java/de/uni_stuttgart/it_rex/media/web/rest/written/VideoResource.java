@@ -2,6 +2,7 @@ package de.uni_stuttgart.it_rex.media.web.rest.written;
 
 import de.uni_stuttgart.it_rex.media.domain.written.Video;
 import de.uni_stuttgart.it_rex.media.service.written.VideoService;
+import de.uni_stuttgart.it_rex.media.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.minio.errors.ErrorResponseException;
 import io.minio.errors.InsufficientDataException;
@@ -19,11 +20,14 @@ import org.springframework.http.HttpRange;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -34,6 +38,7 @@ import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.hibernate.id.IdentifierGenerator.ENTITY_NAME;
@@ -71,16 +76,18 @@ public class VideoResource {
 
   /**
    * Upload a video to the system.
-   * The file ist stored in a file storage
+   * The video file is stored in a file storage
    * while metadata is persisted in an RDBMS.
    *
-   * @param file               The video file to upload.
+   * @param videoFile          The video file to upload.
+   * @param courseId           Course ID as String.
    * @param redirectAttributes The redirect attributes.
    * @return the filename and id
    */
   @PostMapping("/videos")
   public ResponseEntity<Video> uploadVideo(
-      @RequestParam("file") final MultipartFile file,
+      @RequestPart("videoFile") final MultipartFile videoFile,
+      @RequestPart("courseId") final String courseId,
       final RedirectAttributes redirectAttributes)
       throws URISyntaxException,
       IOException,
@@ -92,14 +99,20 @@ public class VideoResource {
       XmlParserException,
       InsufficientDataException,
       ErrorResponseException {
+    UUID courseUuid;
+    try {
+        courseUuid = UUID.fromString(courseId);
+    } catch (Exception e) {
+        throw new BadRequestAlertException("Invalid course ID", ENTITY_NAME, "invalidId");
+    }
 
-    Video result = videoService.store(file);
+    Video result = videoService.store(videoFile, courseUuid);
     String logMessage =
         String.format("A video with the id %s was successfully created!",
             result.getId());
     LOGGER.info(logMessage);
     redirectAttributes.addFlashAttribute("message",
-        "You successfully uploaded " + file.getOriginalFilename() + "!");
+        "You successfully uploaded " + videoFile.getOriginalFilename() + "!");
 
     return ResponseEntity.created(new URI("/api/videos/" + result.getId()))
         .headers(HeaderUtil.createEntityCreationAlert(this.getApplicationName(),
@@ -107,7 +120,7 @@ public class VideoResource {
         .body(result);
   }
 
-  /**
+    /**
    * Delete a video from the system.
    *
    * @param id                 of the video file to delete.
@@ -115,7 +128,7 @@ public class VideoResource {
    * @return the filename and id
    */
   @DeleteMapping("/videos/{id:.+}")
-  public ResponseEntity<Video> deleteVideo(
+  public ResponseEntity<Void> deleteVideo(
       @PathVariable final UUID id,
       final RedirectAttributes redirectAttributes)
       throws
@@ -142,13 +155,15 @@ public class VideoResource {
   /**
    * {@code GET  /videos} : get all the videos.
    *
+   * @param courseId Course ID.
    * @return the {@link ResponseEntity} with
    * status {@code 200 (OK)} and the list of videos in body.
    */
   @GetMapping("/videos")
-  public List<Video> getAllVideos() {
+  public List<Video> getAllVideos(
+          @RequestParam("course_id") final Optional<String> courseId) {
     LOGGER.debug("REST request to get all Videos");
-    return videoService.findAll();
+    return videoService.findAll(courseId);
   }
 
   /**
@@ -195,6 +210,30 @@ public class VideoResource {
     responseHeaders.add("Content-Type", "video/mp4");
 
     return ResponseEntity.ok().headers(responseHeaders).body(file);
+  }
+
+  /**
+   * {@code PATCH  /videos} : Patches an existing video.
+   *
+   * @param video The video to patch
+   * @return the {@link ResponseEntity} with status {@code 200 (OD)} and with
+   * body of the patched video,
+   * or with status {@code 400 (Bad Request)} if the video ID is not valid,
+   * or with status {@code 500 (Internal Server Error)} if the video
+   * couldn't be patched.
+   */
+  @PatchMapping("/videos")
+  public ResponseEntity<Video> patchVideo(@RequestBody final Video video) {
+    LOGGER.debug("REST request to patch a Video");
+    if (video.getId() == null) {
+      throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+    }
+
+    Video result = videoService.patch(video);
+    return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(this.getApplicationName(),
+                    true, ENTITY_NAME, result.getId().toString()))
+            .body(result);
   }
 
   /**

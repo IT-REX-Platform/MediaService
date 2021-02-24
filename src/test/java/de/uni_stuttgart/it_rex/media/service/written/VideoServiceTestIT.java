@@ -48,9 +48,10 @@ class VideoServiceTestIT {
   @Test
   void contextLoads() {
     assertThat(videoService).isNotNull();
+    assertThat(videoService.getApplicationEventPublisher()).isNotNull();
     assertThat(videoService.getFileValidatorService()).isNotNull();
     assertThat(videoService.getVideoRepository()).isNotNull();
-    assertThat(videoService.getVideoRepository()).isNotNull();
+    assertThat(videoService.getVideoMapper()).isNotNull();
   }
 
   @Test
@@ -70,8 +71,10 @@ class VideoServiceTestIT {
         "".getBytes()
     );
 
+    UUID zeroUuid = new UUID( 0 , 0 );
+
     Exception storageException = assertThrows(StorageException.class, () ->
-        videoService.store(emptyFile));
+        videoService.store(emptyFile, zeroUuid));
     assertThat(storageException.getMessage()).isEqualTo(EXCEPTION_MESSAGE);
   }
 
