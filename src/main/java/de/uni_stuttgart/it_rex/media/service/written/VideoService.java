@@ -4,6 +4,7 @@ import de.uni_stuttgart.it_rex.media.domain.written.Video;
 import de.uni_stuttgart.it_rex.media.repository.written.VideoRepository;
 import de.uni_stuttgart.it_rex.media.service.mapper.written.VideoMapper;
 import de.uni_stuttgart.it_rex.media.service.written.events.FileCreatedEvent;
+import de.uni_stuttgart.it_rex.media.web.rest.errors.BadRequestAlertException;
 import io.minio.BucketExistsArgs;
 import io.minio.GetObjectArgs;
 import io.minio.MakeBucketArgs;
@@ -43,6 +44,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import static org.hibernate.id.IdentifierGenerator.ENTITY_NAME;
 
 
 /**
@@ -344,9 +347,10 @@ public class VideoService {
   }
 
   /**
-   * Finds all videos.
+   * Method finds all videos corresponding to given filters.
    *
-   * @return all videos
+   * @param courseId optional filter parameter course ID.
+   * @return all videos after filtering.
    */
   @Transactional(readOnly = true)
   public List<Video> findAll(final Optional<String> courseId) {
@@ -468,14 +472,41 @@ public class VideoService {
    */
   public Video patch(final Video video) {
     LOGGER.debug("Request to update Video : {}", video);
-    Optional<Video> oldVideo = videoRepository.findById(video.getId());
+    Optional<Video> videoStored = videoRepository.findById(video.getId());
 
-    if (oldVideo.isPresent()) {
-      Video oldVideoEntity = oldVideo.get();
-      videoMapper.updateVideoFromVideo(video, oldVideoEntity);
-      return videoRepository.save(oldVideoEntity);
+    if (videoStored.isEmpty()) {
+        throw new BadRequestAlertException("Video not found", ENTITY_NAME, "idInvalid");
     }
-    return null;
+
+    Video videoStoredEntity = videoStored.get();
+    Video videoSanitized = sanitizeVideoPatch(video);
+    videoMapper.updateVideoFromVideo(videoSanitized, videoStoredEntity);
+    return videoRepository.save(videoStoredEntity);
+  }
+
+  /**
+   * Method removes unwanted changes to Video and Content entities.
+   *
+   * @param video the entity to use to update a created video/content entity.
+   * @return the sanitized entity.
+   */
+  private Video sanitizeVideoPatch(final Video video) {
+    Video videoSanitized = new Video();
+
+    if (!video.getTitle().isEmpty()) {
+      videoSanitized.setTitle(video.getTitle());
+    }
+    if (video.getStartDate() != null) {
+      videoSanitized.setStartDate(video.getStartDate());
+    }
+    if (video.getEndDate() != null) {
+      videoSanitized.setEndDate(video.getEndDate());
+    }
+    if (video.getChapterId() != null) {
+      videoSanitized.setChapterId(video.getChapterId());
+    }
+
+    return videoSanitized;
   }
 
   /**
