@@ -485,7 +485,7 @@ public class VideoService {
   }
 
   /**
-   * Method removes unwanted changes to Video and Content entities.
+   * Method removes unwanted changes to video and content entities.
    *
    * @param video the entity to use to update a created video/content entity.
    * @return the sanitized entity.
