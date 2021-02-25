@@ -103,7 +103,10 @@ public class VideoResource {
     try {
         courseUuid = UUID.fromString(courseId);
     } catch (Exception e) {
-        throw new BadRequestAlertException("Invalid course ID", ENTITY_NAME, "invalidId");
+        throw new BadRequestAlertException(
+                "Invalid course ID",
+                ENTITY_NAME,
+                "invalidId");
     }
 
     Video result = videoService.store(videoFile, courseUuid);
@@ -231,7 +234,8 @@ public class VideoResource {
 
     Video result = videoService.patch(video);
     return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(this.getApplicationName(),
+            .headers(HeaderUtil
+                    .createEntityUpdateAlert(this.getApplicationName(),
                     true, ENTITY_NAME, result.getId().toString()))
             .body(result);
   }
