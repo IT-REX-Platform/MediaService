@@ -475,7 +475,7 @@ public class VideoService {
     Optional<Video> videoStored = videoRepository.findById(video.getId());
 
     if (videoStored.isEmpty()) {
-        throw new BadRequestAlertException("Video not found", ENTITY_NAME, "idInvalid");
+      return null;
     }
 
     Video videoStoredEntity = videoStored.get();
