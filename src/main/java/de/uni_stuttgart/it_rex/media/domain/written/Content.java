@@ -68,18 +68,6 @@ public class Content implements Serializable {
   private UUID uploaderId;
 
   /**
-   * Id of the previous content in the chapter.
-   */
-  @Column(name = "previous_id")
-  private UUID previousId;
-
-  /**
-   * Id of the next content in the chapter.
-   */
-  @Column(name = "next_id")
-  private UUID nextId;
-
-  /**
    * Getter.
    *
    * @return the id.
@@ -206,42 +194,6 @@ public class Content implements Serializable {
   }
 
   /**
-   * Getter.
-   *
-   * @return id of the previous video in the chapter
-   */
-  public UUID getPreviousId() {
-    return previousId;
-  }
-
-  /**
-   * Setter.
-   *
-   * @param newPreviousId id of the previous video in the chapter
-   */
-  public void setPreviousId(final UUID newPreviousId) {
-    this.previousId = newPreviousId;
-  }
-
-  /**
-   * Getter.
-   *
-   * @return id of the next video in the chapter
-   */
-  public UUID getNextId() {
-    return nextId;
-  }
-
-  /**
-   * Setter.
-   *
-   * @param newNextId id of the next video in the chapter
-   */
-  public void setNextId(final UUID newNextId) {
-    this.nextId = newNextId;
-  }
-
-  /**
    * Equals method.
    *
    * @param o the other object
@@ -262,9 +214,7 @@ public class Content implements Serializable {
         && Objects.equals(getEndDate(), content.getEndDate())
         && Objects.equals(getCourseId(), content.getCourseId())
         && Objects.equals(getChapterId(), content.getChapterId())
-        && Objects.equals(getUploaderId(), content.getUploaderId())
-        && Objects.equals(getPreviousId(), content.getPreviousId())
-        && Objects.equals(getNextId(), content.getNextId());
+        && Objects.equals(getUploaderId(), content.getUploaderId());
   }
 
   /**
@@ -281,9 +231,7 @@ public class Content implements Serializable {
         getEndDate(),
         getCourseId(),
         getChapterId(),
-        getUploaderId(),
-        getPreviousId(),
-        getNextId());
+        getUploaderId());
   }
 
   /**
@@ -300,8 +248,6 @@ public class Content implements Serializable {
         + ", endDate=" + endDate
         + ", courseId=" + courseId
         + ", chapterId=" + chapterId
-        + ", uploaderId=" + uploaderId
-        + ", previousId=" + previousId
-        + ", nextId=" + nextId + '}';
+        + ", uploaderId=" + uploaderId + '}';
   }
 }

@@ -17,7 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -79,8 +78,7 @@ class ContentResourceTestIT {
     video.setLength(LENGTH_1);
     video.setWidth(WIDTH_1);
     video.setHeight(HEIGHT_1);
-    video.setNextId(NEXT_ID_1);
-    video.setPreviousId(PREVIOUS_ID_1);
+
     return video;
   }
 
@@ -96,8 +94,7 @@ class ContentResourceTestIT {
     video.setLength(LENGTH_2);
     video.setWidth(WIDTH_2);
     video.setHeight(HEIGHT_2);
-    video.setNextId(NEXT_ID_2);
-    video.setPreviousId(PREVIOUS_ID_2);
+
     return video;
   }
 
@@ -143,8 +140,6 @@ class ContentResourceTestIT {
     assertEquals(expected.getCourseId(), updated.getCourseId());
     assertEquals(expected.getChapterId(), updated.getChapterId());
     assertEquals(expected.getUploaderId(), updated.getUploaderId());
-    assertEquals(expected.getPreviousId(), updated.getPreviousId());
-    assertEquals(expected.getNextId(), updated.getNextId());
     assertEquals(MIMETYPE_1, ((Resource) updated).getMimeType());
     assertEquals(LENGTH_1, ((Video) updated).getLength());
     assertEquals(WIDTH_1, ((Video) updated).getWidth());

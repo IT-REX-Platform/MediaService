@@ -4,7 +4,6 @@ import de.uni_stuttgart.it_rex.media.domain.written.Video;
 import de.uni_stuttgart.it_rex.media.repository.written.VideoRepository;
 import de.uni_stuttgart.it_rex.media.service.mapper.written.VideoMapper;
 import de.uni_stuttgart.it_rex.media.service.written.events.FileCreatedEvent;
-import de.uni_stuttgart.it_rex.media.web.rest.errors.BadRequestAlertException;
 import io.minio.BucketExistsArgs;
 import io.minio.GetObjectArgs;
 import io.minio.MakeBucketArgs;
@@ -44,8 +43,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-import static org.hibernate.id.IdentifierGenerator.ENTITY_NAME;
 
 
 /**
@@ -153,6 +150,7 @@ public class VideoService {
    * @param location the location
    */
   public void makeBucket(final Path location) {
+    final MinioClient minioClient = buildClient();
     try {
       // Make uploads bucket if not exist.
       final boolean found = minioClient.bucketExists(
@@ -300,7 +298,7 @@ public class VideoService {
       NoSuchAlgorithmException,
       XmlParserException,
       ErrorResponseException {
-    MinioClient minioClient = buildClient();
+    final MinioClient minioClient = buildClient();
 
     final ObjectWriteResponse result = minioClient.putObject(
         PutObjectArgs.builder()
@@ -334,7 +332,7 @@ public class VideoService {
       InternalException,
       XmlParserException,
       ErrorResponseException {
-    MinioClient minioClient = buildClient();
+    final MinioClient minioClient = buildClient();
     minioClient.removeObject(
         RemoveObjectArgs.builder().bucket(rootLocation.toString())
             .object(id.toString()).build());
@@ -395,7 +393,7 @@ public class VideoService {
    */
   public long getLength(final UUID id) {
 
-    MinioClient minioClient = buildClient();
+    final MinioClient minioClient = buildClient();
 
     try {
 
@@ -429,7 +427,7 @@ public class VideoService {
   public Resource loadAsResource(final UUID filename, final long offset,
                                  final long length) {
 
-    MinioClient minioClient = buildClient();
+    final MinioClient minioClient = buildClient();
 
     // get object given the bucket and object name
     try {
