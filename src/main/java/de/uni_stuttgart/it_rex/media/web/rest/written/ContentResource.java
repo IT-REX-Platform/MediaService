@@ -68,7 +68,7 @@ public class ContentResource {
       throw new BadRequestAlertException("Invalid id", ENTITY_NAME,
           "idnull");
     }
-    Content result = contentService.patch(content);
+    final Content result = contentService.patch(content);
     return ResponseEntity.ok()
         .headers(HeaderUtil.createEntityUpdateAlert(applicationName,
             true, ENTITY_NAME, result.getId().toString()))

@@ -153,10 +153,9 @@ public class VideoService {
    * @param location the location
    */
   public void makeBucket(final Path location) {
-    MinioClient minioClient = buildClient();
     try {
       // Make uploads bucket if not exist.
-      boolean found = minioClient.bucketExists(
+      final boolean found = minioClient.bucketExists(
           BucketExistsArgs.builder().bucket(location.toString())
               .build());
       if (!found) {
@@ -164,7 +163,7 @@ public class VideoService {
             MakeBucketArgs.builder().bucket(location.toString())
                 .build());
       } else {
-        String bucketExistsLog = String
+        final String bucketExistsLog = String
             .format("Bucket %s already exists.", location);
         LOGGER.info(bucketExistsLog);
       }
@@ -221,7 +220,7 @@ public class VideoService {
       InternalException {
     fileValidatorService.validate(videoFile);
 
-    Video video = this.save(new Video());
+    final Video video = this.save(new Video());
 
     storeFile(video.getId(), videoFile);
     applicationEventPublisher.publishEvent(
@@ -303,14 +302,14 @@ public class VideoService {
       ErrorResponseException {
     MinioClient minioClient = buildClient();
 
-    ObjectWriteResponse result = minioClient.putObject(
+    final ObjectWriteResponse result = minioClient.putObject(
         PutObjectArgs.builder()
             .bucket(rootLocation.toString())
             .object(videoId.toString())
             .stream(file.getInputStream(), -1, UNKNOWN_FILE_SIZE)
             .build());
 
-    String uploadSuccessLog = String
+    final String uploadSuccessLog = String
         .format(
             "%s is successfully uploaded as object %s to bucket '%s'.",
             file.getOriginalFilename(), result.object(),
@@ -340,7 +339,7 @@ public class VideoService {
         RemoveObjectArgs.builder().bucket(rootLocation.toString())
             .object(id.toString()).build());
 
-    String uploadSuccessLog = String
+    final String uploadSuccessLog = String
         .format("The file with the id %s was successfully removed from %s.",
             id, rootLocation.toString());
     LOGGER.info(uploadSuccessLog);
@@ -355,7 +354,7 @@ public class VideoService {
   @Transactional(readOnly = true)
   public List<Video> findAll(final Optional<String> courseId) {
       LOGGER.trace("Applying filters.");
-      Video videoExample = applyFiltersToExample(courseId);
+    final Video videoExample = applyFiltersToExample(courseId);
       return videoRepository.findAll(Example.of(videoExample));
   }
 
@@ -369,7 +368,7 @@ public class VideoService {
    * @return Example video with applied filters for search.
    */
   private Video applyFiltersToExample(final Optional<String> courseId) {
-      Video video = new Video();
+    final Video video = new Video();
       courseId.ifPresent(id -> {
           UUID courseUuid = UUID.fromString(id);
           video.setCourseId(courseUuid);
@@ -435,7 +434,7 @@ public class VideoService {
     // get object given the bucket and object name
     try {
 
-      InputStream stream = minioClient.getObject(
+      final InputStream stream = minioClient.getObject(
           GetObjectArgs.builder()
               .bucket(rootLocation.toString())
               .object(filename.toString())
@@ -444,7 +443,7 @@ public class VideoService {
               .build());
 
       // Read data from stream
-      InputStreamResource
+      final InputStreamResource
           resource = new InputStreamResource(stream, filename.toString());
 
       if (resource.exists() || resource.isReadable()) {
@@ -472,14 +471,14 @@ public class VideoService {
    */
   public Video patch(final Video video) {
     LOGGER.debug("Request to update Video : {}", video);
-    Optional<Video> videoStored = videoRepository.findById(video.getId());
+    final Optional<Video> videoStored = videoRepository.findById(video.getId());
 
     if (videoStored.isEmpty()) {
       return null;
     }
 
-    Video videoStoredEntity = videoStored.get();
-    Video videoSanitized = sanitizeVideoPatch(video);
+    final Video videoStoredEntity = videoStored.get();
+    final Video videoSanitized = sanitizeVideoPatch(video);
     videoMapper.updateVideoFromVideo(videoSanitized, videoStoredEntity);
     return videoRepository.save(videoStoredEntity);
   }
@@ -491,7 +490,7 @@ public class VideoService {
    * @return the sanitized entity.
    */
   private Video sanitizeVideoPatch(final Video video) {
-    Video videoSanitized = new Video();
+    final Video videoSanitized = new Video();
 
     if (!video.getTitle().isEmpty()) {
       videoSanitized.setTitle(video.getTitle());

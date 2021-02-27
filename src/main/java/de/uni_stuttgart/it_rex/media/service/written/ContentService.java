@@ -52,14 +52,13 @@ public class ContentService {
   @Transactional
   public Content patch(final Content patch) {
     LOGGER.debug("Request to update Content : {}", patch);
-    Optional<Content> contentOptional =
-        contentRepository.findById(patch.getId());
+   final Optional<Content> contentOptional =
+       contentRepository.findById(patch.getId());
 
     if (contentOptional.isPresent()) {
-      Content content = contentOptional.get();
+      final Content content = contentOptional.get();
       contentMapper.updateContentFromContent(patch, content);
-      content = contentRepository.save(content);
-      return content;
+      return contentRepository.save(content);
     }
     return null;
   }
