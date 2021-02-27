@@ -493,8 +493,8 @@ public class VideoService {
   private Video sanitizeVideoPatch(final Video video) {
     Video videoSanitized = new Video();
 
-    if (!video.getTitle().isEmpty()) {
-      videoSanitized.setTitle(video.getTitle());
+    if (video.getTitle() != null && !video.getTitle().equals("")) {
+        videoSanitized.setTitle(video.getTitle());
     }
     if (video.getStartDate() != null) {
       videoSanitized.setStartDate(video.getStartDate());
