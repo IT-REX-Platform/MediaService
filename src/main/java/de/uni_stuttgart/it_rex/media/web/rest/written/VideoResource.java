@@ -232,7 +232,7 @@ public class VideoResource {
       throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
     }
 
-    Video result = videoService.patch(video);
+    final Video result = videoService.patch(video);
     return ResponseEntity.ok()
             .headers(HeaderUtil
                     .createEntityUpdateAlert(this.getApplicationName(),

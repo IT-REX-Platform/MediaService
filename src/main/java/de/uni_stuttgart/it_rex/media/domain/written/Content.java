@@ -22,7 +22,7 @@ import java.util.UUID;
     name = "dtype",
     columnDefinition = "TINYINT(1)"
 )
-public abstract class Content implements Serializable {
+public class Content implements Serializable {
 
   /**
    * Identifier.
@@ -196,8 +196,8 @@ public abstract class Content implements Serializable {
   /**
    * Equals method.
    *
-   * @param o the other object.
-   * @return if they are equal.
+   * @param o the other object
+   * @return if they are equal
    */
   @Override
   public boolean equals(final Object o) {
@@ -208,8 +208,7 @@ public abstract class Content implements Serializable {
       return false;
     }
     Content content = (Content) o;
-    return Objects.equals(getId(),
-        content.getId())
+    return Objects.equals(getId(), content.getId())
         && Objects.equals(getTitle(), content.getTitle())
         && Objects.equals(getStartDate(), content.getStartDate())
         && Objects.equals(getEndDate(), content.getEndDate())
@@ -219,13 +218,14 @@ public abstract class Content implements Serializable {
   }
 
   /**
-   * Hash code.
+   * Hash code method.
    *
-   * @return the hash code.
+   * @return the hash code
    */
   @Override
   public int hashCode() {
-    return Objects.hash(getId(),
+    return Objects.hash(
+        getId(),
         getTitle(),
         getStartDate(),
         getEndDate(),
@@ -248,7 +248,6 @@ public abstract class Content implements Serializable {
         + ", endDate=" + endDate
         + ", courseId=" + courseId
         + ", chapterId=" + chapterId
-        + ", uploaderId=" + uploaderId
-        + '}';
+        + ", uploaderId=" + uploaderId + '}';
   }
 }
