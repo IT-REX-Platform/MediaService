@@ -375,7 +375,7 @@ public final class RexAuthz {
             try {
                 role = Optional.of(REXROLE.valueOf(roleComponents[2]));
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error(e.getLocalizedMessage());
             }
         }
         return role;
@@ -398,7 +398,7 @@ public final class RexAuthz {
             try {
                 uuid = Optional.of(UUID.fromString(roleComponents[2]));
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error(e.getLocalizedMessage());
             }
         }
         return uuid;
@@ -424,7 +424,7 @@ public final class RexAuthz {
                 COURSEROLE role = COURSEROLE.valueOf(roleComponents[3]);
                 entry = Optional.of(new SimpleEntry<>(uuid, role));
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error(e.getLocalizedMessage());
             }
         }
         return entry;
