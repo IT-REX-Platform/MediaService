@@ -37,7 +37,7 @@ public class VideoUtil {
    * @param number the length of the list
    * @return the DTOs
    */
-  public static List<Video> createVideoDTOs(final int number) {
+  public static List<Video> createVideos(final int number) {
     return IntStream.range(0, number).mapToObj(i -> createVideo()).collect(Collectors.toList());
   }
 

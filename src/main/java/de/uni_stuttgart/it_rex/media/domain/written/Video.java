@@ -77,7 +77,7 @@ public final class Video extends Media implements Serializable {
      * @return the height.
      */
     public Integer getHeight() {
-        return videoHeight;
+        return videoWidth;
     }
 
     /**
