@@ -202,16 +202,16 @@ jhipster:
   #   exposed-headers: "Authorization,Link,X-Total-Count"
   #   allow-credentials: true
   #   max-age: 1800
-    mail:
-      from: MediaService@localhost
-    swagger:
-      default-include-pattern: /api/.*
-      title: MediaService API
-      description: MediaService API documentation
-      version: 0.0.1
-      terms-of-service-url:
-      contact-name:
-      contact-url:
+  mail:
+    from: MediaService@localhost
+  swagger:
+    default-include-pattern: /api/.*
+    title: MediaService API
+    description: MediaService API documentation
+    version: 0.0.1
+    terms-of-service-url:
+    contact-name:
+    contact-url:
     contact-email:
     license: unlicensed
     license-url:
