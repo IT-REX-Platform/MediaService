@@ -6,7 +6,7 @@ public class EnumUtil {
   /**
    * Generates a random mimetype.
    *
-   * @return the publish state
+   * @return the mimetype
    */
   public static MIMETYPE generateRandomMimeType() {
     return MIMETYPE.values()[NumbersUtil.generateRandomInteger(0, MIMETYPE.values().length)];
