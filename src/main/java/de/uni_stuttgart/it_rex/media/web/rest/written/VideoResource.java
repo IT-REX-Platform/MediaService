@@ -127,7 +127,7 @@ public class VideoResource {
    *
    * @param id                 of the video file to delete.
    * @param redirectAttributes redirectAttributes
-   * @return the filename and id
+   * @return the filename and id.
    */
   @DeleteMapping("/videos/{id:.+}")
   public ResponseEntity<Void> deleteVideo(
