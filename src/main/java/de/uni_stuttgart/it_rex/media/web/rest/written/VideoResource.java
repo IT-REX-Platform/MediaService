@@ -163,7 +163,7 @@ public class VideoResource {
    */
   @GetMapping("/videos")
   public List<Video> findAllVideosOfACourse(
-    @RequestParam("courseId") final UUID courseId) {
+    @RequestParam("course_id") final UUID courseId) {
     LOGGER.debug("REST request to get all Videos");
     return videoService.findAllVideosOfACourse(courseId);
   }
