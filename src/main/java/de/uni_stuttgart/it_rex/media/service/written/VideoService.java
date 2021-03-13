@@ -27,7 +27,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
@@ -350,10 +349,9 @@ public class VideoService {
    * @return all videos after filtering.
    */
   @Transactional(readOnly = true)
-  public List<Video> findAll(final Optional<String> courseId) {
-      LOGGER.trace("Applying filters.");
-    final Video videoExample = applyFiltersToExample(courseId);
-      return videoRepository.findAll(Example.of(videoExample));
+  public List<Video> findAllVideosOfACourse(final UUID courseId) {
+    LOGGER.info("Find videos of course: {}", courseId);
+    return videoRepository.findAllByCourseId(courseId);
   }
 
   /**
@@ -381,7 +379,7 @@ public class VideoService {
    * @return the videos
    */
   @Transactional(readOnly = true)
-  public List<Video> findAll(final Iterable<UUID> ids) {
+  public List<Video> findAllWithIds(final Iterable<UUID> ids) {
     return videoRepository.findAllById(ids);
   }
 
