@@ -171,8 +171,8 @@ spring:
             client-secret: internal
   servlet:
     multipart:
-      max-file-size: 2GB
-      max-request-size: 2GB
+      max-file-size: 7GB
+      max-request-size: 7GB
 
 server:
   servlet:
