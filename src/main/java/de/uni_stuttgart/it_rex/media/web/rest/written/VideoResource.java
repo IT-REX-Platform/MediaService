@@ -17,8 +17,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRange;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -51,7 +51,7 @@ public class VideoResource {
    * Logger.
    */
   private static final Logger LOGGER =
-      LoggerFactory.getLogger(VideoResource.class);
+    LoggerFactory.getLogger(VideoResource.class);
   /**
    * Service for storing videos.
    */
@@ -64,7 +64,7 @@ public class VideoResource {
   /**
    * Constructor.
    *
-   * @param vss                VideoStorageService.
+   * @param vss  VideoStorageService.
    * @param name application name.
    */
   @Autowired
@@ -75,8 +75,7 @@ public class VideoResource {
   }
 
   /**
-   * Upload a video to the system.
-   * The video file is stored in a file storage
+   * Upload a video to the system. The video file is stored in a file storage
    * while metadata is persisted in an RDBMS.
    *
    * @param videoFile          The video file to upload.
@@ -86,44 +85,44 @@ public class VideoResource {
    */
   @PostMapping("/videos")
   public ResponseEntity<Video> uploadVideo(
-      @RequestPart("videoFile") final MultipartFile videoFile,
-      @RequestPart("courseId") final String courseId,
-      final RedirectAttributes redirectAttributes)
-      throws URISyntaxException,
-      IOException,
-      InvalidResponseException,
-      InvalidKeyException,
-      NoSuchAlgorithmException,
-      ServerException,
-      InternalException,
-      XmlParserException,
-      InsufficientDataException,
-      ErrorResponseException {
+    @RequestPart("videoFile") final MultipartFile videoFile,
+    @RequestPart("courseId") final String courseId,
+    final RedirectAttributes redirectAttributes)
+    throws URISyntaxException,
+    IOException,
+    InvalidResponseException,
+    InvalidKeyException,
+    NoSuchAlgorithmException,
+    ServerException,
+    InternalException,
+    XmlParserException,
+    InsufficientDataException,
+    ErrorResponseException {
     UUID courseUuid;
     try {
-        courseUuid = UUID.fromString(courseId);
+      courseUuid = UUID.fromString(courseId);
     } catch (Exception e) {
-        throw new BadRequestAlertException(
-                "Invalid course ID",
-                ENTITY_NAME,
-                "invalidId");
+      throw new BadRequestAlertException(
+        "Invalid course ID",
+        ENTITY_NAME,
+        "invalidId");
     }
 
     Video result = videoService.store(videoFile, courseUuid);
     String logMessage =
-        String.format("A video with the id %s was successfully created!",
-            result.getId());
+      String.format("A video with the id %s was successfully created!",
+        result.getId());
     LOGGER.info(logMessage);
     redirectAttributes.addFlashAttribute("message",
-        "You successfully uploaded " + videoFile.getOriginalFilename() + "!");
+      "You successfully uploaded " + videoFile.getOriginalFilename() + "!");
 
     return ResponseEntity.created(new URI("/api/videos/" + result.getId()))
-        .headers(HeaderUtil.createEntityCreationAlert(this.getApplicationName(),
-            true, ENTITY_NAME, result.getId().toString()))
-        .body(result);
+      .headers(HeaderUtil.createEntityCreationAlert(this.getApplicationName(),
+        true, ENTITY_NAME, result.getId().toString()))
+      .body(result);
   }
 
-    /**
+  /**
    * Delete a video from the system.
    *
    * @param id                 of the video file to delete.
@@ -132,27 +131,27 @@ public class VideoResource {
    */
   @DeleteMapping("/videos/{id:.+}")
   public ResponseEntity<Void> deleteVideo(
-      @PathVariable final UUID id,
-      final RedirectAttributes redirectAttributes)
-      throws
-      IOException,
-      InvalidResponseException,
-      InvalidKeyException,
-      NoSuchAlgorithmException,
-      ServerException,
-      InternalException,
-      XmlParserException,
-      InsufficientDataException,
-      ErrorResponseException {
+    @PathVariable final UUID id,
+    final RedirectAttributes redirectAttributes)
+    throws
+    IOException,
+    InvalidResponseException,
+    InvalidKeyException,
+    NoSuchAlgorithmException,
+    ServerException,
+    InternalException,
+    XmlParserException,
+    InsufficientDataException,
+    ErrorResponseException {
     videoService.deleteFile(id);
 
     redirectAttributes.addFlashAttribute(
-        "message", "You successfully deleted " + id + "!");
+      "message", "You successfully deleted " + id + "!");
 
     return ResponseEntity.noContent().headers(
-        HeaderUtil.createEntityDeletionAlert(
-            this.getApplicationName(),
-            true, ENTITY_NAME, id.toString())).build();
+      HeaderUtil.createEntityDeletionAlert(
+        this.getApplicationName(),
+        true, ENTITY_NAME, id.toString())).build();
   }
 
   /**
@@ -178,12 +177,12 @@ public class VideoResource {
    */
   @GetMapping("/videos/{id:.+}")
   public ResponseEntity<Resource> downloadVideo(
-      @PathVariable final UUID id,
-      @RequestHeader final HttpHeaders headers) {
+    @PathVariable final UUID id,
+    @RequestHeader final HttpHeaders headers) {
 
     HttpHeaders responseHeaders = new HttpHeaders();
 
-    long chosenFileLength = videoService.getLength(id);
+    Long chosenFileLength = videoService.getLength(id);
 
     if (chosenFileLength == 0L) {
       return ResponseEntity.notFound().headers(responseHeaders).build();
@@ -202,17 +201,22 @@ public class VideoResource {
     long length = end - start + 1;
 
     Resource file = videoService
-        .loadAsResource(id, start, length);
+      .loadAsResource(id, start, length);
 
     if (file == null) {
       return ResponseEntity.notFound().headers(responseHeaders).build();
     }
 
     responseHeaders.add(HttpHeaders.CONTENT_DISPOSITION,
-        "inline; filename=\"" + id + "\"");
+      "inline; filename=\"" + id + "\"");
+    responseHeaders.add("Accept-Ranges", "bytes");
     responseHeaders.add("Content-Type", "video/mp4");
+    responseHeaders.add("Content-Length", chosenFileLength.toString());
+    responseHeaders.add("Content-Range", "bytes " + start
+      + "-" + (end - 1) + "/" + chosenFileLength);
 
-    return ResponseEntity.ok().headers(responseHeaders).body(file);
+    return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT)
+      .headers(responseHeaders).body(file);
   }
 
   /**
@@ -220,10 +224,9 @@ public class VideoResource {
    *
    * @param video The video to patch
    * @return the {@link ResponseEntity} with status {@code 200 (OD)} and with
-   * body of the patched video,
-   * or with status {@code 400 (Bad Request)} if the video ID is not valid,
-   * or with status {@code 500 (Internal Server Error)} if the video
-   * couldn't be patched.
+   * body of the patched video, or with status {@code 400 (Bad Request)} if the
+   * video ID is not valid, or with status {@code 500 (Internal Server Error)}
+   * if the video couldn't be patched.
    */
   @PatchMapping("/videos")
   public ResponseEntity<Video> patchVideo(@RequestBody final Video video) {
@@ -234,10 +237,10 @@ public class VideoResource {
 
     final Video result = videoService.patch(video);
     return ResponseEntity.ok()
-            .headers(HeaderUtil
-                    .createEntityUpdateAlert(this.getApplicationName(),
-                    true, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+      .headers(HeaderUtil
+        .createEntityUpdateAlert(this.getApplicationName(),
+          true, ENTITY_NAME, result.getId().toString()))
+      .body(result);
   }
 
   /**
