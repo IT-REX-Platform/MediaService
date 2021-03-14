@@ -84,7 +84,6 @@ public class VideoResource {
    * @param redirectAttributes The redirect attributes.
    * @return the filename and id
    */
-  @CrossOrigin
   @PostMapping("/videos")
   public ResponseEntity<Video> uploadVideo(
       @RequestPart("videoFile") final MultipartFile videoFile,
