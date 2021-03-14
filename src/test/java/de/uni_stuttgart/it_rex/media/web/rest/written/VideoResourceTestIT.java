@@ -79,7 +79,7 @@ class VideoResourceTestIT {
       .andReturn().getResponse().getContentAsString();
 
     String id = JsonPath.read(result, "$.id");
-    restCourseMockMvc.perform(get("/api/videos/" + id)).andExpect(status().isOk());
+    restCourseMockMvc.perform(get("/api/videos/" + id)).andExpect(status().isPartialContent());
     restCourseMockMvc.perform(delete("/api/videos/" + id)).andExpect(status().isNoContent());
     restCourseMockMvc.perform(get("/api/videos/" + id)).andExpect(status().is4xxClientError());
   }
