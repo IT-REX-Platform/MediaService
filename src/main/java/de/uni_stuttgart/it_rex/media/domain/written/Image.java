@@ -5,7 +5,6 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.Objects;
 
 /**
  * A Image.
@@ -14,7 +13,6 @@ import java.util.Objects;
 @Table(name = "content")
 @DiscriminatorValue("3")
 public final class Image extends Media implements Serializable {
-    private static final long serialVersionUID = 1L;
 
     /**
      * Width in pixels.
@@ -66,36 +64,30 @@ public final class Image extends Media implements Serializable {
 
     /**
      * Equals method.
+     * <p>
+     * The overridden method is called because the comparison is supposed to
+     * only use the Id (primary key) here as Hibernate handles the rest.
      *
-     * @param o the other object.
-     * @return if they are equal.
+     * @param o the other object
+     * @return if they are equal
      */
     @Override
     public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Image)) {
-            return false;
-        }
-        if (!super.equals(o)) {
-            return false;
-        }
-        Image image = (Image) o;
-        return Objects.equals(getWidth(),
-            image.getWidth())
-            && Objects.equals(getHeight(),
-            image.getHeight());
+        return super.equals(o);
     }
 
     /**
      * Hash code.
+     * <p>
+     * The overridden method is called because a constant value has to be
+     * returned here. This is because the Id is generated and set when the
+     * entity is persisted and can be null before that.
      *
      * @return the hash code.
      */
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getWidth(), getHeight());
+        return super.hashCode();
     }
 
     /**
