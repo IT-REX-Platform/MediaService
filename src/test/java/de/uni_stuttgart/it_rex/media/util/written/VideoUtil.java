@@ -12,7 +12,7 @@ import java.util.stream.IntStream;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class VideoUtil {
+public final class VideoUtil {
     /**
      * Creates a random entity.
      *

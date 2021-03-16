@@ -7,7 +7,7 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class AudioUtil {
+public final class AudioUtil {
 
     public static boolean equals(final Audio first, final Audio second) {
         return MediaUtil.equals(first, second)

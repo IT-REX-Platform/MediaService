@@ -7,7 +7,7 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ContentUtil {
+public final class ContentUtil {
 
     /**
      * Tests if two entities are equal.

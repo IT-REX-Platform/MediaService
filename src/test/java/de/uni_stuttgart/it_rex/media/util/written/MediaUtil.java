@@ -5,7 +5,7 @@ import de.uni_stuttgart.it_rex.media.domain.written.Media;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MediaUtil {
+public final class MediaUtil {
 
     public static boolean equals(final Media first, final Media second) {
         return ResourceUtil.equals(first, second);

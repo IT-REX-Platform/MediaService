@@ -5,7 +5,7 @@ import de.uni_stuttgart.it_rex.media.domain.written.Document;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DocumentUtil {
+public final class DocumentUtil {
 
     public static boolean equals(final Document first, final Document second) {
         return ResourceUtil.equals(first, second);

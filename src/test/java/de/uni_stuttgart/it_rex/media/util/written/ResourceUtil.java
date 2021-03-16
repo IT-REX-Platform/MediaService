@@ -7,7 +7,7 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ResourceUtil {
+public final class ResourceUtil {
 
     public static boolean equals(final Resource first, final Resource second) {
         return ContentUtil.equals(first, second)

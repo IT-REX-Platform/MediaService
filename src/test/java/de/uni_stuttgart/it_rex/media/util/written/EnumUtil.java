@@ -2,7 +2,7 @@ package de.uni_stuttgart.it_rex.media.util.written;
 
 import de.uni_stuttgart.it_rex.media.domain.written.enumeration.MIMETYPE;
 
-public class EnumUtil {
+public final class EnumUtil {
   /**
    * Generates a random mimetype.
    *

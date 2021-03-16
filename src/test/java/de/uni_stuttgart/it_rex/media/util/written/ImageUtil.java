@@ -7,7 +7,7 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ImageUtil {
+public final class ImageUtil {
 
     public static boolean equals(final Image first, final Image second) {
         return MediaUtil.equals(first, second)
