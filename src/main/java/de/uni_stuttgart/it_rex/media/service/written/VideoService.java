@@ -355,6 +355,17 @@ public class VideoService {
   }
 
   /**
+   * Finds a Video by id.
+   *
+   * @param id the id
+   * @return the video
+   */
+  @Transactional(readOnly = true)
+  public Optional<Video> findById(final UUID id) {
+    return videoRepository.findById(id);
+  }
+
+  /**
    * Finds all Videos by id.
    *
    * @param ids the ids
