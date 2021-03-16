@@ -9,6 +9,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class ImageUtil {
 
+    /**
+     * Checks if two entities are equal.
+     *
+     * @param first
+     * @param second
+     */
     public static boolean equals(final Image first, final Image second) {
         return MediaUtil.equals(first, second)
             && Objects.equals(first.getHeight(), second.getHeight())
@@ -16,7 +22,7 @@ public final class ImageUtil {
     }
 
     /**
-     * Tests if two entities are equal.
+     * Asserts that two entities are equal.
      *
      * @param first
      * @param second
@@ -26,7 +32,7 @@ public final class ImageUtil {
     }
 
     /**
-     * Tests if two entities are not equal.
+     * Asserts that two entities are not equal.
      *
      * @param first
      * @param second

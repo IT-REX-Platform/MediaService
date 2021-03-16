@@ -7,12 +7,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class MediaUtil {
 
+    /**
+     * Checks if two entities are equal.
+     *
+     * @param first
+     * @param second
+     */
     public static boolean equals(final Media first, final Media second) {
         return ResourceUtil.equals(first, second);
     }
 
     /**
-     * Tests if two entities are equal.
+     * Asserts that two entities are equal.
      *
      * @param first
      * @param second
@@ -22,7 +28,7 @@ public final class MediaUtil {
     }
 
     /**
-     * Tests if two entities are not equal.
+     * Asserts that two entities are not equal.
      *
      * @param first
      * @param second

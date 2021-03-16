@@ -9,13 +9,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class AudioUtil {
 
+    /**
+     * Checks if two entities are equal.
+     *
+     * @param first
+     * @param second
+     */
     public static boolean equals(final Audio first, final Audio second) {
         return MediaUtil.equals(first, second)
             && Objects.equals(first.getLength(), second.getLength());
     }
 
     /**
-     * Tests if two entities are equal.
+     * Asserts that two entities are equal.
      *
      * @param first
      * @param second
@@ -25,7 +31,7 @@ public final class AudioUtil {
     }
 
     /**
-     * Tests if two entities are not equal.
+     * Asserts that two entities are not equal.
      *
      * @param first
      * @param second

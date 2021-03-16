@@ -9,13 +9,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public final class ResourceUtil {
 
+    /**
+     * Checks if two entities are equal.
+     *
+     * @param first
+     * @param second
+     */
     public static boolean equals(final Resource first, final Resource second) {
         return ContentUtil.equals(first, second)
             && Objects.equals(first.getMimeType(), second.getMimeType());
     }
 
     /**
-     * Tests if two entities are equal.
+     * Asserts that two entities are equal.
      *
      * @param first
      * @param second
@@ -25,7 +31,7 @@ public final class ResourceUtil {
     }
 
     /**
-     * Tests if two entities are not equal.
+     * Asserts that two entities are not equal.
      *
      * @param first
      * @param second

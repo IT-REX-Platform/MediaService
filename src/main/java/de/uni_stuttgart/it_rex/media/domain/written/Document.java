@@ -11,5 +11,5 @@ import java.io.Serializable;
 @Entity
 @Table(name = "content")
 @DiscriminatorValue("4")
-public final  class Document extends Resource implements Serializable {
+public final class Document extends Resource implements Serializable {
 }

@@ -43,6 +43,12 @@ public final class VideoUtil {
         return IntStream.range(0, number).mapToObj(i -> createVideo()).collect(Collectors.toList());
     }
 
+    /**
+     * Checks if two entities are equal.
+     *
+     * @param first
+     * @param second
+     */
     public static boolean equals(final Video first, final Video second) {
         return MediaUtil.equals(first, second)
             && Objects.equals(first.getLength(), second.getLength())
@@ -51,7 +57,7 @@ public final class VideoUtil {
     }
 
     /**
-     * Tests if two entities are equal but ignores their id.
+     * Asserts that two entities are equal but ignores their id.
      *
      * @param first
      * @param second
@@ -61,7 +67,7 @@ public final class VideoUtil {
     }
 
     /**
-     * Tests if two entities are not equal.
+     * Asserts that two entities are not equal.
      *
      * @param first
      * @param second
