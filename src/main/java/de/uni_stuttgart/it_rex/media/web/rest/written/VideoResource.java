@@ -2,6 +2,7 @@ package de.uni_stuttgart.it_rex.media.web.rest.written;
 
 import de.uni_stuttgart.it_rex.media.domain.written.Video;
 import de.uni_stuttgart.it_rex.media.service.written.VideoService;
+import de.uni_stuttgart.it_rex.media.web.rest.dto.written.ByteRangeDTO;
 import de.uni_stuttgart.it_rex.media.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.minio.errors.ErrorResponseException;
@@ -39,6 +40,7 @@ import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.hibernate.id.IdentifierGenerator.ENTITY_NAME;
@@ -163,9 +165,23 @@ public class VideoResource {
    */
   @GetMapping("/videos")
   public List<Video> findAllVideosOfACourse(
-    @RequestParam("course_id") final UUID courseId) {
+      @RequestParam("course_id") final UUID courseId) {
     LOGGER.debug("REST request to get all Videos");
     return videoService.findAllVideosOfACourse(courseId);
+  }
+
+  private ByteRangeDTO parseByteRange(final HttpHeaders headers,
+                                      final long videoLength) {
+    HttpRange range;
+    try {
+      range = headers.getRange().get(0);
+    } catch (IndexOutOfBoundsException e) {
+      range = HttpRange.parseRanges("bytes=0-").get(0);
+    }
+
+    final long start = range.getRangeStart(videoLength);
+    final long end = range.getRangeEnd(videoLength);
+    return new ByteRangeDTO(start, end);
   }
 
   /**
@@ -180,43 +196,34 @@ public class VideoResource {
     @PathVariable final UUID id,
     @RequestHeader final HttpHeaders headers) {
 
-    HttpHeaders responseHeaders = new HttpHeaders();
+    final Optional<Video> videoOptional = videoService.findById(id);
 
-    Long chosenFileLength = videoService.getLength(id);
-
-    if (chosenFileLength == 0L) {
-      return ResponseEntity.notFound().headers(responseHeaders).build();
+    if (!videoOptional.isPresent()) {
+      return ResponseEntity.notFound().headers(new HttpHeaders()).build();
     }
 
-    HttpRange range;
+    final Video video = videoOptional.get();
+    final ByteRangeDTO byteRangeDTO = parseByteRange(headers,
+        video.getLength());
 
-    try {
-      range = headers.getRange().get(0);
-    } catch (IndexOutOfBoundsException e) {
-      range = HttpRange.parseRanges("bytes=0-").get(0);
-    }
-
-    long start = range.getRangeStart(chosenFileLength);
-    long end = range.getRangeEnd(chosenFileLength);
-    long length = end - start + 1;
-
-    Resource file = videoService
-      .loadAsResource(id, start, length);
+    final Resource file = videoService.loadAsResource(
+        video.getId(), byteRangeDTO.getStart(), byteRangeDTO.getLength());
 
     if (file == null) {
-      return ResponseEntity.notFound().headers(responseHeaders).build();
+      return ResponseEntity.notFound().headers(new HttpHeaders()).build();
     }
 
+    final HttpHeaders responseHeaders = new HttpHeaders();
     responseHeaders.add(HttpHeaders.CONTENT_DISPOSITION,
-      "inline; filename=\"" + id + "\"");
+        "inline; filename=\"" + video.getTitle() + "\"");
     responseHeaders.add("Accept-Ranges", "bytes");
     responseHeaders.add("Content-Type", "video/mp4");
-    responseHeaders.add("Content-Length", chosenFileLength.toString());
-    responseHeaders.add("Content-Range", "bytes " + start
-      + "-" + (end - 1) + "/" + chosenFileLength);
+    responseHeaders.add("Content-Length", video.getLength().toString());
+    responseHeaders.add("Content-Range", "bytes " + byteRangeDTO.getStart()
+        + "-" + (byteRangeDTO.getEnd() - 1) + "/" + video.getLength());
 
     return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT)
-      .headers(responseHeaders).body(file);
+        .headers(responseHeaders).body(file);
   }
 
   /**

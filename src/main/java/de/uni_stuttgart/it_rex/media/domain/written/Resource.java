@@ -7,76 +7,71 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
-import java.util.Objects;
 
 @Entity
 @Table(name = "content")
 public abstract class Resource extends Content {
 
-  /**
-   * Mimetype of this Resource.
-   */
-  @Enumerated(EnumType.STRING)
-  @Column(name = "mime_type")
-  private MIMETYPE mimeType;
+    /**
+     * Mimetype of this Resource.
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "mime_type")
+    private MIMETYPE mimeType;
 
-  /**
-   * Getter.
-   *
-   * @return the mime type
-   */
-  public MIMETYPE getMimeType() {
-    return mimeType;
-  }
-
-  /**
-   * Setter.
-   *
-   * @param newMimeType the mime type.
-   */
-  public void setMimeType(final MIMETYPE newMimeType) {
-    this.mimeType = newMimeType;
-  }
-
-  /**
-   * Equals method.
-   *
-   * @param o the other object.
-   * @return if they are equal.
-   */
-  @Override
-  public boolean equals(final Object o) {
-    if (this == o) {
-      return true;
+    /**
+     * Getter.
+     *
+     * @return the mime type
+     */
+    public MIMETYPE getMimeType() {
+        return mimeType;
     }
-    if (!(o instanceof Resource)) {
-      return false;
+
+    /**
+     * Setter.
+     *
+     * @param newMimeType the mime type.
+     */
+    public void setMimeType(final MIMETYPE newMimeType) {
+        this.mimeType = newMimeType;
     }
-    if (!super.equals(o)) {
-      return false;
+
+    /**
+     * Equals method.
+     * <p>
+     * The overridden method is called because the comparison is supposed to
+     * only use the Id (primary key) here as Hibernate handles the rest.
+     *
+     * @param o the other object
+     * @return if they are equal
+     */
+    @Override
+    public boolean equals(final Object o) {
+        return super.equals(o);
     }
-    Resource resource = (Resource) o;
-    return getMimeType() == resource.getMimeType();
-  }
 
-  /**
-   * Hash code.
-   *
-   * @return the hash code.
-   */
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), getMimeType());
-  }
+    /**
+     * Hash code.
+     * <p>
+     * The overridden method is called because a constant value has to be
+     * returned here. This is because the Id is generated and set when the
+     * entity is persisted and can be null before that.
+     *
+     * @return the hash code.
+     */
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 
-
-  /**
-   * To string method.
-   *
-   * @return this object as a string.
-   */
-  @Override
-  public String toString() {
-    return "Resource{}";
-  }
+    /**
+     * To string method.
+     *
+     * @return this object as a string.
+     */
+    @Override
+    public String toString() {
+        return "Resource{}";
+    }
 }

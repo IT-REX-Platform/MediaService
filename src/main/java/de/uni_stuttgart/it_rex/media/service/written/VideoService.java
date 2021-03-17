@@ -355,21 +355,14 @@ public class VideoService {
   }
 
   /**
-   * Method applies filters to an example instance of video,
-   * which is used for running a search over all videos.
-   * <p>
-   * More filters can be added here. @s.pastuchov 20.02.21
+   * Finds a Video by id.
    *
-   * @param courseId Filter course ID.
-   * @return Example video with applied filters for search.
+   * @param id the id
+   * @return the video
    */
-  private Video applyFiltersToExample(final Optional<String> courseId) {
-    final Video video = new Video();
-      courseId.ifPresent(id -> {
-          UUID courseUuid = UUID.fromString(id);
-          video.setCourseId(courseUuid);
-      });
-      return video;
+  @Transactional(readOnly = true)
+  public Optional<Video> findById(final UUID id) {
+    return videoRepository.findById(id);
   }
 
   /**
