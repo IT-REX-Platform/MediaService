@@ -218,7 +218,13 @@ public class VideoResource {
         "inline; filename=\"" + video.getTitle() + "\"");
     responseHeaders.add("Accept-Ranges", "bytes");
     responseHeaders.add("Content-Type", "video/mp4");
-    responseHeaders.add("Content-Length", video.getLength().toString());
+
+    // Da scheint es wohl nen Bug zu geben mit den Zuul-Filtern...
+    // wenn man das hier mitschickt, kann man manche Videos nicht mehr anschauen,
+    // weil das Gateway sich daran verschluckt. Ohne gibts immernoch ne Exception,
+    // aber zumindest klappt alles aus Sicht des Clients (Browser).
+    // responseHeaders.add("Content-Length", video.getLength().toString());
+
     responseHeaders.add("Content-Range", "bytes " + byteRangeDTO.getStart()
         + "-" + (byteRangeDTO.getEnd() - 1) + "/" + video.getLength());
 
