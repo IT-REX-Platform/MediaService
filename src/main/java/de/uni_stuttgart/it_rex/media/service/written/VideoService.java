@@ -351,7 +351,7 @@ public class VideoService {
   @Transactional(readOnly = true)
   public List<Video> findAllVideosOfACourse(final UUID courseId) {
     LOGGER.info("Find videos of course: {}", courseId);
-    return videoRepository.findAllByCourseId(courseId);
+    return videoRepository.findAllByCourseIdOrderByTitleAsc(courseId);
   }
 
   /**
