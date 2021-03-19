@@ -159,15 +159,15 @@ public class VideoResource {
   }
 
   /**
-   * {@code GET  /videos} : get all the videos of a Course.
+   * {@code GET  /videos/course/{courseId:.+}} : get all the videos of a Course.
    *
    * @param courseId Course ID.
    * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the
    * list of videos in body.
    */
-  @GetMapping("/videos/course")
+  @GetMapping("/videos/course/{courseId:.+}")
   public List<Video> findAllVideosOfACourse(
-      @RequestParam("course_id") final UUID courseId) {
+      @PathVariable final UUID courseId) {
     LOGGER.debug("REST request to get all Videos");
     return videoService.findAllVideosOfACourse(courseId);
   }
@@ -259,14 +259,14 @@ public class VideoResource {
   }
 
   /**
-   * {@code GET  /videos} : get all the videos with ids.
+   * {@code GET  /videos/} : get all the videos with ids.
    *
-   * @param videoIds Video IDs.
-   * @return the map of videos in body.
+   * @param videoIds Video IDs as comma separated list.
+   * @return the map of videos in the body.
    */
   @GetMapping("/videos")
   public Map<UUID, Video> findAllWithIds(
-      @RequestBody final List<UUID> videoIds) {
+      @RequestParam final List<UUID> videoIds) {
     LOGGER.info("REST request to get all videos with the ids: {}", videoIds);
     final List<Video> videos = videoService.findAllWithIds(videoIds);
     return videos.stream().collect(
