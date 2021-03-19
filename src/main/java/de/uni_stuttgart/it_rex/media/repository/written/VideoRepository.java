@@ -20,5 +20,5 @@ public interface VideoRepository extends JpaRepository<Video, UUID> {
    * @param courseId the course id
    * @return the videos
    */
-  List<Video> findAllByCourseId(UUID courseId);
+  List<Video> findAllByCourseIdOrderByTitleAsc(UUID courseId);
 }
