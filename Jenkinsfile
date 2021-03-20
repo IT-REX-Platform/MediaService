@@ -1,4 +1,4 @@
-9080/auth/realms/jhipster/protocol/openid-connect/auth?response_type=code&client_id=jhipster-registry&scope=openid address email jhipster microprofile-jwt offline_access phone profile roles web-origins&state=TXq1PI-EHpr9eqoeppu4s0NvMm6FS5eZRGd89hPnz4Y%3D&redirect_uri=http://129.69.217.173:8761/login/oauth2/code/oidc&nonce=S1U33LTpr0ccUuEikhkOzPGr_2cFmoeglPIq3vkr0tcdef agentLabel
+def agentLabel
 if (BRANCH_NAME == 'main') {
     agentLabel = 'master'
 } else {
