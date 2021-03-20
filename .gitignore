@@ -147,3 +147,4 @@ Desktop.ini
 .eslintcache
 
 src/main/docker/
+docker/data/
