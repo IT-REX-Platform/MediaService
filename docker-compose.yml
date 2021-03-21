@@ -21,6 +21,7 @@ services:
 
   mediaservice-postgresql:
     image: "postgres:12.3"
+    restart: always
     environment:
       - POSTGRES_USER=MediaService
       - POSTGRES_PASSWORD=
