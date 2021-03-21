@@ -30,6 +30,7 @@ services:
 
   minio:
     image: "minio/minio"
+    restart: always
     volumes:
       - "/srv/minio/data:/data"
     ports:
