@@ -66,7 +66,7 @@ pipeline {
             steps {
                 echo 'Deploying....'
                     sh './gradlew jibDockerBuild'
-                    sh 'docker-compose down'
+                    sh 'docker-compose rm -svf mediaservice'
                     sh 'docker-compose up -d --build --remove-orphans'
             }
         }
