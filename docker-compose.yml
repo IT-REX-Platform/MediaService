@@ -12,12 +12,11 @@ services:
       - "SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_OIDC_ISSUER_URI=http://129.69.217.173:9080/auth/realms/jhipster"
       - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_OIDC_CLIENT_ID=internal
       - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_OIDC_CLIENT_SECRET=internal
-      - JHIPSTER_SLEEP=30
+      - JHIPSTER_SLEEP=5
       - JHIPSTER_REGISTRY_PASSWORD=admin
     restart: always
     networks:
       - it-rex
-      - default
 
   mediaservice-postgresql:
     image: "postgres:12.3"
@@ -27,7 +26,7 @@ services:
       - POSTGRES_PASSWORD=
       - POSTGRES_HOST_AUTH_METHOD=trust
     networks:
-      - default
+      - it-rex
 
   minio:
     image: "minio/minio"
@@ -40,6 +39,8 @@ services:
       MINIO_ACCESS_KEY: minio_itrex
       MINIO_SECRET_KEY: minio_itrex_secret
     command: server --address ":8087" /data
+    networks:
+      - it-rex
 
 networks:
   it-rex:
