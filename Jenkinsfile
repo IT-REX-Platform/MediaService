@@ -9,35 +9,16 @@ pipeline {
     agent { label agentLabel }
 
     stages {
-        stage('check java') {
-            steps {
-                sh 'java -version'
-            }
-        }
-
         stage('clean') {
             steps { sh 'chmod +x gradlew'
                 sh './gradlew clean --no-daemon'
             }
         }
 
-        stage('nohttp') {
-            steps {
-                sh './gradlew checkstyleNohttp --no-daemon'
-            }
-        }
-
-        stage('backend tests') {
+        stage('tests') {
             steps {
                 sh './gradlew check jacocoTestReport -PnodeInstall --no-daemon'
                 junit '**/build/**/TEST-*.xml'
-            }
-        }
-
-        stage('packaging') {
-            steps {
-                sh './gradlew bootJar -x test -Pprod -PnodeInstall --no-daemon'
-                archiveArtifacts artifacts: '**/build/libs/*.jar', fingerprint: true
             }
         }
 
