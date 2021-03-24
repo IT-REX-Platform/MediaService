@@ -51,15 +51,5 @@ pipeline {
                     sh 'docker-compose up -d --build --remove-orphans'
             }
         }
-
-        stage('release') {
-            when { allOf { branch 'dev'; triggeredBy 'UserIdCause' } }
-            steps {
-                sshagent (credentials: ['jenkins']) {
-                    echo 'Pushing dev to main'
-                    sh 'git push git@github.com:IT-REX-Platform/MediaService.git dev:main'
-                }
-            }
-        }
     }
 }
