@@ -259,14 +259,14 @@ public class VideoResource {
   }
 
   /**
-   * {@code GET  /videos/} : get all the videos with ids.
+   * {@code GET  /videos/ids} : get all the videos with ids.
    *
    * @param videoIds Video IDs as comma separated list.
    * @return the map of videos in the body.
    */
-  @GetMapping("/videos")
+  @GetMapping("/videos/ids")
   public Map<UUID, Video> findAllWithIds(
-      @RequestParam final List<UUID> videoIds) {
+      @RequestBody final List<UUID> videoIds) {
     LOGGER.info("REST request to get all videos with the ids: {}", videoIds);
     final List<Video> videos = videoService.findAllWithIds(videoIds);
     return videos.stream().collect(
