@@ -261,7 +261,7 @@ public class VideoResource {
   /**
    * {@code GET  /videos/ids} : get all the videos with ids.
    *
-   * @param videoIds Video IDs as comma separated list.
+   * @param videoIds the Video Ids.
    * @return the map of videos in the body.
    */
   @GetMapping("/videos/ids")
