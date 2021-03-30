@@ -13,5 +13,5 @@ pluginManagement {
           id "io.spring.nohttp" version "${spring_no_http_plugin_version}"
      }
 }
-
+ 
 rootProject.name = "media-service"
