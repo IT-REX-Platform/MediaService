@@ -259,12 +259,18 @@ public class VideoResource {
   }
 
   /**
-   * {@code GET  /videos/ids} : get all the videos with ids.
+   * {@code POST  /videos/get/ids} : get all the videos with ids.
    *
+   * This is actually a {@code GET} request.
+   * The ids need to be in the request body, because the practical URI length limit is around 2000 chars.
+   * With UUIDs this would imply an upper limit of about 50 ids.
+   * {@code POST} is used, because the frontend cannot send a body in a get request.
+   * ¯\_(ツ)_/¯
+   * 
    * @param videoIds the Video Ids.
    * @return the map of videos in the body.
    */
-  @GetMapping("/videos/ids")
+  @PostMapping("/videos/get/ids")
   public Map<UUID, Video> findAllWithIds(
       @RequestBody final List<UUID> videoIds) {
     LOGGER.info("REST request to get all videos with the ids: {}", videoIds);
